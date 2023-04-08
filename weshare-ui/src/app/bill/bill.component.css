@@ -1,0 +1,50 @@
+.own {
+  border: 2px solid #06AF8C;
+  padding: 5px;
+  border-radius: 15px;
+  box-shadow: 0 1px 6px rgba(6, 175, 140, 0.12), 0 1px 4px rgba(6, 175, 140, 0.24);
+  margin-bottom: 10px;
+  background: #06AF8C;
+  color: white;
+  width: 200px;
+}
+
+.other {
+  border: 2px solid #af7c06;
+  padding: 5px;
+  border-radius: 15px;
+  box-shadow: 0 1px 6px rgba(175, 124, 6, 0.12), 0 1px 4px rgba(175, 124, 6, 0.24);
+  margin-bottom: 10px;
+  color: white;
+  background: #af7c06;
+  width: 200px;
+}
+
+#amount {
+  font-family: "sans-serif";
+  text-align: center;
+  font-size: 1.3em;
+  margin: 0;
+  padding: 5px;
+  font-weight: 500;
+}
+
+#description {
+  font-style: italic;
+  font-family: "sans-serif";
+  text-align: center;
+  font-size: 1em;
+  margin: 0;
+}
+
+#own {
+  font-family: "sans-serif";
+  text-align: center;
+  font-size: 1em;
+  margin: 0;
+}
+
+.isPaid {
+  opacity: 0.3;
+  border: none;
+}

@@ -1,0 +1,31 @@
+<p-toast [hideTransitionOptions]="'1000ms ease-out'" position="top-center"></p-toast>
+<p-toolbar styleClass="stickyBar">
+  <p-button
+    (onClick)="showTab(NEW_BILL)"
+    icon="pi pi-plus"
+    styleClass="p-button-raised p-button-rounded p-button-help">
+  </p-button>
+  <p-button
+    (onClick)="showTab(SHOW_BILLS)"
+    class="checkButton"
+    icon="pi pi-book"
+    styleClass="p-button-raised p-button-rounded">
+  </p-button>
+  <p
+    [style.color]="debtAmount >= 0 ? 'green' : 'red'">
+    {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
+  </p>
+  <p-button
+    (onClick)="showTab(SHOW_STATISTICS)"
+    class="checkButton"
+    icon="pi pi-chart-bar"
+    styleClass="p-button-raised p-button-rounded p-button-success">
+  </p-button>
+  <p-button
+    (onClick)="payDebt()"
+    [disabled]="debtAmount >= 0"
+    [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised p-button-rounded' : 'p-button-warning p-button-raised p-button-rounded'"
+    class="checkButton"
+    icon="pi pi-wallet">
+  </p-button>
+</p-toolbar>

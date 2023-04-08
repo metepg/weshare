@@ -1,0 +1,46 @@
+<p-blockUI [blocked]="blocked">
+  <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+</p-blockUI>
+<p-card [style.margin-top]="'105px'">
+  <h2>Uusi lasku</h2>
+  <form (ngSubmit)="onSubmit()" [formGroup]="billFormBuilder">
+    <span class="p-float-label p-input-icon-left">
+      <i class="pi pi-euro"></i>
+      <input class="customStyle" formControlName="amount" id="amount" pInputText required type="number">
+      <label for="amount">Summa</label>
+    </span>
+
+
+    <div disabled="true">
+      <p>Oma osuus: {{ownShareOfBill | number: '1.2-2' }}€</p>
+      <p-slider (onChange)="handleSliderChange($event)" [step]=10
+                formControlName="sliderPercent"></p-slider>
+      <p style="text-align: center; font-size: 12px"><i>({{sliderPercent}}%)</i></p>
+    </div>
+
+    <span class="p-float-label p-input-icon-left">
+      <i class="pi pi-tag"></i>
+      <input class="customStyle" formControlName="description" id="description" name="description" pInputText required>
+      <label for="description">Kuvaus</label>
+    </span>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <p-dropdown
+      [options]="categories"
+      formControlName="category"
+      name="category"
+      placeholder="Kategoria"
+      styleClass="customStyle">
+    </p-dropdown>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <p-button [disabled]="submitButtonIsDisabled" styleClass="p-button-help" type="submit">Tallenna</p-button>
+  </form>
+</p-card>

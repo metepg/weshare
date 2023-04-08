@@ -40,6 +40,9 @@ testem.log
 /typings
 weshare-api/env_variables.yaml
 weshare-api/src/main/resources/*
+weshare-ui/.vscode
+weshare-ui/.angular
+weshare-ui/node_modules
 
 # System files
 .DS_Store
