@@ -1,5 +1,6 @@
 package com.weshare.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -24,14 +25,14 @@ public class SecurityConfig {
 
         return http
                 .csrf().disable()
-                .authorizeHttpRequests()
-                .anyRequest().authenticated().and()
+                .authorizeHttpRequests().requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .formLogin()
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true).failureUrl("/login?error").and()
+                .defaultSuccessUrl("https://weshare-86777.ey.r.appspot.com/", true)
+                .failureUrl("/login?error").and()
                 .exceptionHandling().accessDeniedPage("/logout").and()
                 .build();
-
     }
 
 }

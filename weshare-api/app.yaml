@@ -2,7 +2,5 @@ runtime: java17
 includes:
   - env_variables.yaml
 handlers:
-  - url: /(.*\.(js|json))
-    static_files: src/main/resources/static/\1
-    redirect_http_response_code: 301
-    upload: src/main/resources/static/(.*\.(js|json))
+  - url: /.*
+    secure: always

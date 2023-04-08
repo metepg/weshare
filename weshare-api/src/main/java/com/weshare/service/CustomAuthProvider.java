@@ -44,11 +44,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<User> student = repository.findByUsername(username);
-        if (student.isEmpty()) {
+        Optional<User> user = repository.findByUsername(username);
+        if (user.isEmpty()) {
             throw new BadCredentialsException("Väärä nimi tai salasana");
         }
-        User loggedUser = student.get();
+        User loggedUser = user.get();
 
         if (encoder.matches(password, loggedUser.getPassword())) {
             logger.info("Successfully Authenticated the user");
