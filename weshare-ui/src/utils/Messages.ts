@@ -4,7 +4,6 @@ export default {
       severity: 'success',
       summary: 'Tallennus onnistui'
     },
-
   },
   ERROR: {
     invalidBillForm: {

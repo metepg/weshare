@@ -22,7 +22,7 @@ describe('BillService', () => {
 
   fit('should be created', () => {
     expect(service).toBeTruthy();
-    service.getBillCount().subscribe((count) => billCount = count);
+    service.getBillCount().subscribe((count: number) => billCount = count);
     const request = controller.expectOne(url);
     request.flush(COUNT_OF_BILLS);
 

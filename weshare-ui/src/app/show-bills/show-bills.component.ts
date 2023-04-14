@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
-import { Bill } from '../model/Bill';
+import { Bill } from '../../model/Bill';
 import { Observable } from 'rxjs';
 
 @Component({

@@ -9,9 +9,8 @@
     "test": "ng test",
     "package": "cd ../weshare-api && mvn clean package && cd ../weshare-ui",
     "runJar": "java -jar ../weshare-api/target/weshare-0.0.2.jar --spring.profiles.active=dev",
-    "deploy": "cd ../weshare-ui && gcloud app deploy ../weshare-api/target/weshare-0.0.2.jar --quiet",
     "bdev": "ng build --configuration development && npm run package && npm run runJar",
-    "bprod": "ng build --configuration production && npm run package && npm run deploy",
+    "bprod": "ng build --configuration production && npm run package",
     "dev": "ng build --watch --configuration=development"
   },
   "private": true,
