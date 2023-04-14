@@ -1,6 +1,0 @@
-runtime: java17
-includes:
-  - env_variables.yaml
-handlers:
-  - url: /.*
-    secure: always

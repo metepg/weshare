@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
-import { Bill } from '../model/Bill';
+import { Bill } from '../../model/Bill';
 import { Observable, tap } from 'rxjs';
+import Categories from '../../utils/Categories';
 
 @Component({
   selector: 'app-show-statistics',
@@ -12,7 +13,6 @@ export class ShowStatisticsComponent implements OnInit {
   yearOptions: Object[];
   selectedYear: number;
   data: any;
-  monthlyJoku: Map<number, number>;
   monthlyValuesByCategory: Map<string, number[]>
   bills$: Observable<Bill[]>;
 
@@ -59,7 +59,6 @@ export class ShowStatisticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.monthlyJoku = new Map<number, number>();
     this.monthlyValuesByCategory = new Map<string, number[]>();
     this.getStatistics(new Date().getFullYear())
     window.scrollTo(0, document.body.scrollHeight);
@@ -84,24 +83,24 @@ export class ShowStatisticsComponent implements OnInit {
       ],
       datasets: [
         {
-          label: "Bensa",
+          label: Categories[0],
           backgroundColor: "lightgreen",
-          data: data.get("Bensa")
+          data: data.get(Categories[0])
         },
         {
-          label: "Ruoka",
+          label: Categories[1],
           backgroundColor: "pink",
-          data: data.get("Ruoka")
+          data: data.get(Categories[1])
         },
         {
-          label: "Laskut",
+          label: Categories[2],
           backgroundColor: "gold",
-          data: data.get("Laskut")
+          data: data.get(Categories[2])
         },
         {
-          label: "Muut",
+          label: Categories[3],
           backgroundColor: "skyblue",
-          data: data.get("Muut")
+          data: data.get(Categories[3])
         }
       ]
     };
@@ -113,15 +112,16 @@ export class ShowStatisticsComponent implements OnInit {
     this.getStatistics(year)
   }
 
-  getStatistics(year: number) {
+  getStatistics(year: number): void {
     this.bills$ = this.billService.getBillsByYear(year).pipe(
-      tap((bills: Bill[]) => {
+      tap((bills: Bill[]): void => {
         this.monthlyValuesByCategory = new Map<string, number[]>();
-        bills.map((bill: Bill) => {
-          const month = new Date(bill.date).getMonth();
-          const category = bill.category;
+        bills.map((bill: Bill): void => {
+          const month: number = new Date(bill.date).getMonth();
+          const category: string = bill.category;
+          const amount: number = bill.amount;
           const arr = this.monthlyValuesByCategory.get(category) ?? new Array(12).fill(null);
-          arr[month] = bill.amount;
+          arr[month] += amount;
           this.monthlyValuesByCategory.set(category, arr);
         })
         this.setData(this.monthlyValuesByCategory);

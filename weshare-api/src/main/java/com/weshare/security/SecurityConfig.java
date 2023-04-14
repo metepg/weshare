@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("https://weshare-86777.ey.r.appspot.com/", true)
+                .defaultSuccessUrl("/", true)
                 .failureUrl("/login?error").and()
                 .exceptionHandling().accessDeniedPage("/logout").and()
                 .build();

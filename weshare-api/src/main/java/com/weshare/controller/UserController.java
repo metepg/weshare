@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class UserController {
 
-    @PreAuthorize("hasAnyRole('SUPER_MIES', 'SUPER_NAINEN')")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/users/current")
     public ResponseEntity<String> findUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

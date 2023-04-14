@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
-import { Bill } from '../model/Bill';
+import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
+import Categories from '../../utils/Categories';
 
 @Component({
   selector: 'app-new-bill-form',
@@ -21,12 +22,7 @@ export class NewBillFormComponent implements OnInit {
     description: ['', Validators.required],
     sliderPercent: 50
   })
-  categories = [
-    'Bensa',
-    'Laskut',
-    'Muut',
-    'Ruoka'
-  ];
+  categories: string[] = Categories;
   sliderPercent = 50;
 
   constructor(private formBuilder: FormBuilder, private billService: BillService) {
@@ -44,7 +40,7 @@ export class NewBillFormComponent implements OnInit {
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
     this.blocked = true;
-    const isValid = this.validateForm((this.billFormBuilder))
+    const isValid: boolean = this.validateForm((this.billFormBuilder))
     if (!isValid) {
       this.formEmitter.emit(false);
       this.submitButtonIsDisabled = false;
@@ -73,7 +69,7 @@ export class NewBillFormComponent implements OnInit {
     for (const [key, value] of Object.entries(form.value)) {
       if (!isValid) return false;
       if (key === 'sliderPercent') continue;
-      if (typeof value === 'number') isValid = value !== this.ownShareOfBill;
+      if (typeof value === 'number') isValid = value !== this.ownShareOfBill && value > 0;
       if (typeof value === 'string') isValid = !!value.trim();
     }
     return isValid;

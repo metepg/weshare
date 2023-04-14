@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Bill } from '../model/Bill';
+import { Bill } from '../../model/Bill';
 
 @Component({
   selector: 'app-bill',
@@ -28,7 +28,7 @@ export class BillComponent implements OnInit {
     this.date = this.bill.date
     this.description = this.bill.description
     this.isPaid = this.bill.isPaid
-    this.ownAmount = this.bill.ownAmount
+    this.ownAmount = Math.abs(this.bill.ownAmount);
     this.owner = this.bill.owner;
     this.userIsOwnerOfBill = this.owner === this.username;
   }

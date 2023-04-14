@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
-import { Bill } from '../model/Bill';
+import { Bill } from '../../model/Bill';
 import { FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserService } from '../../services/user/user.service';
@@ -21,9 +21,9 @@ export class MainComponent implements OnInit {
   SHOW_STATISTICS = Constants.SHOW_STATISTICS;
   activeTab: number;
   bills$: Observable<Bill[]>;
-  debtAmount$: Observable<number>;
   username: string;
   isLoading = false;
+  debt: number;
 
   constructor(
     private billService: BillService,
@@ -44,7 +44,9 @@ export class MainComponent implements OnInit {
 
   loadBills(): void {
     this.bills$ = this.billService.getBills();
-    this.debtAmount$ = this.billService.getTotalAmount();
+    this.billService.getTotalAmount().subscribe((amount: number): void => {
+      this.debt = amount;
+    });
   }
 
   onFormSubmit(formIsValid: boolean): void {
@@ -67,7 +69,8 @@ export class MainComponent implements OnInit {
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
         this.isLoading = true;
-        this.billService.payDebt().subscribe((response: HttpResponse<Bill[]>) => {
+        const resetBill = new Bill(0, '', '', this.debt, this.username);
+        this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const status: number = response.status;
           const body: Bill[] | null = response.body;
           if (status === 200 && body) {

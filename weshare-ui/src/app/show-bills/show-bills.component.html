@@ -3,7 +3,7 @@
   <app-bill
     *ngFor="let bill of bills"
     [bill]="bill"
-    [style.place-self]="(bill.owner === this.username) ? 'end' : 'start'"
+    [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner === this.username) ? 'end' : 'start'"
     [username]="username"
     style="margin-bottom: 10px">
   </app-bill>

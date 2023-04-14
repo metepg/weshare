@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Bill } from '../../app/model/Bill';
+import { Bill } from '../../model/Bill';
 import { environment } from '../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class BillService {
   private apiUrl = environment.apiUrl + '/bills';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   createBill(bill: Bill): Observable<HttpResponse<Bill>> {
     return this.http.post<Bill>(`${this.apiUrl}/create`, bill, {
@@ -28,11 +29,10 @@ export class BillService {
     return this.http.get<Bill[]>(`${this.apiUrl}/statistics/` + year);
   }
 
-  payDebt(): Observable<HttpResponse<Bill[]>> {
-    return this.http.put<Bill[]>(
-      `${this.apiUrl}/pay`,
-      { message: 'empty' },
-      { observe: 'response' }
+  payDebt(bill: Bill): Observable<HttpResponse<Bill[]>> {
+    return this.http.post<Bill[]>(
+      `${this.apiUrl}/pay`, bill,
+      {observe: 'response'}
     );
   }
 

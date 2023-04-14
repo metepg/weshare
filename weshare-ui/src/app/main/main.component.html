@@ -2,7 +2,7 @@
 <app-navbar
   (debtEmitter)="payDebt()"
   (tabEmitter)="showTab($event)"
-  [debtAmount]="(debtAmount$ | async)!">
+  [debtAmount]="debt">
 </app-navbar>
 
 <main *ngIf="!isLoading; else loading;" [ngSwitch]="activeTab">
