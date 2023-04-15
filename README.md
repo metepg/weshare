@@ -2,7 +2,8 @@
 
 <p>App for splitting bills fairly.</p>
 <p>Built with Spring Boot / Angular 14 / MongoDB Atlas.</p>
-<p>App was built because Mobilepay discontinued their own app Weshare at the start of 2023. This app was intended for my personal use only as it is hardcoded for 2 people but feel free to do what you want with it.</p>
+<p>Runs in browser and is styled just enough to look good with my current phone.</p> 
+<p>App was built because Mobilepay discontinued their own app Weshare at the start of 2023. This app was intended for my personal use only as it is hardcoded for 2 people but feel free to do whatever you want with it.</p>
 
 ---
 
@@ -53,8 +54,11 @@
 - Minimum required properties are:
 
 ```*.properties
-  - spring.data.mongodb.uri=mongodb+srv://exampleUser:<password>@<MongoURL>?retryWrites=true&w=majority
-  - spring.data.mongodb.database=<collectionName>
+  spring.data.mongodb.uri=mongodb+srv://exampleUser:<password>@<MongoURL>?retryWrites=true&w=majority
+  spring.data.mongodb.database=<collectionName>
+  Role1=RoleName1
+  Role2=RoleName2
+
 ```
 
 ### Angular configuration
