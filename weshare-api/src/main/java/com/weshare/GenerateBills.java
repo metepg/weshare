@@ -1,8 +1,9 @@
 /**
- * Copy contents of this class to WeShareApplication.java and start application normally
- * It generates bills fast for development purpose.
+ * Copy contents of this class to WeShareApplication.java and start application
+ * normally
+ * It generates bills and users for for development purpose.
+ * Running this is also the only way to add users to database.
  */
-
 
 //package com.weshare;
 //
@@ -90,7 +91,6 @@
 //        userRepository.save(testUser2);
 //    }
 //
-//
 //    void createBills() {
 //        System.out.println("-------------CREATING BILLS-------------------------------\n");
 //        Collection<Bill> bills = generateBills();
@@ -102,7 +102,6 @@
 //        int maxAmount = 60;
 //        LocalDate startDate = LocalDate.of(fromYear, 1, 1);
 //        LocalDate endDate = LocalDate.of(toYear, 1, 1);
-//
 //
 //        while (startDate.isBefore(endDate)) {
 //            Random random = new Random();
@@ -127,6 +126,5 @@
 //        amount = ((int) amount);
 //        return amount / 100;
 //    }
-//
 //
 //}
