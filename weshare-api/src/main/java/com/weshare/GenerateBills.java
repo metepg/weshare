@@ -8,7 +8,6 @@
 //package com.weshare;
 //
 //import com.weshare.model.Bill;
-//import com.weshare.model.ERole;
 //import com.weshare.model.User;
 //import com.weshare.repository.IUserRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,10 @@
 //@EnableMongoRepositories
 //public class WeshareApplication implements CommandLineRunner {
 //
-//    private static final String user1 = "User1";
-//    private static final String user2 = "User2";
+//    private final static String user1 = "User1";
+//    private final static String user2 = "User2";
+//    private final static String role1 = "Role1";
+//    private final static String role2 = "Role2";
 //    private static final String[] categories = {"Ruoka", "Muut", "Bensa", "Laskut"};
 //    private static final int fromYear = 2021;
 //    private static final int toYear = 2023;
@@ -54,8 +55,8 @@
 //    }
 //
 //    public void run(String... args) {
-////        deleteUsers();
-////        createUsers();
+//        deleteUsers();
+//        createUsers();
 //        deleteBills();
 //        createBills();
 //        System.out.println("-------------DONE-------------------------------\n");
@@ -72,23 +73,26 @@
 //    }
 //
 //    void deleteUsers() {
-//        System.out.println("-------------DELETING ALL BILLS-------------------------------\n");
+//        System.out.println("-------------DELETING ALL USERS-------------------------------\n");
 //        db.remove(new Query(), "users");
 //    }
 //
 //    void createUsers() {
 //        System.out.println("-------------CREATING USERS-------------------------------\n");
-//        User testUser1 = new User(user1, encoder().encode("password1"));
+//        User testUser1 = new User(user1, encoder().encode("password"));
 //        Set<String> user1Roles = new HashSet<>();
-//        user1Roles.add(ERole.ROLE1);
+//        user1Roles.add(role2);
 //        testUser1.setRoles(user1Roles);
-//        userRepository.save(testUser1);
+//        User user1 = userRepository.save(testUser1);
+//        System.out.println("CREATED USER " + user1.getUsername());
 //
-//        User testUser2 = new User(user2, encoder().encode("password2"));
+//        User testUser2 = new User(user2, encoder().encode("password"));
 //        Set<String> user2Roles = new HashSet<>();
-//        user2Roles.add(ERole.ROLE2);
+//        user2Roles.add(role2);
 //        testUser2.setRoles(user2Roles);
 //        userRepository.save(testUser2);
+//        User user2 = userRepository.save(testUser1);
+//        System.out.println("CREATED USER " + user2.getUsername());
 //    }
 //
 //    void createBills() {
