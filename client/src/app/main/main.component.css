@@ -1,0 +1,11 @@
+.centr {
+  border: 1px solid gray;
+  padding: 0 10px;
+}
+
+@media only screen and (min-width: 600px) {
+  .centr {
+    width: 30%;
+    margin: auto;
+  }
+}

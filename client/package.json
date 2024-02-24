@@ -6,7 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "package": "cd ../server && mvn clean package && cd ../client",
+    "runJar": "java -jar ../server/target/server-0.0.2.jar --spring.profiles.active=dev",
+    "bdev": "ng build --configuration development && npm run package && npm run runJar",
+    "bprod": "ng build --configuration production && npm run package",
+    "dev": "ng build --watch --configuration=development"
   },
   "private": true,
   "dependencies": {
@@ -18,6 +23,9 @@
     "@angular/platform-browser": "^16.0.0",
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
+    "chart.js": "^4.4.1",
+    "primeicons": "^6.0.1",
+    "primeng": "^16.9.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

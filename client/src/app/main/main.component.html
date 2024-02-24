@@ -1,0 +1,50 @@
+<!--NAVBAR-->
+<app-navbar
+  (debtEmitter)="payDebt()"
+  (tabEmitter)="showTab($event)"
+  [debtAmount]="debt">
+</app-navbar>
+
+<main *ngIf="!isLoading; else loading;" [ngSwitch]="activeTab">
+
+  <!--ADD BILL-->
+  <app-new-bill-form
+    (formEmitter)="onFormSubmit($event)"
+    *ngSwitchCase="NEW_BILL"
+    [username]="username"
+    class="col"
+    style="display: grid; place-items: center">
+  </app-new-bill-form>
+
+  <!--SHOW BILLS-->
+  <app-show-bills
+    *ngSwitchCase="SHOW_BILLS"
+    [bills$]="bills$"
+    [username]="username">
+  </app-show-bills>
+
+  <!--    STATISTICS-->
+  <app-show-statistics
+    *ngSwitchCase="SHOW_STATISTICS"
+    style="display: grid;
+    margin-top: 50px;
+    place-content: center">
+  </app-show-statistics>
+
+</main>
+
+<!--Confirmation popup-->
+<p-confirmDialog #cd header="Confirmation" icon="pi pi-exclamation-triangle">
+  <ng-template pTemplate="footer">
+    <button (click)="cd.reject()" class="p-button-danger" icon="pi pi-times" label="Peruuta" pButton
+            style="margin-top: 25px" type="button"></button>
+    <button (click)="cd.accept()" class="p-button-success" icon="pi pi-check" label="Maksa" pButton
+            type="button"></button>
+  </ng-template>
+</p-confirmDialog>
+
+<ng-template #loading>
+  <div style="margin-top: 200px; display: grid; place-items: center">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>

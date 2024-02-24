@@ -1,0 +1,15 @@
+<div
+  *ngIf="bills$ | async as bills; else loading" style="display:grid; place-items: center; margin-top: 100px">
+  <app-bill
+    *ngFor="let bill of bills"
+    [bill]="bill"
+    [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner === this.username) ? 'end' : 'start'"
+    [username]="username"
+    style="margin-bottom: 10px">
+  </app-bill>
+</div>
+<ng-template #loading>
+  <div style="margin-top: 200px; display: grid; place-items: center">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>
