@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "package": "cd ../server && mvn clean package && cd ../client",
-    "runJar": "java -jar ../server/target/server-0.0.2.jar --spring.profiles.active=dev",
+    "runJar": "java -jar ../server/target/server-1.0.0.jar --spring.profiles.active=dev",
     "bdev": "ng build --configuration development && npm run package && npm run runJar",
     "bprod": "ng build --configuration production && npm run package",
     "dev": "ng build --watch --configuration=development"

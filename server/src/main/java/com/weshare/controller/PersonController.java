@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
-public class UserController {
+@RequestMapping("/api/persons")
+public class PersonController {
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/users/current")
-    public ResponseEntity<String> findUser() {
+    @GetMapping("/current")
+    public ResponseEntity<String> findPerson() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         String username = auth != null ? auth.getName() : "";

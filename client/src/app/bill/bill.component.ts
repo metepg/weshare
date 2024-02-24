@@ -10,7 +10,7 @@ export class BillComponent implements OnInit {
   @Input() bill: Bill;
   @Input() username: string;
   amount: number;
-  category: string;
+  category: number;
   date: Date;
   description: string;
   isPaid: boolean;
@@ -18,9 +18,6 @@ export class BillComponent implements OnInit {
   owner: string;
   userIsOwnerOfBill: boolean;
 
-
-  constructor() {
-  }
 
   ngOnInit(): void {
     this.amount = this.bill.amount

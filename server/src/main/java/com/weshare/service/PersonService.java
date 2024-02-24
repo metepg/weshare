@@ -1,16 +1,16 @@
 package com.weshare.service;
 
 import com.weshare.model.Person;
-import com.weshare.repository.IPersonRepository;
+import com.weshare.repository.PersonRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService {
-    private final IPersonRepository personRepository;
+    private final PersonRepository personRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public PersonService(IPersonRepository personRepository1, PasswordEncoder passwordEncoder) {
+    public PersonService(PersonRepository personRepository1, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository1;
         this.passwordEncoder = passwordEncoder;
     }

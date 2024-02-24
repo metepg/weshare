@@ -3,7 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
-import Categories from '../../utils/Categories';
+import {BillCategoryCode} from '../../utils/Categories';
+
+interface FormValidationStrategies {
+  [key: string]: (value: any) => boolean;
+}
 
 @Component({
   selector: 'app-new-bill-form',
@@ -18,11 +22,17 @@ export class NewBillFormComponent implements OnInit {
   ownShareOfBill: number;
   billFormBuilder = this.formBuilder.group({
     amount: [null, Validators.required],
-    category: ['', Validators.required],
+    category: [null, Validators.required],
     description: ['', Validators.required],
     sliderPercent: 50
   })
-  categories: string[] = Categories;
+
+  categories = Object.keys(BillCategoryCode)
+    .filter((key) => isNaN(Number(key)))
+    .map((key, index) => ({
+      label: key,
+      value: index
+    }));
   sliderPercent = 50;
 
   constructor(private formBuilder: FormBuilder, private billService: BillService) {
@@ -62,19 +72,20 @@ export class NewBillFormComponent implements OnInit {
       this.blocked = false;
     });
   }
-
-
   validateForm(form: FormGroup): boolean {
-    let isValid = true;
-    for (const [key, value] of Object.entries(form.value)) {
-      if (!isValid) return false;
-      if (key === 'sliderPercent') continue;
-      if (typeof value === 'number') isValid = value !== this.ownShareOfBill && value > 0;
-      if (typeof value === 'string') isValid = !!value.trim();
-    }
-    return isValid;
-  }
+    const strategies: FormValidationStrategies = {
+      sliderPercent: () => true,
+      amount: (value: number) => value > 0,
+      category: (value: number) => value >= 0,
+      description: (value: string) => value.toString().trim() !== '',
+    };
 
+    for (const [key, value] of Object.entries(form.value)) {
+      const isValid = strategies[key];
+      if (!isValid(value)) return false;
+    }
+    return true;
+  }
 
   handleSliderChange(e: any): void {
     this.sliderPercent = e.value;

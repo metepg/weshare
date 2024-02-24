@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { UserService } from '../../services/user/user.service';
+import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
 import { Constants } from '../../utils/Constants';
 import { HttpResponse } from '@angular/common/http';
@@ -13,7 +13,7 @@ import { HttpResponse } from '@angular/common/http';
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
-  providers: [MessageService, UserService],
+  providers: [MessageService, PersonService],
 })
 export class MainComponent implements OnInit {
   NEW_BILL = Constants.NEW_BILL;
@@ -28,7 +28,7 @@ export class MainComponent implements OnInit {
   constructor(
     private billService: BillService,
     private messageService: MessageService,
-    private userService: UserService,
+    private userService: PersonService,
     private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService
   ) {
@@ -69,7 +69,7 @@ export class MainComponent implements OnInit {
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
         this.isLoading = true;
-        const resetBill = new Bill(0, '', '', this.debt, this.username);
+        const resetBill = new Bill(0, -1, '', this.debt, this.username);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const status: number = response.status;
           const body: Bill[] | null = response.body;

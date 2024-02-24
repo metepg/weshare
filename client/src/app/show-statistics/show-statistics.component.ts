@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { Observable, tap } from 'rxjs';
-import Categories from '../../utils/Categories';
+import {BillCategoryCode} from '../../utils/Categories';
 
 @Component({
   selector: 'app-show-statistics',
@@ -11,7 +11,7 @@ import Categories from '../../utils/Categories';
 })
 export class ShowStatisticsComponent implements OnInit {
   yearOptions: Object[];
-  selectedYear: number;
+  selectedYear: number = new Date().getFullYear();
   data: any;
   monthlyValuesByCategory: Map<string, number[]>
   bills$: Observable<Bill[]>;
@@ -83,24 +83,34 @@ export class ShowStatisticsComponent implements OnInit {
       ],
       datasets: [
         {
-          label: Categories[0],
+          label: BillCategoryCode[0],
           backgroundColor: "lightgreen",
-          data: data.get(Categories[0])
+          data: data.get(BillCategoryCode[0])
         },
         {
-          label: Categories[1],
+          label: BillCategoryCode[1],
           backgroundColor: "pink",
-          data: data.get(Categories[1])
+          data: data.get(BillCategoryCode[1])
         },
         {
-          label: Categories[2],
+          label: BillCategoryCode[2],
           backgroundColor: "gold",
-          data: data.get(Categories[2])
+          data: data.get(BillCategoryCode[2])
         },
         {
-          label: Categories[3],
+          label: BillCategoryCode[3],
+          backgroundColor: "red",
+          data: data.get(BillCategoryCode[3])
+        },
+        {
+          label: BillCategoryCode[4],
           backgroundColor: "skyblue",
-          data: data.get(Categories[3])
+          data: data.get(BillCategoryCode[4])
+        },
+        {
+          label: BillCategoryCode[5],
+          backgroundColor: "grey",
+          data: data.get(BillCategoryCode[5])
         }
       ]
     };
@@ -118,7 +128,7 @@ export class ShowStatisticsComponent implements OnInit {
         this.monthlyValuesByCategory = new Map<string, number[]>();
         bills.map((bill: Bill): void => {
           const month: number = new Date(bill.date).getMonth();
-          const category: string = bill.category;
+          const category: string = BillCategoryCode[bill.category];
           const amount: number = bill.amount;
           const arr = this.monthlyValuesByCategory.get(category) ?? new Array(12).fill(null);
           arr[month] += amount;

@@ -1,6 +1,8 @@
-export default [
-  'Bensa',
-  'Laskut',
-  'Muut',
-  'Ruoka'
-]
+export enum BillCategoryCode {
+  Bensa,
+  Kissat,
+  Laskut,
+  Ravintola,
+  Ruoka,
+  Muut,
+}

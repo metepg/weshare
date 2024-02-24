@@ -1,7 +1,7 @@
 package com.weshare.service;
 
 import com.weshare.model.Person;
-import com.weshare.repository.IPersonRepository;
+import com.weshare.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,16 +17,15 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
-    final private IPersonRepository repository;
-    final private PasswordEncoder encoder;
+    private final PersonRepository repository;
+    private final PasswordEncoder encoder;
     Logger logger = LoggerFactory.getLogger(CustomAuthProvider.class);
 
-    public CustomAuthProvider(IPersonRepository repository, PasswordEncoder encoder) {
+    public CustomAuthProvider(PersonRepository repository, PasswordEncoder encoder) {
         this.encoder = encoder;
         this.repository = repository;
     }
@@ -44,11 +43,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<Person> user = repository.findByUsername(username);
-        if (user.isEmpty()) {
+        Optional<Person> person = repository.findByUsername(username);
+        if (person.isEmpty()) {
             throw new BadCredentialsException("Väärä nimi tai salasana");
         }
-        Person loggedPerson = user.get();
+        Person loggedPerson = person.get();
 
         if (encoder.matches(password, loggedPerson.getPassword())) {
             logger.info("Successfully Authenticated the user");
@@ -69,7 +68,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
      */
     private List<GrantedAuthority> getUserRoles(String personRole) {
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        logger.info("Role: " + personRole);
+        logger.info("Role: {}", personRole);
         String fullRole = "ROLE_" + personRole;
         grantedAuthorityList.add(new SimpleGrantedAuthority(fullRole));
 

@@ -3,3 +3,4 @@ export const enum Constants {
   SHOW_BILLS,
   SHOW_STATISTICS
 }
+

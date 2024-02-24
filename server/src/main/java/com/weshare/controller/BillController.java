@@ -2,7 +2,6 @@ package com.weshare.controller;
 
 import com.weshare.model.Bill;
 import com.weshare.service.BillService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,46 +16,43 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/bills")
 public class BillController {
 
-    @Autowired
-    BillService billService;
+    private final BillService billService;
 
-    /**
-     * Create new Bill
-     */
+    BillController(BillService billService) {
+       this.billService = billService;
+    }
+
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @PostMapping("/bills/create")
+    @PostMapping("/create")
     public ResponseEntity<Bill> createBill(@RequestBody Bill bill) {
         return new ResponseEntity<>(billService.create(bill), HttpStatus.CREATED);
     }
 
-    /**
-     * Find bills for main view (last 6 months)
-     * TODO: make it scrollable by month
-     */
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/bills")
-    public List<Bill> findBillsFromlastSixMonths() {
+    @GetMapping("")
+    public List<Bill> findBillsFromLastSixMonths() {
         return billService.findAllFromLastSixMonths();
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/bills/statistics/{year}")
+    @GetMapping("/statistics/{year}")
     public List<Bill> findBills(@PathVariable Integer year) {
         return billService.findAllByYear(year);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @PostMapping("/bills/pay")
+    @PostMapping("/pay")
     public ResponseEntity<List<Bill>> payDebt(@RequestBody Bill bill) {
+        // Bill created here is used in UI to indicate all bills are paid
         createBill(bill);
         return new ResponseEntity<>(billService.payDebt(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/bills/total")
+    @GetMapping("/total")
     public double getTotalAmount(Principal auth) {
         String currentUser = auth.getName();
         return billService.getTotalDebtByName(currentUser);
