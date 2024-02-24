@@ -3,13 +3,15 @@
   <p-button
     (onClick)="showTab(NEW_BILL)"
     icon="pi pi-plus"
-    styleClass="p-button-raised p-button-rounded p-button-help">
+    [rounded]="true"
+    styleClass="p-button-raised p-button-help">
   </p-button>
   <p-button
     (onClick)="showTab(SHOW_BILLS)"
     class="checkButton"
     icon="pi pi-book"
-    styleClass="p-button-raised p-button-rounded">
+    [rounded]="true"
+    styleClass="p-button-raised">
   </p-button>
   <p
     [style.color]="debtAmount >= 0 ? 'green' : 'red'">
@@ -19,13 +21,15 @@
     (onClick)="showTab(SHOW_STATISTICS)"
     class="checkButton"
     icon="pi pi-chart-bar"
-    styleClass="p-button-raised p-button-rounded p-button-success">
+    [rounded]="true"
+    styleClass="p-button-raised p-button-success">
   </p-button>
   <p-button
     (onClick)="payDebt()"
     [disabled]="debtAmount >= 0"
-    [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised p-button-rounded' : 'p-button-warning p-button-raised p-button-rounded'"
+    [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
     class="checkButton"
-    icon="pi pi-wallet">
+    icon="pi pi-wallet"
+    [rounded]="true">
   </p-button>
 </p-toolbar>
