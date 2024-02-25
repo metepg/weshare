@@ -49,8 +49,8 @@
 2. Create database `weshare` with schema `weshare`
 3. `npm install` in `/client` directory
 4. `mvn install` in `/server` directory 
-5. Before starting the app go to `Application.java` and run the commented out code instead of the current code. Be sure to run that code with **DEV** profile This will insert 2 users to database with the credentials that are found in `application-dev.properties`. 
-6. Undo changes in `Application.java` and start the app with `npm run bdev`
+5. Start spring boot with profile **setup**. This will insert 2 users to database with the credentials that are found in `application-setup.properties`. 
+6. Start the app with `npm run bdev`
 7. You should see the app load in <code>http://localhost:8080</code>. You can login with
     - username: `user`
     - password: `password`
@@ -64,3 +64,5 @@ Starting the app with `npm run bdev` inside `/client` directory does 3 things
 3. Runs .jar file with profile=dev (for spring boot).
 
 For production optimized .jar run `npm run bprod` in `client` directory.
+
+Current state of the app supports only 2 users and has hardcoded Finnish labels and text.
