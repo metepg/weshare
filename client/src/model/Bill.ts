@@ -4,7 +4,7 @@ export class Bill {
   category: number;
   date: Date;
   description: string;
-  isPaid: boolean
+  paid: boolean
   ownAmount: number;
   owner: string;
 
@@ -14,7 +14,7 @@ export class Bill {
     this.description = description;
     this.ownAmount = ownAmount;
     this.date = new Date();
-    this.isPaid = false;
+    this.paid = false;
     this.owner = owner;
   }
 }

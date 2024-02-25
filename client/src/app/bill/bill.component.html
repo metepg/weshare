@@ -1,7 +1,7 @@
 <div *ngIf="amount > 0; else paidElement" [ngClass]="isPaid ? 'isPaid' : ''">
-  <i style="margin: 0 6px ; font-weight: lighter; color: gray">{{owner}}</i>
+  <i style="margin: 0 6px ;color: grey">{{owner}}</i>
   <br>
-  <i style="margin: 0 6px ; font-weight: lighter; color: gray">{{date | date: 'd.M.YYYY'}}</i>
+  <i style="margin: 0 6px; color: grey">{{date | date: 'd.M.YYYY'}}</i>
   <div [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']" style="width: 185px;">
     <p id="amount">{{+amount | number : '1.2-2'}} €</p>
     <p id="description">{{description}}</p>

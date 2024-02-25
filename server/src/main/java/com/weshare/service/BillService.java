@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,25 +33,23 @@ public class BillService {
     }
 
     public double getTotalDebtByName(String name) {
-        List<Bill> allUnpaidBills = billRepository.findAllUnpaidBills();
-
-        // Partition bills by ownership
-        Map<Boolean, List<Bill>> partitionedBills = allUnpaidBills.stream()
-                .collect(Collectors.partitioningBy(bill -> name.equals(bill.getOwner())));
-
-        double sumOwned = partitionedBills.get(true).stream()
-                .mapToDouble(bill -> bill.getAmount() - bill.getOwnAmount())
+        List<Bill> bills = billRepository.findAllUnpaidBills();
+        return bills
+                .stream()
+                .mapToDouble(bill -> getOwnAmount(bill, name))
                 .sum();
-        double sumNotOwned = partitionedBills.get(false).stream()
-                .mapToDouble(bill -> bill.getAmount() - bill.getOwnAmount())
-                .sum();
-
-        return sumNotOwned - sumOwned;
     }
 
     public List<Bill> findAllByYear(Integer year) {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 12, 31);
         return billRepository.findAllByDateBetween(startDate, endDate);
+    }
+
+    private double getOwnAmount(Bill bill, String name) {
+        double total = bill.getAmount() - bill.getOwnAmount();
+        return bill.getOwner().equals(name)
+                ? total
+                : -total;
     }
 }
