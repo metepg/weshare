@@ -9,6 +9,9 @@
     "test": "ng test",
     "package": "cd ../server && mvn clean package && cd ../client",
     "runJar": "java -jar ../server/target/server-1.0.0.jar --spring.profiles.active=dev",
+    "runSetup": "java -jar ../server/target/server-1.0.0.jar --spring.profiles.active=setup",
+    "dbsetup": "npm run package && npm run runSetup",
+    "resetLocalDB": "cd ../server/src/main/resources/db && sh resetLocalDB.sh",
     "bdev": "ng build --configuration development && npm run package && npm run runJar",
     "bprod": "ng build --configuration production && npm run package",
     "dev": "ng build --watch --configuration=development"

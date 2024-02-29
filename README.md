@@ -38,23 +38,44 @@
 
 ## Prequisites
 
-- PostgreSQL
+- PostgreSQL (can be run in container)
 - Java 17
 - Maven
 - NodeJS
 
 ## Instructions for setting up local environment
+Create a database named "weshare" (default). If you prefer a different name, you'll need to change the database name in
+  - application-dev.properties
+  - application-setup.properties
+After cloning this repo run these commands in `/client` directory
 
-1. Clone repository normally
-2. Create database `weshare` with schema `weshare`
-3. `npm install` in `/client` directory
-4. `mvn install` in `/server` directory 
-5. Start spring boot with profile **setup**. This will insert 2 users to database with the credentials that are found in `application-setup.properties`. 
-6. Start the app with `npm run bdev`
-7. You should see the app load in <code>http://localhost:8080</code>. You can login with
-    - username: `user`
-    - password: `password`
-  <br>
+### Initialize Application
+1. `npm install` (installs dependencies)
+2. `npm run dbsetup`. This will insert 2 users to database with the credentials that are found in `application-setup.properties`. 
+3. Start the app with `npm run bdev`
+4. You should see the app load at [http://localhost:8080](http://localhost:8080). You can login with 2 users:
+    - **User 1:**
+        - Username: `user`
+        - Password: `password`
+    - **User 2:**
+        - Username: `user2`
+        - Password: `password`
+---
+
+### Create Test Data (optional)
+Depending on your setup, use the appropriate command **in project root** to create test data:
+
+- **Using Local Database**:
+  ```sh
+  sudo -u postgres psql -d weshare -f server/src/main/resources/db/create-test-data.sql
+  ```
+ 
+- **Using Docker Container Database**:
+  ```sh
+  docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
+  ```
+---
+
 
 ## Extra
 Starting the app with `npm run bdev` inside `/client` directory does 3 things
