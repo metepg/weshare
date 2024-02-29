@@ -24,7 +24,7 @@ public class BillService {
     public List<Bill> findAllFromLastSixMonths() {
         LocalDate today = LocalDate.now();
         LocalDate sixMonthsAgo = today.minusMonths(6);
-        return billRepository.findAllFromLastSixMonths(sixMonthsAgo, today);
+        return billRepository.findAllByDateBetween(sixMonthsAgo, today);
     }
 
     public List<Bill> payDebt() {
@@ -36,7 +36,7 @@ public class BillService {
         List<Bill> bills = billRepository.findAllUnpaidBills();
         return bills
                 .stream()
-                .mapToDouble(bill -> getOwnAmount(bill, name))
+                .mapToDouble(bill -> getUnpaidAmount(name, bill))
                 .sum();
     }
 
@@ -46,7 +46,7 @@ public class BillService {
         return billRepository.findAllByDateBetween(startDate, endDate);
     }
 
-    private double getOwnAmount(Bill bill, String name) {
+    private double getUnpaidAmount(String name, Bill bill) {
         double total = bill.getAmount() - bill.getOwnAmount();
         return bill.getOwner().equals(name)
                 ? total
