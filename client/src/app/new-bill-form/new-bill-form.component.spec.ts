@@ -8,8 +8,8 @@ describe('NewBillComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NewBillFormComponent]
-    })
+    imports: [NewBillFormComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(NewBillFormComponent);

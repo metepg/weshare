@@ -3,17 +3,39 @@ import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { FormBuilder } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
 import { Constants } from '../../utils/Constants';
 import { HttpResponse } from '@angular/common/http';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ButtonDirective } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ShowStatisticsComponent } from '../show-statistics/show-statistics.component';
+import { ShowBillsComponent } from '../show-bills/show-bills.component';
+import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
+import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css'],
-  providers: [MessageService, PersonService],
+    selector: 'app-main',
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.css'],
+    providers: [MessageService, PersonService],
+    standalone: true,
+    imports: [
+        NavbarComponent,
+        NgIf,
+        NgSwitch,
+        NgSwitchCase,
+        NewBillFormComponent,
+        ShowBillsComponent,
+        ShowStatisticsComponent,
+        ConfirmDialogModule,
+        PrimeTemplate,
+        ButtonDirective,
+        ProgressSpinnerModule,
+    ],
 })
 export class MainComponent implements OnInit {
   NEW_BILL = Constants.NEW_BILL;

@@ -3,11 +3,18 @@ import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { Observable, tap } from 'rxjs';
 import {BillCategoryCode} from '../../utils/Categories';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ChartModule } from 'primeng/chart';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
-  selector: 'app-show-statistics',
-  templateUrl: './show-statistics.component.html',
-  styleUrls: ['./show-statistics.component.css']
+    selector: 'app-show-statistics',
+    templateUrl: './show-statistics.component.html',
+    styleUrls: ['./show-statistics.component.css'],
+    standalone: true,
+    imports: [DropdownModule, FormsModule, NgIf, ChartModule, ProgressSpinnerModule, AsyncPipe]
 })
 export class ShowStatisticsComponent implements OnInit {
   yearOptions: Object[];

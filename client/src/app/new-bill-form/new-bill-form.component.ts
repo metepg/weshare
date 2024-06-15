@@ -1,18 +1,27 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
 import {BillCategoryCode} from '../../utils/Categories';
+import { DecimalPipe } from '@angular/common';
+import { Button } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { SliderModule } from 'primeng/slider';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { BlockUIModule } from 'primeng/blockui';
 
 interface FormValidationStrategies {
   [key: string]: (value: any) => boolean;
 }
 
 @Component({
-  selector: 'app-new-bill-form',
-  templateUrl: './new-bill-form.component.html',
-  styleUrls: ['./new-bill-form.component.css']
+    selector: 'app-new-bill-form',
+    templateUrl: './new-bill-form.component.html',
+    styleUrls: ['./new-bill-form.component.css'],
+    standalone: true,
+    imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe]
 })
 export class NewBillFormComponent implements OnInit {
   submitButtonIsDisabled: boolean;

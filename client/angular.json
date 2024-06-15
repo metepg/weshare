@@ -68,7 +68,6 @@
               "buildTarget": "client:build:production"
             },
             "development": {
-              "servePath": "server",
               "proxyConfig": "proxy.conf.json",
               "buildTarget": "client:build:development"
             }

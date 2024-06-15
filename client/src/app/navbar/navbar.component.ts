@@ -1,10 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Constants } from '../../utils/Constants';
+import { DecimalPipe } from '@angular/common';
+import { Button } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+    selector: 'app-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.css'],
+    standalone: true,
+    imports: [ToastModule, ToolbarModule, Button, DecimalPipe]
 })
 export class NavbarComponent implements OnInit {
   NEW_BILL = Constants.NEW_BILL;
