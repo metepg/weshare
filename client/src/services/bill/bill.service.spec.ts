@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BillService } from './bill.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { COUNT_OF_BILLS } from '../../testUtils/constants';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BillService', () => {
   let service: BillService;
@@ -12,9 +13,9 @@ describe('BillService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [BillService]
-    })
+    imports: [],
+    providers: [BillService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
     service = TestBed.inject(BillService);
     controller = TestBed.inject(HttpTestingController);

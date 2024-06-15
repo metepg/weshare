@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { InputTextModule } from 'primeng/inputtext';
 import { MainComponent } from './main/main.component';
 import { NgModule } from '@angular/core';
@@ -26,39 +26,32 @@ import { SpinnerModule } from 'primeng/spinner';
 import { ShowStatisticsComponent } from './show-statistics/show-statistics.component';
 import { ChartModule } from 'primeng/chart';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    BillComponent,
-    MainComponent,
-    NavbarComponent,
-    NewBillFormComponent,
-    ShowBillsComponent,
-    ShowStatisticsComponent
-  ],
-  imports: [
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    ButtonModule,
-    CardModule,
-    ConfirmDialogModule,
-    DropdownModule,
-    FormsModule,
-    HttpClientModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    SkeletonModule,
-    SliderModule,
-    ToastModule,
-    ToolbarModule,
-    ProgressSpinnerModule,
-    BlockUIModule,
-    SpinnerModule,
-    ChartModule
-  ],
-  providers: [ConfirmationService],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        BillComponent,
+        MainComponent,
+        NavbarComponent,
+        NewBillFormComponent,
+        ShowBillsComponent,
+        ShowStatisticsComponent
+    ],
+    bootstrap: [AppComponent], imports: [AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        ButtonModule,
+        CardModule,
+        ConfirmDialogModule,
+        DropdownModule,
+        FormsModule,
+        InputTextModule,
+        ReactiveFormsModule,
+        SkeletonModule,
+        SliderModule,
+        ToastModule,
+        ToolbarModule,
+        ProgressSpinnerModule,
+        BlockUIModule,
+        SpinnerModule,
+        ChartModule], providers: [ConfirmationService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {
 }

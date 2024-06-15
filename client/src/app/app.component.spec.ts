@@ -1,25 +1,29 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BillService } from '../services/bill/bill.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   let service: BillService;
   beforeEach(async () => {
     service = TestBed.inject(BillService);
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        HttpClientModule
-      ],
-      providers: [BillService, HttpClient],
-      declarations: [
+    declarations: [
         AppComponent
-      ],
-    }).compileComponents();
+    ],
+    imports: [RouterTestingModule,
+        HttpClientModule],
+    providers: [BillService, HttpClient, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}{
+    declarations: [
+        AppComponent
+    ],
+    imports: [RouterTestingModule,
+        HttpClientTestingModule],
+    providers: [BillService, HttpClient, provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   });
 
   it('should create the app', () => {
