@@ -1,9 +1,9 @@
-import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, AfterViewChecked } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { Observable } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-show-bills',
@@ -12,19 +12,12 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
     standalone: true,
     imports: [NgIf, NgFor, BillComponent, ProgressSpinnerModule, AsyncPipe]
 })
-export class ShowBillsComponent implements OnInit, AfterViewChecked {
+export class ShowBillsComponent implements AfterViewChecked {
   @Input() bills$: Observable<Bill[]>;
   @Input() username: string;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   ngAfterViewChecked(): void {
     window.scrollTo(0, document.body.scrollHeight);
   }
-
 
 }

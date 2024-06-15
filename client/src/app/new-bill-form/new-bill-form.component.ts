@@ -7,14 +7,12 @@ import {BillCategoryCode} from '../../utils/Categories';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { SliderModule } from 'primeng/slider';
+import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { BlockUIModule } from 'primeng/blockui';
 
-interface FormValidationStrategies {
-  [key: string]: (value: any) => boolean;
-}
+type FormValidationStrategies = Record<string, (value: unknown) => boolean>;
 
 @Component({
     selector: 'app-new-bill-form',
@@ -81,12 +79,13 @@ export class NewBillFormComponent implements OnInit {
       this.blocked = false;
     });
   }
+
   validateForm(form: FormGroup): boolean {
     const strategies: FormValidationStrategies = {
       sliderPercent: () => true,
-      amount: (value: number) => value > 0,
-      category: (value: number) => value >= 0,
-      description: (value: string) => value.toString().trim() !== '',
+      amount: (value: unknown) => typeof value === 'number' && value > 0,
+      category: (value: unknown) => typeof value === 'number' && value >= 0,
+      description: (value: unknown) => typeof value === 'string' && value.trim() !== '',
     };
 
     for (const [key, value] of Object.entries(form.value)) {
@@ -96,8 +95,9 @@ export class NewBillFormComponent implements OnInit {
     return true;
   }
 
-  handleSliderChange(e: any): void {
-    this.sliderPercent = e.value;
+  handleSliderChange(e: SliderChangeEvent): void {
+    if (e.value === undefined) return;
+    this.sliderPercent = e.value
   }
 
   resetForm(): void {

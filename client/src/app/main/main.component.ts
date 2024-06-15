@@ -6,7 +6,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
-import { Constants } from '../../utils/Constants';
+import { View } from '../../utils/View';
 import { HttpResponse } from '@angular/common/http';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonDirective } from 'primeng/button';
@@ -38,9 +38,9 @@ import { NavbarComponent } from '../navbar/navbar.component';
     ],
 })
 export class MainComponent implements OnInit {
-  NEW_BILL = Constants.NEW_BILL;
-  SHOW_BILLS = Constants.SHOW_BILLS;
-  SHOW_STATISTICS = Constants.SHOW_STATISTICS;
+  NEW_BILL = View.NEW_BILL;
+  SHOW_BILLS = View.SHOW_BILLS;
+  SHOW_STATISTICS = View.SHOW_STATISTICS;
   activeTab: number;
   bills$: Observable<Bill[]>;
   username: string;
