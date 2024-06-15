@@ -1,18 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
 import {BillCategoryCode} from '../../utils/Categories';
+import { DecimalPipe } from '@angular/common';
+import { Button } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { SliderChangeEvent, SliderModule } from 'primeng/slider';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { BlockUIModule } from 'primeng/blockui';
 
-interface FormValidationStrategies {
-  [key: string]: (value: any) => boolean;
-}
+type FormValidationStrategies = Record<string, (value: unknown) => boolean>;
 
 @Component({
-  selector: 'app-new-bill-form',
-  templateUrl: './new-bill-form.component.html',
-  styleUrls: ['./new-bill-form.component.css']
+    selector: 'app-new-bill-form',
+    templateUrl: './new-bill-form.component.html',
+    styleUrls: ['./new-bill-form.component.css'],
+    standalone: true,
+    imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe]
 })
 export class NewBillFormComponent implements OnInit {
   submitButtonIsDisabled: boolean;
@@ -72,12 +79,13 @@ export class NewBillFormComponent implements OnInit {
       this.blocked = false;
     });
   }
+
   validateForm(form: FormGroup): boolean {
     const strategies: FormValidationStrategies = {
       sliderPercent: () => true,
-      amount: (value: number) => value > 0,
-      category: (value: number) => value >= 0,
-      description: (value: string) => value.toString().trim() !== '',
+      amount: (value: unknown) => typeof value === 'number' && value > 0,
+      category: (value: unknown) => typeof value === 'number' && value >= 0,
+      description: (value: unknown) => typeof value === 'string' && value.trim() !== '',
     };
 
     for (const [key, value] of Object.entries(form.value)) {
@@ -87,8 +95,9 @@ export class NewBillFormComponent implements OnInit {
     return true;
   }
 
-  handleSliderChange(e: any): void {
-    this.sliderPercent = e.value;
+  handleSliderChange(e: SliderChangeEvent): void {
+    if (e.value === undefined) return;
+    this.sliderPercent = e.value
   }
 
   resetForm(): void {
