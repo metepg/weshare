@@ -4,13 +4,12 @@
   (tabEmitter)="showTab($event)"
   [debtAmount]="debt">
 </app-navbar>
-
 <main *ngIf="!isLoading; else loading;" [ngSwitch]="activeTab">
 
   <!--ADD BILL-->
   <app-new-bill-form
     (formEmitter)="onFormSubmit($event)"
-    *ngSwitchCase="NEW_BILL"
+    *ngSwitchCase="View.NEW_BILL"
     [username]="username"
     class="col"
     style="display: grid; place-items: center">
@@ -18,19 +17,22 @@
 
   <!--SHOW BILLS-->
   <app-show-bills
-    *ngSwitchCase="SHOW_BILLS"
+    *ngSwitchCase="View.SHOW_BILLS"
     [bills$]="bills$"
     [username]="username">
   </app-show-bills>
 
   <!--    STATISTICS-->
   <app-show-statistics
-    *ngSwitchCase="SHOW_STATISTICS"
+    *ngSwitchCase="View.SHOW_STATISTICS"
     style="display: grid;
     margin-top: 50px;
     place-content: center">
   </app-show-statistics>
 
+  <!--SEARCH-->
+  <app-search-bills *ngSwitchCase="View.SEARCH"></app-search-bills>
+  
 </main>
 
 <!--Confirmation popup-->

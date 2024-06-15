@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
-import { FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
@@ -16,6 +15,7 @@ import { ShowBillsComponent } from '../show-bills/show-bills.component';
 import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
 import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { SearchBillsComponent } from '../search-bills/search-bills.component';
 
 @Component({
     selector: 'app-main',
@@ -23,24 +23,23 @@ import { NavbarComponent } from '../navbar/navbar.component';
     styleUrls: ['./main.component.css'],
     providers: [MessageService, PersonService],
     standalone: true,
-    imports: [
-        NavbarComponent,
-        NgIf,
-        NgSwitch,
-        NgSwitchCase,
-        NewBillFormComponent,
-        ShowBillsComponent,
-        ShowStatisticsComponent,
-        ConfirmDialogModule,
-        PrimeTemplate,
-        ButtonDirective,
-        ProgressSpinnerModule,
-    ],
+  imports: [
+    NavbarComponent,
+    NgIf,
+    NgSwitch,
+    NgSwitchCase,
+    NewBillFormComponent,
+    ShowBillsComponent,
+    ShowStatisticsComponent,
+    ConfirmDialogModule,
+    PrimeTemplate,
+    ButtonDirective,
+    ProgressSpinnerModule,
+    SearchBillsComponent,
+  ],
 })
 export class MainComponent implements OnInit {
-  NEW_BILL = View.NEW_BILL;
-  SHOW_BILLS = View.SHOW_BILLS;
-  SHOW_STATISTICS = View.SHOW_STATISTICS;
+  protected readonly View = View;
   activeTab: number;
   bills$: Observable<Bill[]>;
   username: string;
@@ -51,17 +50,14 @@ export class MainComponent implements OnInit {
     private billService: BillService,
     private messageService: MessageService,
     private userService: PersonService,
-    private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService
   ) {
   }
 
   ngOnInit(): void {
     this.loadBills();
-    this.showTab(this.SHOW_BILLS);
-    this.userService
-    .getUsername()
-    .subscribe((username: string) => (this.username = username));
+    this.showTab(View.SHOW_BILLS);
+    this.userService.getUsername().subscribe((username: string) => (this.username = username));
   }
 
   loadBills(): void {
@@ -78,7 +74,7 @@ export class MainComponent implements OnInit {
     }
     this.messageService.add(Messages.SUCCESS.validBillForm);
     this.loadBills();
-    this.showTab(this.SHOW_BILLS);
+    this.showTab(View.SHOW_BILLS);
   }
 
   showTab(tab: number): void {
@@ -114,4 +110,5 @@ export class MainComponent implements OnInit {
       },
     });
   }
+
 }
