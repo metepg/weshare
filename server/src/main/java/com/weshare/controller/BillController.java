@@ -1,6 +1,7 @@
 package com.weshare.controller;
 
 import com.weshare.model.Bill;
+import com.weshare.model.SearchFilter;
 import com.weshare.service.BillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class BillController {
     @GetMapping("")
     public List<Bill> findBillsFromLastSixMonths() {
         return billService.findAllFromLastSixMonths();
+    }
+
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PostMapping("")
+    public List<Bill> findBillsByFilter(@RequestBody SearchFilter filter) {
+        return billService.findBillsByFilter(filter);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")

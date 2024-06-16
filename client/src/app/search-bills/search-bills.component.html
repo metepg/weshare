@@ -1,1 +1,47 @@
-<p>search-bills works!</p>
+<div style="display: flex; justify-content: center; align-items: center;">
+  <form
+    (ngSubmit)="onSubmit()"
+    [formGroup]="searchForm"
+    style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 300px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
+  >
+    <!--Search word-->
+    <p-iconField iconPosition="right">
+      <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
+      <input
+        type="text"
+        pInputText
+        placeholder="Hakusana"
+        formControlName="description"
+        style="width: 100%; margin-bottom: 10px;"
+      >
+    </p-iconField>
+
+    <!--Category-->
+    <p-multiSelect
+      [options]="categories"
+      formControlName="categories"
+      showHeader="false"
+      showClear="true"
+      optionLabel="label"
+      [selectedItemsLabel]="getSelectedItemsLabel()"
+      [maxSelectedLabels]="2"
+      [style]="{'width': '100%', 'margin-bottom': '10px'}"
+      placeholder="Kategoriat">
+    </p-multiSelect>
+
+    <!--Range-->
+    <p-calendar
+      formControlName="range"
+      [showIcon]="true"
+      [showOnFocus]="false"
+      selectionMode="range"
+      placeholder="Valitse ajanjakso"
+      [showButtonBar]="true"
+      inputId="buttondisplay"/>
+    <p-button
+      styleClass="p-button-submit"
+      [style]="{'width': '100%', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"
+      type="submit">Hae laskut
+    </p-button>
+  </form>
+</div>

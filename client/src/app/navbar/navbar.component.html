@@ -23,6 +23,9 @@
       styleClass="p-button-raised">
     </p-button>
     <p
+      tabindex="0"
+      (click)="showTab(View.SEARCH)"
+      (keyup.enter)="showTab(View.SEARCH)"
       [style.color]="debtAmount >= 0 ? 'green' : 'red'">
       {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
     </p>
@@ -39,15 +42,6 @@
       [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
       class="checkButton"
       icon="pi pi-wallet"
-      [rounded]="true">
-    </p-button>
-  </div>
-  <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
-    <p-button
-      (onClick)="showTab(View.SEARCH)"
-      styleClass="p-button-contrast p-button-raised"
-      class="checkButton"
-      icon="pi pi-search"
       [rounded]="true">
     </p-button>
   </div>

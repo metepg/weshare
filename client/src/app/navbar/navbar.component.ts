@@ -23,7 +23,6 @@ export class NavbarComponent {
   }
 
   showTab(tab: number): void {
-    console.log(tab)
     this.tabEmitter.emit(tab)
   }
 }
