@@ -18,22 +18,33 @@
       }
       <!--SHOW BILLS-->
       @case (View.SHOW_BILLS) {
-        <app-show-bills
-          [bills$]="bills$"
-          [username]="username">
-        </app-show-bills>
-      }
-      <!--    STATISTICS-->
+      <app-show-bills
+        [bills$]="bills$"
+        [username]="username">
+      </app-show-bills>
+    }
+      <!--STATISTICS-->
       @case (View.SHOW_STATISTICS) {
-        <app-show-statistics
-          style="display: grid;
-    margin-top: 50px;
-    place-content: center">
-        </app-show-statistics>
-      }
-      <!--SEARCH-->
-      @case (View.SEARCH) {
-        <app-search-bills></app-search-bills>
+        <div style="display: flex; justify-content: center">
+          <p-selectButton
+            [options]="options"
+            [(ngModel)]="option"
+            optionLabel="icon">
+            <ng-template let-item pTemplate>
+              <i [class]="item.icon"></i>
+            </ng-template>
+          </p-selectButton>
+        </div>
+      
+        @if (option.value === 'chart') {
+          <app-show-statistics
+            [(showSideBar)]="showSideBar"
+            style="display: grid; place-content: center">
+          </app-show-statistics>
+        } @else {
+          <app-search-bills></app-search-bills>
+        }
+      
       }
     }
   </main>

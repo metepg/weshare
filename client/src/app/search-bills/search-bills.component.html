@@ -1,4 +1,4 @@
-<div style="display: flex; justify-content: center; align-items: center;">
+<div style="display: flex; justify-content: center; align-items: center; margin-top: 30px">
   <form
     (ngSubmit)="onSubmit()"
     [formGroup]="searchForm"
@@ -6,11 +6,11 @@
   >
     <!--Search word-->
     <p-iconField iconPosition="right">
-      <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
+      <p-inputIcon styleClass="pi pi-tag"></p-inputIcon>
       <input
         type="text"
         pInputText
-        placeholder="Hakusana"
+        placeholder="Kuvaus"
         formControlName="description"
         style="width: 100%; margin-bottom: 10px;"
       >
@@ -38,6 +38,17 @@
       placeholder="Valitse ajanjakso"
       [showButtonBar]="true"
       inputId="buttondisplay"/>
+
+    <!--User-->
+    <p-multiSelect
+      [options]="users"
+      formControlName="users"
+      showHeader="false"
+      optionLabel="label"
+      [style]="{'width': '100%', 'margin-bottom': '10px'}"
+      placeholder="Käyttäjät">
+    </p-multiSelect>
+
     <p-button
       styleClass="p-button-submit"
       [style]="{'width': '100%', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"

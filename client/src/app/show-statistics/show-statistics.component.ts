@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { Observable, tap } from 'rxjs';
@@ -9,6 +9,9 @@ import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { CATEGORY_COLORS, MONTHS } from '../../utils/constants';
+import { SidebarModule } from 'primeng/sidebar';
+import { SearchBillsComponent } from '../search-bills/search-bills.component';
+import { Button } from 'primeng/button';
 
 interface ChartData {
   labels: string[];
@@ -24,7 +27,7 @@ interface ChartData {
   templateUrl: './show-statistics.component.html',
   styleUrls: ['./show-statistics.component.css'],
   standalone: true,
-  imports: [DropdownModule, FormsModule, ChartModule, ProgressSpinnerModule, AsyncPipe]
+  imports: [DropdownModule, FormsModule, ChartModule, ProgressSpinnerModule, AsyncPipe, SidebarModule, SearchBillsComponent, Button]
 })
 
 export class ShowStatisticsComponent implements OnInit {
@@ -33,6 +36,8 @@ export class ShowStatisticsComponent implements OnInit {
   data: ChartData;
   monthlyValuesByCategory: Map<string, number[]>;
   bills$: Observable<Bill[]>;
+  @Input() showSideBar = false;
+  @Output() showSideBarChange = new EventEmitter<boolean>();
 
   StackedOptions = {
     maintainAspectRatio: false,
@@ -117,4 +122,10 @@ export class ShowStatisticsComponent implements OnInit {
       })
     );
   }
+
+  onSidebarHide() {
+    this.showSideBar = false;
+    this.showSideBarChange.emit(this.showSideBar);
+  }
+
 }

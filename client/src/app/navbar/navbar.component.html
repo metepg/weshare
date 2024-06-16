@@ -23,16 +23,13 @@
       styleClass="p-button-raised">
     </p-button>
     <p
-      tabindex="0"
-      (click)="showTab(View.SEARCH)"
-      (keyup.enter)="showTab(View.SEARCH)"
       [style.color]="debtAmount >= 0 ? 'green' : 'red'">
       {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
     </p>
     <p-button
       (onClick)="showTab(View.SHOW_STATISTICS)"
       class="checkButton"
-      icon="pi pi-chart-bar"
+      icon="pi pi-info-circle"
       [rounded]="true"
       styleClass="p-button-raised p-button-success">
     </p-button>

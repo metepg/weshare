@@ -34,6 +34,7 @@ import { PrimeNGConfig } from 'primeng/api';
 export class SearchBillsComponent implements OnInit {
 
   categories: { label: string, value: number }[];
+  users: { label: string, value: string }[];
   searchForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private billService: BillService, private primengConfig: PrimeNGConfig) {
@@ -43,14 +44,15 @@ export class SearchBillsComponent implements OnInit {
       label: key,
       value: index
     }));
+    this.users = [{label: 'Sanna', value: 'Sanna'}, {label: 'Mete', value: 'Mete'}];
   }
-  
 
   ngOnInit() {
     this.searchForm = this.formBuilder.group({
       description: [null],
       categories: [[...this.categories]],
       range: [null],
+      users: [[...this.users]],
     });
 
     // TODO: Put these to translation file
@@ -71,7 +73,7 @@ export class SearchBillsComponent implements OnInit {
     if (!selectedCategories) return;
     
     if (selectedCategories.length === this.categories.length) {
-      return 'Kaikki';
+      return 'Kaikki kategoriat';
     }
     return `${selectedCategories.length} valittuna`;
   }
@@ -80,6 +82,8 @@ export class SearchBillsComponent implements OnInit {
     const description = this.searchForm.get('description')?.value ?? '';
     const categories = this.searchForm?.get('categories')?.value?.map((category: { label: string, value: number }) => category.value) || [];
     const range = (this.searchForm?.get('range')?.value || []).filter((date: Date | null) => date !== null);
+    const users = this.searchForm.get('users')?.value ?? []
+    console.log(users)
     const searchFilter = {
       description,
       categories,

@@ -25,7 +25,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT b FROM Bill b WHERE " +
             "(:description IS NULL OR b.description ILIKE %:description%) AND " +
             "(:startDate IS NULL OR :endDate IS NULL OR b.date BETWEEN :startDate AND :endDate) AND " +
-            "(COALESCE(:categories, NULL) IS NULL OR b.category IN :categories)")
+            "(COALESCE(:categories, NULL) IS NULL OR b.category IN :categories) AND b.category != 1")
     List<Bill> findByFilter(
             @Param("description") String description,
             @Param("startDate") LocalDate startDate,

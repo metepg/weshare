@@ -1,5 +1,5 @@
 @if (bills$ | async; as bills) {
-  <div style="display:grid; place-items: center; margin-top: 100px">
+  <div style="display:grid; place-items: center;">
     @for (bill of bills; track bill) {
       <app-bill
         [bill]="bill"

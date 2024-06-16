@@ -13,9 +13,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ShowStatisticsComponent } from '../show-statistics/show-statistics.component';
 import { ShowBillsComponent } from '../show-bills/show-bills.component';
 import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
-
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-main',
@@ -32,8 +34,11 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
     PrimeTemplate,
     ButtonDirective,
     ProgressSpinnerModule,
-    SearchBillsComponent
-],
+    SearchBillsComponent,
+    SplitButtonModule,
+    SelectButtonModule,
+    FormsModule
+  ],
 })
 export class MainComponent implements OnInit {
   protected readonly View = View;
@@ -42,7 +47,13 @@ export class MainComponent implements OnInit {
   username: string;
   isLoading = false;
   debt: number;
-
+  showSideBar = false;
+  options: {icon: string, value: string}[] = [
+    { icon: 'pi pi-chart-bar', value: 'chart' },
+    { icon: 'pi pi-search', value: 'search' },
+  ];
+  option = this.options[0];
+  
   constructor(
     private billService: BillService,
     private messageService: MessageService,
@@ -107,5 +118,4 @@ export class MainComponent implements OnInit {
       },
     });
   }
-
 }
