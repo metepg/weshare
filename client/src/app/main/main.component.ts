@@ -13,7 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ShowStatisticsComponent } from '../show-statistics/show-statistics.component';
 import { ShowBillsComponent } from '../show-bills/show-bills.component';
 import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
-import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
+
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
 
@@ -25,9 +25,6 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
     standalone: true,
   imports: [
     NavbarComponent,
-    NgIf,
-    NgSwitch,
-    NgSwitchCase,
     NewBillFormComponent,
     ShowBillsComponent,
     ShowStatisticsComponent,
@@ -35,8 +32,8 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
     PrimeTemplate,
     ButtonDirective,
     ProgressSpinnerModule,
-    SearchBillsComponent,
-  ],
+    SearchBillsComponent
+],
 })
 export class MainComponent implements OnInit {
   protected readonly View = View;

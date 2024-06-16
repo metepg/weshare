@@ -1,4 +1,5 @@
-<div style="margin-top: 80px; height: 100%; width: 100%; ;display: grid; place-self: center">
+<div
+  style="margin-top: 80px; height: 100%; width: 100%; ;display: grid; place-self: center">
   <p-dropdown
     (onChange)="onChange($event)"
     [(ngModel)]="selectedYear"
@@ -6,22 +7,23 @@
     [style.margin]="'auto'" optionLabel="name"
     optionValue="code">
   </p-dropdown>
-  <div *ngIf="bills$ | async as bills; else loading">
-    <p-chart
-      *ngIf="bills.length > 0; else noData"
-      [data]="data"
-      [options]="StackedOptions"
-      height="500px"
-      type="bar"
-      width="350px">
-    </p-chart>
-    <ng-template #noData>
-      <p style="text-align: center; font-size: 16px; margin-top: 30px">Ei laskuja tältä vuodelta</p>
-    </ng-template>
-  </div>
-  <ng-template #loading>
+  @if (bills$ | async; as bills) {
+    <div>
+      @if (bills.length > 0) {
+        <p-chart
+          [data]="data"
+          [options]="StackedOptions"
+          height="500px"
+          type="bar"
+          width="350px">
+        </p-chart>
+      } @else {
+        <p style="text-align: center; font-size: 16px; margin-top: 30px">Ei laskuja tältä vuodelta</p>
+      }
+    </div>
+  } @else {
     <div style="margin-top: 200px; display: grid; place-items: center">
       <p-progressSpinner></p-progressSpinner>
     </div>
-  </ng-template>
+  }
 </div>

@@ -5,7 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { BillCategoryCode } from '../../utils/Categories';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChartModule } from 'primeng/chart';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { CATEGORY_COLORS, MONTHS } from '../../utils/constants';
@@ -24,7 +24,7 @@ interface ChartData {
   templateUrl: './show-statistics.component.html',
   styleUrls: ['./show-statistics.component.css'],
   standalone: true,
-  imports: [DropdownModule, FormsModule, NgIf, ChartModule, ProgressSpinnerModule, AsyncPipe]
+  imports: [DropdownModule, FormsModule, ChartModule, ProgressSpinnerModule, AsyncPipe]
 })
 
 export class ShowStatisticsComponent implements OnInit {
