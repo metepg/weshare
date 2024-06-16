@@ -30,14 +30,14 @@
     </p-multiSelect>
 
     <!--Range-->
-    <p-calendar
-      formControlName="range"
-      [showIcon]="true"
-      [showOnFocus]="false"
-      selectionMode="range"
-      placeholder="Valitse ajanjakso"
-      [showButtonBar]="true"
-      inputId="buttondisplay"/>
+<!--    <p-calendar-->
+<!--      formControlName="range"-->
+<!--      [showIcon]="true"-->
+<!--      [showOnFocus]="false"-->
+<!--      selectionMode="range"-->
+<!--      placeholder="Valitse ajanjakso"-->
+<!--      [showButtonBar]="true"-->
+<!--      inputId="buttondisplay"/>-->
 
     <!--User-->
     <p-multiSelect
@@ -56,3 +56,28 @@
     </p-button>
   </form>
 </div>
+
+@if (bills && bills.length > 0) {
+  <div class="p-grid p-justify-center" style="margin-top: 20px">
+    <div class="p-col-12 p-md-10 p-lg-8">
+      <p-table [value]="bills" [scrollable]="true" scrollHeight="400px" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="owner">Kuka <p-sortIcon field="owner" /></th>
+            <th pSortableColumn="description">Kuvaus <p-sortIcon field="description" /></th>
+            <th pSortableColumn="amount">Määrä <p-sortIcon field="amount" /></th>
+            <th pSortableColumn="date">Pvm <p-sortIcon field="date" /></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bill>
+          <tr>
+            <td>{{ bill.owner }}</td>
+            <td>{{ bill.description }}</td>
+            <td>{{ bill.amount | number:'1.2-2' }}€</td>
+            <td>{{ bill.date | date: 'd.M.YYYY' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

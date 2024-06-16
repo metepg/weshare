@@ -16,4 +16,5 @@ export class PersonService {
   getUsername(): Observable<string> {
     return this.http.get(`${this.apiUrl}/current`, {responseType: 'text'});
   }
+  
 }

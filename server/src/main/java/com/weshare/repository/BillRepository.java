@@ -22,15 +22,12 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("UPDATE Bill bill SET bill.isPaid = true WHERE bill.isPaid = false")
     void payDebt();
 
-    @Query("SELECT b FROM Bill b WHERE " +
-            "(:description IS NULL OR b.description ILIKE %:description%) AND " +
-            "(:startDate IS NULL OR :endDate IS NULL OR b.date BETWEEN :startDate AND :endDate) AND " +
-            "(COALESCE(:categories, NULL) IS NULL OR b.category IN :categories) AND b.category != 1")
+    @Query("SELECT b FROM Bill b WHERE "
+            + "(:description IS NULL OR b.description ILIKE %:description%) AND "
+            + "(COALESCE(:categories, NULL) IS NULL OR b.category IN :categories) AND "
+            + "(COALESCE(:users, NULL) IS NULL OR b.owner IN :users)")
     List<Bill> findByFilter(
             @Param("description") String description,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            @Param("categories") List<Integer> categories
-    );
-
+            @Param("categories") List<Integer> categories,
+            @Param("users") List<String> users);
 }

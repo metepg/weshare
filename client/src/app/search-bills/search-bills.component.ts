@@ -14,6 +14,10 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { BillCategoryCode } from '../../utils/Categories';
 import { BillService } from '../../services/bill/bill.service';
 import { PrimeNGConfig } from 'primeng/api';
+import { USERS } from '../../utils/constants';
+import { Bill } from '../../model/Bill';
+import { TableModule } from 'primeng/table';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-search-bills',
@@ -26,13 +30,16 @@ import { PrimeNGConfig } from 'primeng/api';
     CalendarModule,
     FormsModule,
     MultiSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TableModule,
+    DecimalPipe,
+    DatePipe
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
 })
 export class SearchBillsComponent implements OnInit {
-
+  bills: Bill[];
   categories: { label: string, value: number }[];
   users: { label: string, value: string }[];
   searchForm: FormGroup;
@@ -44,7 +51,12 @@ export class SearchBillsComponent implements OnInit {
       label: key,
       value: index
     }));
-    this.users = [{label: 'Sanna', value: 'Sanna'}, {label: 'Mete', value: 'Mete'}];
+    this.users = USERS.map(user => {
+      return {
+        label: user,
+        value: user,
+      }
+    })
   }
 
   ngOnInit() {
@@ -82,17 +94,17 @@ export class SearchBillsComponent implements OnInit {
     const description = this.searchForm.get('description')?.value ?? '';
     const categories = this.searchForm?.get('categories')?.value?.map((category: { label: string, value: number }) => category.value) || [];
     const range = (this.searchForm?.get('range')?.value || []).filter((date: Date | null) => date !== null);
-    const users = this.searchForm.get('users')?.value ?? []
-    console.log(users)
+    const users = this.searchForm?.get('users')?.value?.map((user: { label: string, value: string }) => user.value) || [];
     const searchFilter = {
       description,
       categories,
-      range
+      range,
+      users
     };
-    console.log(searchFilter);
+    
     this.billService.getBillsByFilter(searchFilter).subscribe(response => {
-      if (response.ok) {
-        console.log(response.body)
+      if (response.ok && response.body) {
+        this.bills = response.body;
       }
     })
   }

@@ -7,15 +7,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class BillService {
-    private static final int TOTAL_CATEGORIES = 6;
     private final BillRepository billRepository;
 
     BillService(BillRepository billRepository){
@@ -33,21 +29,14 @@ public class BillService {
     }
 
     public List<Bill> findBillsByFilter(SearchFilter filter) {
-        if (filter == null || hasNoFilters(filter)) {
-            return findAllFromLastSixMonths();
+        if (filter == null) {
+            return List.of();
         }
-        String text = filter.description();
+        String description = filter.description();
         List<Integer> categories = filter.categories();
-        LocalDate startDate = null;
-        LocalDate endDate = null;
+        List<String> users = filter.users();
 
-        if (filter.range() != null && !filter.range().isEmpty()) {
-            startDate = convertToLocalDate(filter.range().get(0));
-            if (filter.range().size() == 2) {
-                endDate = convertToLocalDate(filter.range().get(1));
-            }
-        }
-        return billRepository.findByFilter(text, startDate, endDate, categories);
+        return billRepository.findByFilter(description, categories, users);
     }
 
     public List<Bill> payDebt() {
@@ -76,16 +65,4 @@ public class BillService {
                 : -total;
     }
 
-    private boolean hasNoFilters(SearchFilter searchFilter) {
-       if (searchFilter == null) {
-           return true;
-       }
-       return searchFilter.description().isBlank() && searchFilter.range().isEmpty() && searchFilter.categories().size() == TOTAL_CATEGORIES;
-    }
-
-    private LocalDate convertToLocalDate(Date date) {
-        return Optional.ofNullable(date)
-                .map(d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-                .orElse(null);
-    }
 }
