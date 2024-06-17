@@ -18,6 +18,7 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { UserStatsComponent } from '../hall-of-fame/user-stats.component';
 
 @Component({
     selector: 'app-main',
@@ -37,7 +38,8 @@ import { FormsModule } from '@angular/forms';
     SearchBillsComponent,
     SplitButtonModule,
     SelectButtonModule,
-    FormsModule
+    FormsModule,
+    UserStatsComponent
   ],
 })
 export class MainComponent implements OnInit {
@@ -51,6 +53,7 @@ export class MainComponent implements OnInit {
   options: {icon: string, value: string}[] = [
     { icon: 'pi pi-chart-bar', value: 'chart' },
     { icon: 'pi pi-search', value: 'search' },
+    { icon: 'pi pi-user', value: 'hof' },
   ];
   option = this.options[0];
   

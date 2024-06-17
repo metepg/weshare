@@ -2,6 +2,7 @@ package com.weshare.controller;
 
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
+import com.weshare.model.StatsFilter;
 import com.weshare.service.BillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +64,12 @@ public class BillController {
     public double getTotalAmount(Principal auth) {
         String currentUser = auth.getName();
         return billService.getTotalDebtByName(currentUser);
+    }
+
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @GetMapping("/stats")
+    public List<Bill> getStats(@RequestBody StatsFilter filter) {
+        return billService.getStats(filter);
     }
 
 }

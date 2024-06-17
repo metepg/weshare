@@ -2,11 +2,14 @@ package com.weshare.service;
 
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
+import com.weshare.model.StatsFilter;
 import com.weshare.repository.BillRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -58,11 +61,31 @@ public class BillService {
         return billRepository.findAllByDateBetween(startDate, endDate);
     }
 
+    public List<Bill> getStats(StatsFilter filter) {
+        if (filter == null) return List.of();
+        if (filter.range().isEmpty()) return List.of();
+        if (filter.username().isBlank()) return List.of();
+        List<String> range = filter.range();
+
+        LocalDate endDate = range.size() == 1
+                ? LocalDate.now()
+                : convertToLocalDate(range.get(0));
+        LocalDate startDate = range.size() == 1
+                ? LocalDate.now().minusYears(10)
+                : convertToLocalDate(range.get(1));
+        return billRepository.findAllByDateBetween(startDate, endDate);
+    }
+
     private double getUnpaidAmount(String name, Bill bill) {
         double total = bill.getAmount() - bill.getOwnAmount();
         return bill.getOwner().equals(name)
                 ? total
                 : -total;
+    }
+
+    private static LocalDate convertToLocalDate(String isoDate) {
+        ZonedDateTime zdt = ZonedDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
+        return zdt.toLocalDate();
     }
 
 }

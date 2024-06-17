@@ -48,8 +48,9 @@
             [sidebarVisible]="sidebarVisible"
             (sidebarVisibleChange)="showSideBar($event)"
           ></app-search-bills>
-        }
-      
+        } @else if (option?.value === 'hof') {
+          <app-user-stats></app-user-stats>
+        }      
       }
     }
   </main>
