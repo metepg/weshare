@@ -47,7 +47,7 @@ export class MainComponent implements OnInit {
   username: string;
   isLoading = false;
   debt: number;
-  showSideBar = false;
+  sidebarVisible = true;
   options: {icon: string, value: string}[] = [
     { icon: 'pi pi-chart-bar', value: 'chart' },
     { icon: 'pi pi-search', value: 'search' },
@@ -117,5 +117,9 @@ export class MainComponent implements OnInit {
         this.messageService.add(Messages.ERROR.paymentCancelled);
       },
     });
+  }
+  
+  showSideBar(value: boolean) {
+    this.sidebarVisible = value;
   }
 }

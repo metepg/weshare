@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,6 +18,8 @@ import { USERS } from '../../utils/constants';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { SidebarModule } from 'primeng/sidebar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-search-bills',
@@ -33,7 +35,9 @@ import { DatePipe, DecimalPipe } from '@angular/common';
     ReactiveFormsModule,
     TableModule,
     DecimalPipe,
-    DatePipe
+    DatePipe,
+    SidebarModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
@@ -43,6 +47,9 @@ export class SearchBillsComponent implements OnInit {
   categories: { label: string, value: number }[];
   users: { label: string, value: string }[];
   searchForm: FormGroup;
+  isLoading = false;
+  @Input() sidebarVisible: boolean;
+  @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
   constructor(private formBuilder: FormBuilder, private billService: BillService, private primengConfig: PrimeNGConfig) {
     this.categories = Object.keys(BillCategoryCode)
@@ -79,7 +86,7 @@ export class SearchBillsComponent implements OnInit {
       clear: 'Tyhjennä'
     });
   }
-
+  
   getSelectedItemsLabel() {
     const selectedCategories = this.searchForm.get('categories')?.value;
     if (!selectedCategories) return;
@@ -101,12 +108,22 @@ export class SearchBillsComponent implements OnInit {
       range,
       users
     };
-    
+
+    this.sidebarVisible = false;
+    this.isLoading = true;
     this.billService.getBillsByFilter(searchFilter).subscribe(response => {
       if (response.ok && response.body) {
         this.bills = response.body;
+        this.isLoading = false;
+        this.sidebarVisibleChange.emit(this.sidebarVisible);
+      } else {
+        // TODO: Better error handling
+        alert("Jotain meni pieleen.");
       }
     })
   }
 
+  handleSidebarHide() {
+    this.sidebarVisibleChange.emit(false);
+  }
 }
