@@ -1,35 +1,45 @@
 <p-toast [hideTransitionOptions]="'1000ms ease-out'" position="top-center"></p-toast>
-<p-toolbar styleClass="stickyBar">
-  <p-button
-    (onClick)="showTab(NEW_BILL)"
-    icon="pi pi-plus"
-    [rounded]="true"
-    styleClass="p-button-raised p-button-help">
-  </p-button>
-  <p-button
-    (onClick)="showTab(SHOW_BILLS)"
-    class="checkButton"
-    icon="pi pi-book"
-    [rounded]="true"
-    styleClass="p-button-raised">
-  </p-button>
-  <p
-    [style.color]="debtAmount >= 0 ? 'green' : 'red'">
-    {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
-  </p>
-  <p-button
-    (onClick)="showTab(SHOW_STATISTICS)"
-    class="checkButton"
-    icon="pi pi-chart-bar"
-    [rounded]="true"
-    styleClass="p-button-raised p-button-success">
-  </p-button>
-  <p-button
-    (onClick)="payDebt()"
-    [disabled]="debtAmount >= 0"
-    [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
-    class="checkButton"
-    icon="pi pi-wallet"
-    [rounded]="true">
-  </p-button>
+<p-toolbar [style]="{
+  'position': 'sticky',
+  'top': '0',
+  'display': 'flex',
+  'flex-direction': 'column',
+  'align-items': 'center',
+  'background': 'white',
+  'z-index': '1000'
+}">
+  <div style="display: flex; justify-content: space-around; width: 100%;">
+    <p-button
+      (onClick)="showTab(View.NEW_BILL)"
+      icon="pi pi-plus"
+      [rounded]="true"
+      styleClass="p-button-raised p-button-help">
+    </p-button>
+    <p-button
+      (onClick)="showTab(View.SHOW_BILLS)"
+      class="checkButton"
+      icon="pi pi-book"
+      [rounded]="true"
+      styleClass="p-button-raised">
+    </p-button>
+    <p
+      [style.color]="debtAmount >= 0 ? 'green' : 'red'">
+      {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
+    </p>
+    <p-button
+      (onClick)="showTab(View.SHOW_STATISTICS)"
+      class="checkButton"
+      icon="pi pi-info-circle"
+      [rounded]="true"
+      styleClass="p-button-raised p-button-success">
+    </p-button>
+    <p-button
+      (onClick)="payDebt()"
+      [disabled]="debtAmount >= 0"
+      [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
+      class="checkButton"
+      icon="pi pi-wallet"
+      [rounded]="true">
+    </p-button>
+  </div>
 </p-toolbar>

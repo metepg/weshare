@@ -1,6 +1,7 @@
 package com.weshare.service;
 
 import com.weshare.model.Bill;
+import com.weshare.model.SearchFilter;
 import com.weshare.repository.BillRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,17 @@ public class BillService {
         LocalDate today = LocalDate.now();
         LocalDate sixMonthsAgo = today.minusMonths(6);
         return billRepository.findAllByDateBetween(sixMonthsAgo, today);
+    }
+
+    public List<Bill> findBillsByFilter(SearchFilter filter) {
+        if (filter == null) {
+            return List.of();
+        }
+        String description = filter.description();
+        List<Integer> categories = filter.categories();
+        List<String> users = filter.users();
+
+        return billRepository.findByFilter(description, categories, users);
     }
 
     public List<Bill> payDebt() {
@@ -52,4 +64,5 @@ public class BillService {
                 ? total
                 : -total;
     }
+
 }

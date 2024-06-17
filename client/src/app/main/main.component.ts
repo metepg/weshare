@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
-import { FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
@@ -14,8 +13,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ShowStatisticsComponent } from '../show-statistics/show-statistics.component';
 import { ShowBillsComponent } from '../show-bills/show-bills.component';
 import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
-import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { SearchBillsComponent } from '../search-bills/search-bills.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-main',
@@ -23,45 +25,47 @@ import { NavbarComponent } from '../navbar/navbar.component';
     styleUrls: ['./main.component.css'],
     providers: [MessageService, PersonService],
     standalone: true,
-    imports: [
-        NavbarComponent,
-        NgIf,
-        NgSwitch,
-        NgSwitchCase,
-        NewBillFormComponent,
-        ShowBillsComponent,
-        ShowStatisticsComponent,
-        ConfirmDialogModule,
-        PrimeTemplate,
-        ButtonDirective,
-        ProgressSpinnerModule,
-    ],
+  imports: [
+    NavbarComponent,
+    NewBillFormComponent,
+    ShowBillsComponent,
+    ShowStatisticsComponent,
+    ConfirmDialogModule,
+    PrimeTemplate,
+    ButtonDirective,
+    ProgressSpinnerModule,
+    SearchBillsComponent,
+    SplitButtonModule,
+    SelectButtonModule,
+    FormsModule
+  ],
 })
 export class MainComponent implements OnInit {
-  NEW_BILL = View.NEW_BILL;
-  SHOW_BILLS = View.SHOW_BILLS;
-  SHOW_STATISTICS = View.SHOW_STATISTICS;
+  protected readonly View = View;
   activeTab: number;
   bills$: Observable<Bill[]>;
   username: string;
   isLoading = false;
   debt: number;
-
+  showSideBar = false;
+  options: {icon: string, value: string}[] = [
+    { icon: 'pi pi-chart-bar', value: 'chart' },
+    { icon: 'pi pi-search', value: 'search' },
+  ];
+  option = this.options[0];
+  
   constructor(
     private billService: BillService,
     private messageService: MessageService,
     private userService: PersonService,
-    private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService
   ) {
   }
 
   ngOnInit(): void {
     this.loadBills();
-    this.showTab(this.SHOW_BILLS);
-    this.userService
-    .getUsername()
-    .subscribe((username: string) => (this.username = username));
+    this.showTab(View.SHOW_BILLS);
+    this.userService.getUsername().subscribe((username: string) => (this.username = username));
   }
 
   loadBills(): void {
@@ -78,7 +82,7 @@ export class MainComponent implements OnInit {
     }
     this.messageService.add(Messages.SUCCESS.validBillForm);
     this.loadBills();
-    this.showTab(this.SHOW_BILLS);
+    this.showTab(View.SHOW_BILLS);
   }
 
   showTab(tab: number): void {

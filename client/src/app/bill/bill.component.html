@@ -1,20 +1,23 @@
-<div *ngIf="amount > 0; else paidElement" [ngClass]="isPaid ? 'isPaid' : ''">
-  <i style="margin: 0 6px ;color: grey">{{owner}}</i>
-  <br>
-  <i style="margin: 0 6px; color: grey">{{date | date: 'd.M.YYYY'}}</i>
-  <div [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']" style="width: 185px;">
-    <p id="amount">{{+amount | number : '1.2-2'}} €</p>
-    <p id="description">{{description}}</p>
-    <hr>
-    <p id="own">{{userIsOwnerOfBill ? 'Oma' : owner + 'n'}} osuus {{(ownAmount || 0) | number : '1.2-2'}} €</p>
+@if (amount > 0) {
+  <div [ngClass]="isPaid ? 'isPaid' : ''">
+    <i style="margin: 0 6px ;color: grey">{{ owner }}</i>
+    <br>
+    <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.YYYY' }}</i>
+    <div [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']"
+         style="width: 185px;">
+      <p id="amount">{{ +amount | number : '1.2-2' }} €</p>
+      <p id="description">{{ description }}</p>
+      <hr>
+      <p id="own">{{ userIsOwnerOfBill ? 'Oma' : owner + 'n' }}
+        osuus {{ (ownAmount || 0) | number : '1.2-2' }} €</p>
+    </div>
   </div>
-</div>
-
-<ng-template #paidElement>
+} @else {
   <hr>
-  <p style="text-align: center;"><i>{{date | date: 'd.M.YYYY'}}</i></p>
+  <p style="text-align: center;"><i>{{ date | date: 'd.M.YYYY' }}</i></p>
   <p style="text-align: center"><i>
-    {{userIsOwnerOfBill ? 'Maksoit velat' : owner + ' maksoi velat'}}
-    {{ownAmount | number: '1.2-2'}}€</i></p>
+    {{ userIsOwnerOfBill ? 'Maksoit velat' : owner + ' maksoi velat' }}
+    {{ ownAmount | number: '1.2-2' }}€</i></p>
   <hr>
-</ng-template>
+}
+

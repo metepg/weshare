@@ -4,45 +4,63 @@
   (tabEmitter)="showTab($event)"
   [debtAmount]="debt">
 </app-navbar>
-
-<main *ngIf="!isLoading; else loading;" [ngSwitch]="activeTab">
-
-  <!--ADD BILL-->
-  <app-new-bill-form
-    (formEmitter)="onFormSubmit($event)"
-    *ngSwitchCase="NEW_BILL"
-    [username]="username"
-    class="col"
-    style="display: grid; place-items: center">
-  </app-new-bill-form>
-
-  <!--SHOW BILLS-->
-  <app-show-bills
-    *ngSwitchCase="SHOW_BILLS"
-    [bills$]="bills$"
-    [username]="username">
-  </app-show-bills>
-
-  <!--    STATISTICS-->
-  <app-show-statistics
-    *ngSwitchCase="SHOW_STATISTICS"
-    style="display: grid;
-    margin-top: 50px;
-    place-content: center">
-  </app-show-statistics>
-
-</main>
+@if (!isLoading) {
+  <main>
+    @switch (activeTab) {
+      <!--ADD BILL-->
+      @case (View.NEW_BILL) {
+        <app-new-bill-form
+          (formEmitter)="onFormSubmit($event)"
+          [username]="username"
+          class="col"
+          style="display: grid; place-items: center">
+        </app-new-bill-form>
+      }
+      <!--SHOW BILLS-->
+      @case (View.SHOW_BILLS) {
+      <app-show-bills
+        [bills$]="bills$"
+        [username]="username">
+      </app-show-bills>
+    }
+      <!--STATISTICS-->
+      @case (View.SHOW_STATISTICS) {
+        <div style="display: flex; justify-content: center">
+          <p-selectButton
+            [options]="options"
+            [(ngModel)]="option"
+            optionLabel="icon">
+            <ng-template let-item pTemplate>
+              <i [class]="item.icon"></i>
+            </ng-template>
+          </p-selectButton>
+        </div>
+      
+        @if (option.value === 'chart') {
+          <app-show-statistics
+            [(showSideBar)]="showSideBar"
+            style="display: grid; place-content: center">
+          </app-show-statistics>
+        } @else {
+          <app-search-bills></app-search-bills>
+        }
+      
+      }
+    }
+  </main>
+} @else {
+  <div style="margin-top: 200px; display: grid; place-items: center">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+}
 
 <!--Confirmation popup-->
 <p-confirmDialog #cd header="Confirmation" icon="pi pi-exclamation-triangle">
   <ng-template pTemplate="footer">
-    <p-button label="Peruuta" (onClick)="cd.reject()" severity="danger" icon="pi pi-times"></p-button>
-    <p-button label="Maksa" (onClick)="cd.accept()" severity="success" icon="pi pi-check"></p-button>
+    <p-button label="Peruuta" (onClick)="cd.reject()" severity="danger"
+              icon="pi pi-times"></p-button>
+    <p-button label="Maksa" (onClick)="cd.accept()" severity="success"
+              icon="pi pi-check"></p-button>
   </ng-template>
 </p-confirmDialog>
 
-<ng-template #loading>
-  <div style="margin-top: 200px; display: grid; place-items: center">
-    <p-progressSpinner></p-progressSpinner>
-  </div>
-</ng-template>

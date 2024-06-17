@@ -13,10 +13,7 @@ import { ToastModule } from 'primeng/toast';
   imports: [ToastModule, ToolbarModule, Button, DecimalPipe]
 })
 export class NavbarComponent {
-  NEW_BILL = View.NEW_BILL;
-  SHOW_BILLS = View.SHOW_BILLS;
-  SHOW_STATISTICS = View.SHOW_STATISTICS;
-
+  protected readonly View = View;
   @Input() debtAmount: number;
   @Output() tabEmitter = new EventEmitter<number>();
   @Output() debtEmitter = new EventEmitter<boolean>();
@@ -28,5 +25,4 @@ export class NavbarComponent {
   showTab(tab: number): void {
     this.tabEmitter.emit(tab)
   }
-
 }

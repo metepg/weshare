@@ -5,6 +5,8 @@ import com.weshare.repository.PersonRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PersonService {
     private final PersonRepository personRepository;
@@ -21,5 +23,9 @@ public class PersonService {
         person.setPassword(passwordEncoder.encode(password));
         person.setRole(role);
         return personRepository.save(person);
+    }
+
+    public List<String> findPersons() {
+        return List.of();
     }
 }

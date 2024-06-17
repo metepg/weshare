@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
-import {BillCategoryCode} from '../../utils/Categories';
+import { BillCategoryCode } from '../../utils/Categories';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';

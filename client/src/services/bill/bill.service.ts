@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { environment } from '../../environments/environment';
+import { SearchFilter } from '../../model/SearchFilter';
 
 @Injectable({providedIn: 'root'})
 export class BillService {
@@ -38,5 +39,11 @@ export class BillService {
 
   getTotalAmount(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/total`);
+  }
+
+  getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {
+    return this.http.post<Bill[]>(`${this.apiUrl}`, searchFilter, {
+      observe: 'response',
+    });
   }
 }

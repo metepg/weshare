@@ -16,3 +16,5 @@ export const MONTHS = [
 export const CATEGORY_COLORS = [
   "lightgreen", "pink", "gold", "red", "skyblue", "grey"
 ];
+
+export const USERS = ['user', 'user2'];
