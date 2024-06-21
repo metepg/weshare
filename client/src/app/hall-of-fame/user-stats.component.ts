@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { BillCategoryCode } from '../../utils/Categories';
-import { CATEGORY_COLORS } from '../../utils/constants';
+import { BillCategoryCode } from '../../constants/Categories';
+import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
 import { CalendarModule } from 'primeng/calendar';

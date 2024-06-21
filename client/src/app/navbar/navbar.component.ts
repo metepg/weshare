@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { View } from '../../utils/View';
+import { View } from '../../constants/View';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';

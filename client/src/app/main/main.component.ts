@@ -8,8 +8,8 @@ import {
   PrimeTemplate
 } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
-import Messages from '../../utils/Messages';
-import { View } from '../../utils/View';
+import Messages from '../../constants/Messages';
+import { View } from '../../constants/View';
 import { HttpResponse } from '@angular/common/http';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonDirective } from 'primeng/button';

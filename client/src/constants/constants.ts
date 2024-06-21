@@ -18,3 +18,34 @@ export const CATEGORY_COLORS = [
 ];
 
 export const USERS = ['user', 'user2'];
+
+export const BAR_CHART_OPTIONS  = {
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: "#000000"
+      }
+    }
+  },
+  scales: {
+    x: {
+      stacked: true,
+      ticks: {
+        color: "#000000"
+      },
+      grid: {
+        color: "rgba(255,255,255,0.2)"
+      }
+    },
+    y: {
+      stacked: true,
+      ticks: {
+        color: "#000000"
+      },
+      grid: {
+        color: "rgba(255,255,255,0.2)"
+      }
+    }
+  }
+};
