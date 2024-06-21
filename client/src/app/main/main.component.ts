@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
@@ -48,7 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, DoCheck {
   protected readonly View = View;
   activeTab: number;
   bills$: Observable<Bill[]>;
@@ -61,7 +61,7 @@ export class MainComponent implements OnInit {
     { icon: 'pi pi-search', value: 'search' },
     { icon: 'pi pi-user', value: 'hof' },
   ];
-  option = this.options[0];
+  option: {icon: string, value: string} | null;
   
   constructor(
     private billService: BillService,
@@ -70,13 +70,20 @@ export class MainComponent implements OnInit {
     private confirmationService: ConfirmationService
   ) {
   }
-
+  
   ngOnInit(): void {
+    this.option = this.options[0];
     this.loadBills();
     this.showTab(View.SHOW_BILLS);
     this.userService.getUsername().subscribe((username: string) => (this.username = username));
   }
 
+  ngDoCheck(): void {
+    if (this.option?.value === 'search') {
+      this.sidebarVisible = true;
+    }
+  }
+  
   loadBills(): void {
     this.bills$ = this.billService.getBills();
     this.billService.getTotalAmount().subscribe((amount: number): void => {

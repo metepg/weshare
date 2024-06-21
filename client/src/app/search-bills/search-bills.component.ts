@@ -20,7 +20,9 @@ import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { getTranslatedEnum } from '../../utils/translate-enum';
+import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-search-bills',
@@ -53,13 +55,22 @@ export class SearchBillsComponent implements OnInit {
   @Input() sidebarVisible: boolean;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
-  constructor(private formBuilder: FormBuilder, private billService: BillService, private primengConfig: PrimeNGConfig) {
-    this.categories = Object.keys(BillCategoryCode)
-    .filter((key) => isNaN(Number(key)))
-    .map((key, index) => ({
-      label: key,
-      value: index
-    }));
+  constructor(private formBuilder: FormBuilder,
+              private billService: BillService,
+              private primengConfig: PrimeNGConfig,
+              private translate: TranslateService) {
+    const translations$ = Object.values(BillCategoryCode)
+    .filter(value => typeof value === 'number')
+    .map(value =>
+      getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
+        map(label => ({label, value: value as BillCategoryCode}))
+      )
+    );
+
+    forkJoin(translations$).subscribe(translatedCategories => {
+      this.categories = translatedCategories;
+    });
+
     this.users = USERS.map(user => {
       return {
         label: user,

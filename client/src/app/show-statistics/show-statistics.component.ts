@@ -109,7 +109,6 @@ export class ShowStatisticsComponent implements OnInit {
       const amount = bill.amount;
       this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
     }
-    console.log(monthlyValuesByCategory)
 
     return monthlyValuesByCategory;
   }
