@@ -19,6 +19,7 @@ import { ChartModule } from 'primeng/chart';
 import { AsyncPipe } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-statistics',
@@ -29,7 +30,8 @@ import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
     FormsModule,
     ChartModule,
     AsyncPipe,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TranslateModule
   ],
   styleUrls: ['./show-statistics.component.css']
 })

@@ -15,7 +15,7 @@
         <input
           type="text"
           pInputText
-          placeholder="Kuvaus"
+          [placeholder]=" 'description' | translate"
           formControlName="description"
           style="width: 100%; margin-bottom: 10px;"
         >
@@ -31,18 +31,8 @@
         [selectedItemsLabel]="getSelectedItemsLabel()"
         [maxSelectedLabels]="2"
         [style]="{'width': '100%', 'margin-bottom': '10px'}"
-        placeholder="Kategoriat">
+        [placeholder]="'categories' | translate">
       </p-multiSelect>
-
-      <!--Range-->
-      <!--    <p-calendar-->
-      <!--      formControlName="range"-->
-      <!--      [showIcon]="true"-->
-      <!--      [showOnFocus]="false"-->
-      <!--      selectionMode="range"-->
-      <!--      placeholder="Valitse ajanjakso"-->
-      <!--      [showButtonBar]="true"-->
-      <!--      inputId="buttondisplay"/>-->
 
       <!--User-->
       <p-multiSelect
@@ -57,7 +47,7 @@
       <p-button
         styleClass="p-button-submit"
         [style]="{'width': '100%', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"
-        type="submit">Hae laskut
+        type="submit">{{ 'search' | translate}}
       </p-button>
     </form>
   </div>
@@ -74,13 +64,13 @@
         <p-table [value]="bills" [scrollable]="true" scrollHeight="600px" styleClass="p-datatable-gridlines p-datatable-sm">
           <ng-template pTemplate="header">
             <tr>
-              <th pSortableColumn="owner">Kuka <br>
+              <th pSortableColumn="owner">{{ 'who' | translate}} <br>
                 <p-sortIcon field="owner"/>
               </th>
-              <th pSortableColumn="description">Kuvaus <br>
+              <th pSortableColumn="description">{{ 'description' | translate}} <br>
                 <p-sortIcon field="description"/>
               </th>
-              <th pSortableColumn="amount">Määrä <br>
+              <th pSortableColumn="amount">{{ 'amount' | translate}} <br>
                 <p-sortIcon field="amount"/>
               </th>
             </tr>
@@ -91,15 +81,14 @@
                 <i style="font-size: 8px">{{" (" + (bill.date | date: 'd.MM.YY') + ")" }}</i>
               </td>
               <td>{{ bill.description }}</td>
-              <td>{{ bill.amount | number:'1.2-2' }}€</td>
+              <td>{{ bill.amount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
             </tr>
           </ng-template>
         </p-table>
       </div>
     </div>
   } @else {
-    <p style="text-align: center; font-size: 16px; margin-top: 30px">Ei
-      laskuja</p>
+    <p style="text-align: center; font-size: 16px; margin-top: 30px">{{ 'noBillsFound' | translate}}</p>
   }
 }
 

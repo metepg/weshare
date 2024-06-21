@@ -8,6 +8,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DividerModule } from 'primeng/divider';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-stats',
@@ -18,7 +19,8 @@ import { DividerModule } from 'primeng/divider';
     CalendarModule,
     DropdownModule,
     ReactiveFormsModule,
-    DividerModule
+    DividerModule,
+    TranslateModule
   ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss'

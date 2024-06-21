@@ -24,7 +24,7 @@
     </p-button>
     <p
       [style.color]="debtAmount >= 0 ? 'green' : 'red'">
-      {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}€
+      {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}{{ 'currency' | translate}}
     </p>
     <p-button
       (onClick)="showTab(View.SHOW_STATISTICS)"

@@ -20,6 +20,7 @@ import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-bills',
@@ -37,7 +38,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     DecimalPipe,
     DatePipe,
     SidebarModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'

@@ -6,7 +6,7 @@
       [showIcon]="true"
       [showOnFocus]="false"
       selectionMode="range"
-      placeholder="Valitse ajanjakso"
+      [placeholder]="'selectDate' | translate"
       [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"
       [showButtonBar]="true"
       inputId="buttondisplay"
@@ -18,14 +18,14 @@
       formControlName="user"
       [options]="users"
       [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"
-      placeholder="Käyttäjä"
+      [placeholder]="'user' | translate"
     ></p-dropdown>
   </div>
   <div>
     <p-button
       styleClass="p-button-submit"
       [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"
-      type="submit">Hae</p-button>
+      type="submit">{{ 'search' | translate}}</p-button>
   </div>
 </form>
   <p-divider />
@@ -33,5 +33,5 @@
 </div>
 <div class="flex justify-content-center">
   <h1 style="text-align: center">
-    Yhteensä: {{ totalAmount() | number : '1.2-2' }} €</h1>
+    {{ 'total' | translate }}: {{ totalAmount() | number : '1.2-2' }} {{ 'currency' | translate}}</h1>
 </div>
