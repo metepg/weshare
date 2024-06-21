@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
-import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
+import {
+  ConfirmationService,
+  MessageService,
+  PrimeTemplate
+} from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../utils/Messages';
 import { View } from '../../utils/View';
@@ -19,6 +23,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { UserStatsComponent } from '../hall-of-fame/user-stats.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-main',
@@ -39,7 +44,8 @@ import { UserStatsComponent } from '../hall-of-fame/user-stats.component';
     SplitButtonModule,
     SelectButtonModule,
     FormsModule,
-    UserStatsComponent
+    UserStatsComponent,
+    TranslateModule
   ],
 })
 export class MainComponent implements OnInit {

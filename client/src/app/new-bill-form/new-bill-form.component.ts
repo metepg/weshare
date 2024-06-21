@@ -11,6 +11,7 @@ import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { BlockUIModule } from 'primeng/blockui';
+import { TranslateModule } from '@ngx-translate/core';
 
 type FormValidationStrategies = Record<string, (value: unknown) => boolean>;
 
@@ -19,7 +20,7 @@ type FormValidationStrategies = Record<string, (value: unknown) => boolean>;
     templateUrl: './new-bill-form.component.html',
     styleUrls: ['./new-bill-form.component.css'],
     standalone: true,
-    imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe]
+  imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe, TranslateModule]
 })
 export class NewBillFormComponent implements OnInit {
   submitButtonIsDisabled: boolean;

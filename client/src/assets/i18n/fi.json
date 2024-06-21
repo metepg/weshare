@@ -1,0 +1,11 @@
+{
+  "newBill": {
+    "title": "Uusi lasku"
+  },
+  "amount": "Summa",
+  "description": "Kuvaus",
+  "category": "Kategoria",
+  "currency": "€",
+  "ownAmount": "Oma osuus",
+  "save": "Tallenna"
+}

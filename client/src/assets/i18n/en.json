@@ -1,0 +1,11 @@
+{
+  "newBill": {
+    "title": "New bill"
+  },
+  "amount": "Amount",
+  "description": "Description",
+  "category": "Category",
+  "currency": "€",
+  "ownAmount": "Own amount",
+  "save": "Save"
+}
