@@ -33,12 +33,22 @@ export function generateYearOptions(yearsToGoBack: number): { name: string, code
  * @returns A ChartData object structured for charting.
  */
 export function generateChartData(data: Map<string, number[]>): ChartData {
+  // Quick fix for finnish translations for now
+  const CATEGORY_TRANSLATIONS: { [key in keyof typeof BillCategoryCode]: string } = {
+    Category0: "Auto",
+    Category1: "Kissat",
+    Category2: "Laskut",
+    Category3: "Ravintola",
+    Category4: "Ruoka",
+    Category5: "Muut"
+  };
+  
   return {
     labels: MONTHS,
     datasets: Object.values(BillCategoryCode)
     .filter(value => typeof value === 'string')
     .map((category, index) => ({
-      label: category as string,
+      label: CATEGORY_TRANSLATIONS[category as keyof typeof CATEGORY_TRANSLATIONS].toString() || category.toString(),
       backgroundColor: CATEGORY_COLORS[index] || "grey",
       data: data.get(category as string) || new Array(MONTHS.length).fill(0) as number[],
     })),
