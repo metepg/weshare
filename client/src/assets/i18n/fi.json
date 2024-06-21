@@ -7,5 +7,17 @@
   "category": "Kategoria",
   "currency": "€",
   "ownAmount": "Oma osuus",
-  "save": "Tallenna"
+  "save": "Tallenna",
+  "required": "Pakollinen",
+  "amountMustBeGreaterThanZero": "Määrän pitää olla suurempi kuin 0",
+  "minCharacters": "Vähintään 3 merkkiä pitkä",
+  "somethingWentWrong": "Jotain meni pieleen",
+  "Category": {
+    "0": "Auto",
+    "1": "Kissat",
+    "2": "Laskut",
+    "3": "Ravintola",
+    "4": "Ruoka",
+    "5": "Muut"
+  }
 }

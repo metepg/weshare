@@ -7,5 +7,16 @@
   "category": "Category",
   "currency": "€",
   "ownAmount": "Own amount",
-  "save": "Save"
+  "save": "Save",
+  "amountMustBeGreaterThanZero": "Määrän pitää olla suurempi kuin 0",
+  "minCharacters": "Vähintään 3 merkkiä pitkä",
+  "somethingWentWrong": "Jotain meni pieleen",
+  "Category": {
+    "0": "Gasoline",
+    "1": "Cats",
+    "2": "Bills",
+    "3": "Restaurant",
+    "4": "Food",
+    "5": "Others"
+  }
 }
