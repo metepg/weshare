@@ -22,7 +22,7 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-import { UserStatsComponent } from '../hall-of-fame/user-stats.component';
+import { UserStatsComponent } from '../user-stats/user-stats.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
