@@ -1,131 +1,130 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal
+} from '@angular/core';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { BillService } from '../../services/bill/bill.service';
+import { ChartData } from 'chart.js';
 import { Bill } from '../../model/Bill';
-import { Observable, tap } from 'rxjs';
-import { BillCategoryCode } from '../../utils/Categories';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { BAR_CHART_OPTIONS, } from '../../constants/constants';
+import { BillCategoryCode } from '../../constants/Categories';
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { AsyncPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
-import { CATEGORY_COLORS, MONTHS } from '../../utils/constants';
-import { SidebarModule } from 'primeng/sidebar';
-import { SearchBillsComponent } from '../search-bills/search-bills.component';
-import { Button } from 'primeng/button';
-
-interface ChartData {
-  labels: string[];
-  datasets: {
-    label: string;
-    backgroundColor: string;
-    data: number[];
-  }[];
-}
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-statistics',
   templateUrl: './show-statistics.component.html',
-  styleUrls: ['./show-statistics.component.css'],
   standalone: true,
-  imports: [DropdownModule, FormsModule, ChartModule, ProgressSpinnerModule, AsyncPipe, SidebarModule, SearchBillsComponent, Button]
+  imports: [
+    DropdownModule,
+    FormsModule,
+    ChartModule,
+    AsyncPipe,
+    ProgressSpinnerModule,
+    TranslateModule
+  ],
+  styleUrls: ['./show-statistics.component.css']
 })
-
 export class ShowStatisticsComponent implements OnInit {
-  yearOptions: { name: string, code: number }[];
-  selectedYear: number = new Date().getFullYear();
-  data: ChartData;
-  monthlyValuesByCategory: Map<string, number[]>;
-  bills$: Observable<Bill[]>;
-  @Input() showSideBar = false;
+  protected readonly STACKED_OPTIONS = BAR_CHART_OPTIONS;
+  yearOptions = signal<{ name: string, code: number }[]>([]);
+  selectedYear = signal<number>(new Date().getFullYear());
+  data = signal<ChartData | null>(null);
+  monthlyValuesByCategory = signal<Map<string, number[]>>(new Map());
+  bills$!: Observable<Bill[]>;
+  @Input() showSideBar = signal<boolean>(false);
   @Output() showSideBarChange = new EventEmitter<boolean>();
 
-  StackedOptions = {
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: "#000000"
-        }
-      }
-    },
-    scales: {
-      x: {
-        stacked: true,
-        ticks: {
-          color: "#000000"
-        },
-        grid: {
-          color: "rgba(255,255,255,0.2)"
-        }
-      },
-      y: {
-        stacked: true,
-        ticks: {
-          color: "#000000"
-        },
-        grid: {
-          color: "rgba(255,255,255,0.2)"
-        }
-      }
-    }
-  };
 
   constructor(private billService: BillService) {
-    const currentYear = new Date().getFullYear();
-    this.yearOptions = Array.from({length: 5}, (_, idx) => {
-      const year = currentYear - idx;
-      return {name: year.toString(), code: year};
-    });
-  }
-
-  ngOnInit(): void {
-    this.monthlyValuesByCategory = new Map<string, number[]>();
-    this.getStatistics(new Date().getFullYear());
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-
-  setData(data: Map<string, number[]>): void {
-    this.data = {
-      labels: MONTHS,
-      datasets: Object.values(BillCategoryCode)
-      .filter(value => typeof value === 'string') // Filter out numeric enum values
-      .map((category, index) => ({
-        label: category as string,
-        backgroundColor: this.getCategoryColor(index),
-        data: data.get(category as string) || new Array(12).fill(0) as number[],
-      })),
-    };
-  }
-
-  getCategoryColor(index: number): string {
-    return CATEGORY_COLORS[index] || "grey";
   }
 
   onChange(event: DropdownChangeEvent): void {
-    const year = event.value;
-    this.getStatistics(year);
+    this.getStatistics(event.value);
   }
 
+  ngOnInit(): void {
+    this.yearOptions.set(generateYearOptions(5));
+    this.getStatistics(this.selectedYear());
+  }
+
+  /**
+   * Fetches bills for a given year, processes them to aggregate monthly values by category,
+   * and updates the component's state with the new data.
+   *
+   * @param year - The year for which to fetch and process bill data.
+   */
   getStatistics(year: number): void {
     this.bills$ = this.billService.getBillsByYear(year).pipe(
-      tap((bills: Bill[]): void => {
-        this.monthlyValuesByCategory = new Map<string, number[]>();
-        bills.forEach((bill: Bill): void => {
-          const month: number = new Date(bill.date).getMonth();
-          const category: string = BillCategoryCode[bill.category];
-          const amount: number = bill.amount;
-          const arr = this.monthlyValuesByCategory.get(category) ?? new Array(MONTHS.length).fill(0);
-          arr[month] += amount;
-          this.monthlyValuesByCategory.set(category, arr);
-        });
-        this.setData(this.monthlyValuesByCategory);
+      tap((bills: Bill[]) => {
+        const monthlyValuesByCategory = this.aggregateMonthlyValues(bills);
+        this.monthlyValuesByCategory.set(new Map(monthlyValuesByCategory));
+        this.data.set(generateChartData(monthlyValuesByCategory))
       })
-    );
+    )
   }
 
-  onSidebarHide() {
-    this.showSideBar = false;
-    this.showSideBarChange.emit(this.showSideBar);
+  /**
+ * Aggregates monthly values by category from a list of bills.
+ *
+ * @param bills - The list of bills to process.
+ * @returns A map where each key is a category and the value is an array of monthly amounts.
+ *
+ * Example:
+ * ```typescript
+ * {
+ *   "Category1": [
+ *     494.35, // January
+ *     298.83, // February
+ *     265.46, // March
+ *     445.57,
+ *     155.81,
+ *     82.14,
+ *     2,
+ *     500,
+ *     42,
+ *     592.55,
+ *     212.3,
+ *     12.32
+ *   ], etc..
+ * }
+ * ```
+ */
+  private aggregateMonthlyValues(bills: Bill[]): Map<string, number[]> {
+    const monthlyValuesByCategory = new Map<string, number[]>();
+
+    for (const bill of bills) {
+      const month = new Date(bill.date).getMonth();
+      const category = BillCategoryCode[bill.category];
+      const amount = bill.amount;
+      this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
+    }
+    console.log(monthlyValuesByCategory)
+
+    return monthlyValuesByCategory;
   }
 
+  /**
+   * Updates the monthly values for a given category.
+   *
+   * @param valuesByCategory - Values by category.
+   * @param month - The month index to update.
+   * @param category - The category of the bill.
+   * @param amount - The amount to add to the specified month and category.
+   */
+  private updateMonthlyValues(valuesByCategory: Map<string, number[]>, month: number, category: string, amount: number): void {
+    const arr = valuesByCategory.get(category) ?? new Array(12).fill(0);
+    arr[month] += amount;
+    valuesByCategory.set(category, arr);
+  }
 }

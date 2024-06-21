@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-bill',
     templateUrl: './bill.component.html',
     styleUrls: ['./bill.component.css'],
     standalone: true,
-    imports: [NgClass, DecimalPipe, DatePipe]
+  imports: [NgClass, DecimalPipe, DatePipe, TranslateModule]
 })
 export class BillComponent implements OnInit {
   @Input() bill: Bill;

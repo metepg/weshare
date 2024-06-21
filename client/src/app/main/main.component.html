@@ -36,11 +36,11 @@
           </p-selectButton>
         </div>
       
-        @if (option?.value === 'chart') {
+        @if (option.value === 'chart') {
           <app-show-statistics
             style="display: grid; place-content: center">
           </app-show-statistics>
-        } @else if (option?.value === 'search'){
+        } @else if (option.value === 'search'){
           <div style="display: flex; justify-content: end">
             <p-button (click)="showSideBar(true)" size="small" icon="pi pi-filter-fill" [text]="true" severity="secondary" />
           </div>
@@ -48,7 +48,7 @@
             [sidebarVisible]="sidebarVisible"
             (sidebarVisibleChange)="showSideBar($event)"
           ></app-search-bills>
-        } @else if (option?.value === 'hof') {
+        } @else if (option.value === 'hof') {
           <app-user-stats></app-user-stats>
         }      
       }

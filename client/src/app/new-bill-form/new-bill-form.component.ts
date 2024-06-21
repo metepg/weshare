@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
-import { BillCategoryCode } from '../../utils/Categories';
+import { BillCategoryCode } from '../../constants/Categories';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -11,38 +11,40 @@ import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { BlockUIModule } from 'primeng/blockui';
-
-type FormValidationStrategies = Record<string, (value: unknown) => boolean>;
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { getTranslatedEnum } from '../../utils/translate-enum';
+import { forkJoin, map } from 'rxjs';
+import {
+  isValidCategory,
+  isValidDescription
+} from '../../utils/formValidationUtils';
 
 @Component({
     selector: 'app-new-bill-form',
     templateUrl: './new-bill-form.component.html',
     styleUrls: ['./new-bill-form.component.css'],
     standalone: true,
-    imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe]
+  imports: [BlockUIModule, CardModule, FormsModule, ReactiveFormsModule, InputTextModule, SliderModule, DropdownModule, Button, DecimalPipe, TranslateModule]
 })
 export class NewBillFormComponent implements OnInit {
+  categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   blocked: boolean;
   @Input() username: string
   @Output() formEmitter = new EventEmitter<boolean>();
   ownShareOfBill: number;
   billFormBuilder = this.formBuilder.group({
-    amount: [null, Validators.required],
-    category: [null, Validators.required],
-    description: ['', Validators.required],
+    amount: [null, [Validators.required, Validators.min(1)]],
+    category: [null, [Validators.required, isValidCategory]],
+    description: ['', [Validators.required, isValidDescription]],
     sliderPercent: 50
   })
-
-  categories = Object.keys(BillCategoryCode)
-    .filter((key) => isNaN(Number(key)))
-    .map((key, index) => ({
-      label: key,
-      value: index
-    }));
   sliderPercent = 50;
 
-  constructor(private formBuilder: FormBuilder, private billService: BillService) {
+  constructor(private formBuilder: FormBuilder,
+              private billService: BillService,
+              private translate: TranslateService
+  ) {
     this.blocked = false;
     this.submitButtonIsDisabled = false;
   }
@@ -52,21 +54,35 @@ export class NewBillFormComponent implements OnInit {
       if (!value.amount) return
       this.ownShareOfBill = Math.round((value.amount * (this.sliderPercent / 100)) * 100) / 100;
     })
+
+    const translations$ = Object.values(BillCategoryCode)
+    .filter(value => typeof value === 'number')
+    .map(value =>
+      getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
+        map(label => ({label, value: value as BillCategoryCode}))
+      )
+    );
+
+    forkJoin(translations$).subscribe(translatedCategories => {
+      this.categories = translatedCategories;
+    });
   }
 
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
     this.blocked = true;
-    const isValid: boolean = this.validateForm((this.billFormBuilder))
-    if (!isValid) {
+    if (!this.billFormBuilder.valid) {
       this.formEmitter.emit(false);
       this.submitButtonIsDisabled = false;
       this.blocked = false;
+      this.billFormBuilder.markAllAsTouched();
       return;
     }
 
     const {amount, category, description} = this.billFormBuilder.value
-    const bill = new Bill(amount!, category!, description!, this.ownShareOfBill, this.username)
+    if (!amount || !category || !description) return;
+    
+    const bill = new Bill(amount, category, description, this.ownShareOfBill, this.username)
 
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
@@ -80,19 +96,8 @@ export class NewBillFormComponent implements OnInit {
     });
   }
 
-  validateForm(form: FormGroup): boolean {
-    const strategies: FormValidationStrategies = {
-      sliderPercent: () => true,
-      amount: (value: unknown) => typeof value === 'number' && value > 0,
-      category: (value: unknown) => typeof value === 'number' && value >= 0,
-      description: (value: unknown) => typeof value === 'string' && value.trim() !== '',
-    };
-
-    for (const [key, value] of Object.entries(form.value)) {
-      const isValid = strategies[key];
-      if (!isValid(value)) return false;
-    }
-    return true;
+  isValidForm(): boolean {
+    return this.billFormBuilder.valid;
   }
 
   handleSliderChange(e: SliderChangeEvent): void {
@@ -104,6 +109,11 @@ export class NewBillFormComponent implements OnInit {
     this.billFormBuilder.reset();
     this.billFormBuilder.get('sliderPercent')?.setValue(50);
     this.ownShareOfBill = 0;
+  }
+  
+  isControlInvalid(controlName: string): boolean {
+    const control = this.billFormBuilder.get(controlName);
+    return control ? control.invalid && control.touched : false;
   }
 
 }

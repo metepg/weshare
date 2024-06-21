@@ -1,0 +1,31 @@
+{
+  "newBill": {
+    "title": "Uusi lasku"
+  },
+  "amount": "Summa",
+  "amountMustBeGreaterThanZero": "Määrän pitää olla suurempi kuin 0",
+  "categories": "Kategoriat",
+  "category": "Kategoria",
+  "currency": "€",
+  "description": "Kuvaus",
+  "minCharacters": "Vähintään 3 merkkiä pitkä",
+  "noBillsFound": "Ei laskuja",
+  "noBillsFromSelectedYear": "Ei laskuja tältä vuodelta",
+  "ownAmount": "Oma osuus",
+  "required": "Pakollinen",
+  "save": "Tallenna",
+  "search": "Etsi",
+  "selectDate": "Valitse ajanjakso",
+  "somethingWentWrong": "Jotain meni pieleen",
+  "total": "Yhteensä",
+  "user": "Käyttäjä",
+  "who": "Kuka",
+  "Category": {
+    "0": "Auto",
+    "1": "Kissat",
+    "2": "Laskut",
+    "3": "Ravintola",
+    "4": "Ruoka",
+    "5": "Muut"
+  }
+}

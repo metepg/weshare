@@ -11,15 +11,16 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { BillCategoryCode } from '../../utils/Categories';
+import { BillCategoryCode } from '../../constants/Categories';
 import { BillService } from '../../services/bill/bill.service';
 import { PrimeNGConfig } from 'primeng/api';
-import { USERS } from '../../utils/constants';
+import { USERS } from '../../constants/constants';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-bills',
@@ -37,7 +38,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     DecimalPipe,
     DatePipe,
     SidebarModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'

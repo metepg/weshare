@@ -17,7 +17,7 @@
   <p style="text-align: center;"><i>{{ date | date: 'd.M.YYYY' }}</i></p>
   <p style="text-align: center"><i>
     {{ userIsOwnerOfBill ? 'Maksoit velat' : owner + ' maksoi velat' }}
-    {{ ownAmount | number: '1.2-2' }}€</i></p>
+    {{ ownAmount | number: '1.2-2' }} {{ 'currency' | translate }}</i></p>
   <hr>
 }
 

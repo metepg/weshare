@@ -1,7 +1,7 @@
 # Weshare
 
 - App for splitting bills between 2 users.
-- Built with Spring Boot / Angular 16 / PostgreSQL.
+- Built with Spring Boot / Angular 18 / PostgreSQL.
 - Runs in browser and is styled just enough to look good with my current phone.
 - I built this because MobilePay discontinued their own app Weshare at the start of 2023. This app is intended for my personal use only as it is hardcoded for 2 people but feel free to do whatever you want with it.
 
@@ -11,24 +11,13 @@
 
 ## Create bills
 
-- Set amount
-- Set own amount of the bill
-- Write description
-- Set category
-- Save
-
   ![Create bill](resources/videos/CreateBill.gif)
 
 ## Show bills
 
-- Scroll added bills from last 6 months
-- Look statistics about bill amounts from bar chart
-
   ![Show bills](resources/videos/Bills.gif)
 
 ## Pay debt
-
-- Pay accumulated debt
 
   ![Pay debt](resources/videos/PayDebt.gif)
 
@@ -38,7 +27,7 @@
 
 ## Prerequisites
 
-- PostgreSQL (can be run locally or optionally in a Docker container if Docker and Docker-compose are installed)
+- PostgreSQL (can be run locally or optionally in a Docker container)
 - Docker and Docker-compose (optional)
 - Java 17
 - Maven
@@ -100,7 +89,7 @@ Depending on your setup, use the appropriate command **in project root** to crea
 
 - **Using Local Database**:
   ```sh
-  sudo -u postgres psql -d weshare -f server/src/main/resources/db/create-test-data.sql
+  psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
   ```
  
 - **Using Container Database**:
@@ -118,5 +107,6 @@ Starting the app with `npm run bdev` inside `/client` directory does 3 things
 
 For production optimized .jar run `npm run bprod` in `client` directory.
 
-- Current state of the app supports only 2 users and has hardcoded Finnish labels and text.
-- No tests made
+TODO:
+- Support for more than 2 users
+- Implement tests

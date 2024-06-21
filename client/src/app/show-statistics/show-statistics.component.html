@@ -1,25 +1,24 @@
-<div style="margin-top: 10px; height: 100%; width: 100%; ;display: grid; place-self: center">
+<div style="margin-top: 10px; height: 100%; width: 100%; display: grid; place-self: center">
   <p-dropdown
     (onChange)="onChange($event)"
-    [(ngModel)]="selectedYear"
-    [options]="yearOptions"
-    [style.margin]="'auto'" optionLabel="name"
+    [ngModel]="selectedYear()"
+    [options]="yearOptions()"
+    [style.margin]="'auto'"
+    optionLabel="name"
     optionValue="code">
   </p-dropdown>
   @if (bills$ | async; as bills) {
-    <div>
-      @if (bills.length > 0) {
-        <p-chart
-          [data]="data"
-          [options]="StackedOptions"
-          height="500px"
-          type="bar"
-          width="350px">
-        </p-chart>
-      } @else {
-        <p style="text-align: center; font-size: 16px; margin-top: 30px">Ei laskuja tältä vuodelta</p>
-      }
-    </div>
+    @if (bills.length > 0) {
+      <p-chart
+        [data]="data()"
+        [options]="STACKED_OPTIONS"
+        height="500px"
+        type="bar"
+        width="350px">
+      </p-chart>
+    } @else {
+      <p style="text-align: center; font-size: 16px; margin-top: 30px">{{ 'noBillsFromSelectedYear' | translate }}</p>
+    }
   } @else {
     <div style="margin-top: 200px; display: grid; place-items: center">
       <p-progressSpinner></p-progressSpinner>

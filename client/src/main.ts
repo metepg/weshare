@@ -16,21 +16,61 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app/app-routing.module';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateModuleConfig
+} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 if (environment.production) {
   enableProdMode();
 }
 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+const translateModuleConfig: TranslateModuleConfig = {defaultLanguage: 'fi',
+  loader: {
+    provide: TranslateLoader,
+    useFactory: HttpLoaderFactory,
+    deps: [HttpClient]
+  }
+};
+
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(AppRoutingModule, BrowserModule, ButtonModule, CardModule, ConfirmDialogModule, DropdownModule, FormsModule, InputTextModule, ReactiveFormsModule, SkeletonModule, SliderModule, ToastModule, ToolbarModule, ProgressSpinnerModule, BlockUIModule, SpinnerModule, ChartModule),
-        ConfirmationService, provideHttpClient(withInterceptorsFromDi()),
-        provideAnimations()
+        importProvidersFrom(
+          AppRoutingModule,
+          BrowserModule,
+          ButtonModule,
+          CardModule,
+          ConfirmDialogModule,
+          DropdownModule,
+          FormsModule, 
+          InputTextModule, 
+          ReactiveFormsModule, 
+          SkeletonModule, 
+          SliderModule, 
+          ToastModule, 
+          ToolbarModule, 
+          ProgressSpinnerModule, 
+          BlockUIModule, 
+          SpinnerModule, 
+          ChartModule),
+      importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ), 
+      ConfirmationService, provideHttpClient(withInterceptorsFromDi()), 
+      provideAnimations()
     ]
 })
   .catch(err => console.error(err));
