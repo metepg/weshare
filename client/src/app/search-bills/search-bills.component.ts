@@ -23,6 +23,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { getTranslatedEnum } from '../../utils/translate-enum';
 import { forkJoin, map } from 'rxjs';
+import { SidebarService } from '../../services/sidebar/sidebar.service';
 
 @Component({
   selector: 'app-search-bills',
@@ -52,13 +53,15 @@ export class SearchBillsComponent implements OnInit {
   users: { label: string, value: string }[];
   searchForm: FormGroup;
   isLoading = false;
-  @Input() sidebarVisible: boolean;
+  @Input() sidebarVisible = true;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
               private primengConfig: PrimeNGConfig,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private sidebarService: SidebarService
+              ) {
     const translations$ = Object.values(BillCategoryCode)
     .filter(value => typeof value === 'number')
     .map(value =>
@@ -80,6 +83,11 @@ export class SearchBillsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.categories = this.categories || [];
+    this.sidebarService.sidebarVisibility$.subscribe(visible => {
+      this.sidebarVisible = visible;
+    });
+    
     this.searchForm = this.formBuilder.group({
       description: [null],
       categories: [[...this.categories]],
@@ -104,7 +112,7 @@ export class SearchBillsComponent implements OnInit {
     const selectedCategories = this.searchForm.get('categories')?.value;
     if (!selectedCategories) return;
     
-    if (selectedCategories.length === this.categories.length) {
+    if (selectedCategories.length === this.categories?.length) {
       return 'Kaikki kategoriat';
     }
     return `${selectedCategories.length} valittuna`;
@@ -137,6 +145,6 @@ export class SearchBillsComponent implements OnInit {
   }
 
   handleSidebarHide() {
-    this.sidebarVisibleChange.emit(false);
+    this.sidebarService.toggleSidebar(false);
   }
 }

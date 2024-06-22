@@ -22,8 +22,8 @@ import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-show-statistics',
-  templateUrl: './show-statistics.component.html',
+  selector: 'app-show-chart',
+  templateUrl: './show-chart.component.html',
   standalone: true,
   imports: [
     DropdownModule,
@@ -33,9 +33,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ProgressSpinnerModule,
     TranslateModule
   ],
-  styleUrls: ['./show-statistics.component.css']
+  styleUrls: ['./show-chart.component.css']
 })
-export class ShowStatisticsComponent implements OnInit {
+export class ShowChartComponent implements OnInit {
   protected readonly STACKED_OPTIONS = BAR_CHART_OPTIONS;
   yearOptions = signal<{ name: string, code: number }[]>([]);
   selectedYear = signal<number>(new Date().getFullYear());

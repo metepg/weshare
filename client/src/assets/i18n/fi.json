@@ -7,6 +7,7 @@
   "categories": "Kategoriat",
   "category": "Kategoria",
   "currency": "€",
+  "dateShort": "Pvm",
   "description": "Kuvaus",
   "minCharacters": "Vähintään 3 merkkiä pitkä",
   "noBillsFound": "Ei laskuja",
