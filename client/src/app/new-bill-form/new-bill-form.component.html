@@ -5,7 +5,6 @@
 <p-card [style.margin-top]="'105px'">
   <h2>{{ 'newBill.title' | translate}}</h2>
   <form (ngSubmit)="onSubmit()" [formGroup]="billFormBuilder">
-    <div></div>
     <span class="p-float-label p-input-icon-left">
       <i class="pi pi-euro"></i>
       <input class="customStyle" formControlName="amount" id="amount" pInputText required type="number">

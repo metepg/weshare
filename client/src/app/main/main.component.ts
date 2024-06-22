@@ -1,4 +1,4 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit, signal } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
@@ -56,7 +56,7 @@ export class MainComponent implements OnInit, DoCheck {
   bills$: Observable<Bill[]>;
   username: string;
   isLoading = false;
-  debt: number;
+  debt = signal<number>(0);
   sidebarVisible = true;
   options: {icon: string, value: string}[] = [
     { icon: 'pi pi-chart-bar', value: 'chart' },
@@ -84,6 +84,10 @@ export class MainComponent implements OnInit, DoCheck {
       });
     }
     this.getDebtAmount();
+    
+    this.billService.billCreated$.subscribe((amount) => {
+      this.debt.update(previousDebt => previousDebt + amount);
+    });
   }
 
   ngDoCheck(): void {
@@ -94,7 +98,7 @@ export class MainComponent implements OnInit, DoCheck {
   
   getDebtAmount(): void {
     this.billService.getTotalAmount().subscribe((amount: number): void => {
-      this.debt = amount;
+      this.debt.set(amount);
     });
   }
 
@@ -104,7 +108,7 @@ export class MainComponent implements OnInit, DoCheck {
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
         this.isLoading = true;
-        const resetBill = new Bill(0, -1, '', this.debt, this.username);
+        const resetBill = new Bill(0, -1, '', this.debt(), this.username);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {

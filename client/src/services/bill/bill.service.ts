@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { environment } from '../../environments/environment';
 import { SearchFilter } from '../../model/SearchFilter';
@@ -8,6 +8,8 @@ import { SearchFilter } from '../../model/SearchFilter';
 @Injectable({providedIn: 'root'})
 export class BillService {
   private apiUrl = environment.apiUrl + '/bills';
+  private billCreatedSubject = new Subject<number>();
+  billCreated$ = this.billCreatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
   }
@@ -45,5 +47,9 @@ export class BillService {
     return this.http.post<Bill[]>(`${this.apiUrl}`, searchFilter, {
       observe: 'response',
     });
+  }
+
+  notifyBillCreated(amount: number) {
+    this.billCreatedSubject.next(amount);
   }
 }

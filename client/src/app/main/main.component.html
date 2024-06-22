@@ -1,6 +1,6 @@
 <app-navbar
   (debtEmitter)="payDebt()"
-  [debtAmount]="debt">
+  [debtAmount]="debt()">
 </app-navbar>
 
 @if (isLoading) {

@@ -80,6 +80,7 @@ export class NewBillFormComponent implements OnInit {
       if (response.status === HttpStatusCode.Created) {
         this.formEmitter.emit(true)
         this.resetForm();
+        this.billService.notifyBillCreated(amount);
         this.router.navigate(['bills'])
       } else {
         this.formEmitter.emit(false);
