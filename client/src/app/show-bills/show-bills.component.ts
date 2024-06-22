@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { Observable } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -7,7 +7,7 @@ import { AsyncPipe } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { Button } from 'primeng/button';
-import { PersonService } from '../../services/person/person.service';
+import { BillService } from '../../services/bill/bill.service';
 
 @Component({
   selector: 'app-show-bills',
@@ -17,16 +17,14 @@ import { PersonService } from '../../services/person/person.service';
   imports: [BillComponent, ProgressSpinnerModule, AsyncPipe, SidebarModule, SearchBillsComponent, Button]
 })
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
-  @Input() bills$: Observable<Bill[]>;
-  @Input() username: string;
+  bills$: Observable<Bill[]>;
+  username: string;
 
-  constructor(private personService: PersonService) {
-  }
+  constructor(private billService: BillService) {}
 
   ngOnInit() {
-    this.personService.getUsername().subscribe(name => {
-      localStorage.setItem('name', name)
-    })
+    this.bills$ = this.billService.getBills();
+    this.username = localStorage.getItem('name') || '';
   }
 
   ngAfterViewChecked(): void {

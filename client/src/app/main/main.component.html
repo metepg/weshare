@@ -1,60 +1,12 @@
-<!--NAVBAR-->
 <app-navbar
   (debtEmitter)="payDebt()"
-  (tabEmitter)="showTab($event)"
   [debtAmount]="debt">
 </app-navbar>
-@if (!isLoading) {
-  <main>
-    @switch (activeTab) {
-      <!--ADD BILL-->
-      @case (View.NEW_BILL) {
-        <app-new-bill-form
-          (formEmitter)="onFormSubmit($event)"
-          [username]="username"
-          class="col"
-          style="display: grid; place-items: center">
-        </app-new-bill-form>
-      }
-      <!--SHOW BILLS-->
-      @case (View.SHOW_BILLS) {
-      <app-show-bills
-        [bills$]="bills$"
-        [username]="username">
-      </app-show-bills>
-    }
-      <!--STATISTICS-->
-      @case (View.SHOW_STATISTICS) {
-        <div style="display: flex; justify-content: center">
-          <p-selectButton
-            [options]="options"
-            [(ngModel)]="option"
-            optionLabel="icon">
-            <ng-template let-item pTemplate>
-              <i [class]="item.icon"></i>
-            </ng-template>
-          </p-selectButton>
-        </div>
-      
-        @if (option?.value === 'chart') {
-          <app-show-statistics
-            style="display: grid; place-content: center">
-          </app-show-statistics>
-        } @else if (option?.value === 'search'){
-          <app-search-bills
-            [sidebarVisible]="sidebarVisible"
-            (sidebarVisibleChange)="showSideBar($event)"
-          ></app-search-bills>
-        } @else if (option?.value === 'hof') {
-          <app-user-stats></app-user-stats>
-        }      
-      }
-    }
-  </main>
+
+@if (isLoading) {
+  <p-progressSpinner [ngStyle]="{'margin-top': '200px', 'display': 'grid', 'place-items': 'center'}"></p-progressSpinner>
 } @else {
-  <div style="margin-top: 200px; display: grid; place-items: center">
-    <p-progressSpinner></p-progressSpinner>
-  </div>
+  <router-outlet></router-outlet>
 }
 
 <!--Confirmation popup-->
@@ -66,4 +18,3 @@
               icon="pi pi-check"></p-button>
   </ng-template>
 </p-confirmDialog>
-

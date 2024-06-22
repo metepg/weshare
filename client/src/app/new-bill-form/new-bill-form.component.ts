@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
@@ -18,6 +18,7 @@ import {
   isValidCategory,
   isValidDescription
 } from '../../utils/formValidationUtils';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-new-bill-form',
@@ -30,7 +31,7 @@ export class NewBillFormComponent implements OnInit {
   categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   blocked: boolean;
-  @Input() username: string
+  username: string | null;
   @Output() formEmitter = new EventEmitter<boolean>();
   ownShareOfBill: number;
   billFormBuilder = this.formBuilder.group({
@@ -43,13 +44,15 @@ export class NewBillFormComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
-              private translate: TranslateService
+              private translate: TranslateService,
+              private router: Router
   ) {
     this.blocked = false;
     this.submitButtonIsDisabled = false;
   }
 
   ngOnInit(): void {
+    this.username = localStorage.getItem('name');
     this.billFormBuilder.valueChanges.subscribe(value => {
       if (!value.amount) return
       this.ownShareOfBill = Math.round((value.amount * (this.sliderPercent / 100)) * 100) / 100;
@@ -71,33 +74,26 @@ export class NewBillFormComponent implements OnInit {
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
     this.blocked = true;
-    if (!this.billFormBuilder.valid) {
-      this.formEmitter.emit(false);
-      this.submitButtonIsDisabled = false;
-      this.blocked = false;
-      this.billFormBuilder.markAllAsTouched();
+    const {amount, category, description} = this.billFormBuilder.value;
+    const formIsNotValid = !this.billFormBuilder.valid || !amount || !category || !description;
+    if (formIsNotValid || !this.username) {
+      this.resetState();
       return;
     }
 
-    const {amount, category, description} = this.billFormBuilder.value
-    if (!amount || !category || !description) return;
-    
     const bill = new Bill(amount, category, description, this.ownShareOfBill, this.username)
 
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
         this.formEmitter.emit(true)
         this.resetForm();
+        this.router.navigate(['bills'])
       } else {
         this.formEmitter.emit(false);
       }
       this.submitButtonIsDisabled = false;
       this.blocked = false;
     });
-  }
-
-  isValidForm(): boolean {
-    return this.billFormBuilder.valid;
   }
 
   handleSliderChange(e: SliderChangeEvent): void {
@@ -114,6 +110,13 @@ export class NewBillFormComponent implements OnInit {
   isControlInvalid(controlName: string): boolean {
     const control = this.billFormBuilder.get(controlName);
     return control ? control.invalid && control.touched : false;
+  }
+  
+  resetState() {
+    this.formEmitter.emit(false);
+    this.submitButtonIsDisabled = false;
+    this.blocked = false;
+    this.billFormBuilder.markAllAsTouched();
   }
 
 }

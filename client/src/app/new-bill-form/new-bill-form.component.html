@@ -1,3 +1,4 @@
+<main style="display: flex; justify-content: center">
 <p-blockUI [blocked]="blocked">
   <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
 </p-blockUI>
@@ -13,10 +14,10 @@
     
     @if (isControlInvalid('amount')) {
       <div class="alert alert-danger">
-        @if (billFormBuilder?.get('amount')?.hasError('required')) {
+        @if (billFormBuilder.get('amount')?.hasError('required')) {
           <small class="error">{{ 'required' | translate}}</small>
         }
-        @else if (billFormBuilder?.get('amount')?.hasError('min')) {
+        @else if (billFormBuilder.get('amount')?.hasError('min')) {
           <small class="error">{{ 'amountMustBeGreaterThanZero' | translate}}</small>
         }
       </div>
@@ -37,10 +38,10 @@
     
     @if (isControlInvalid('description')) {
       <div class="alert alert-danger">
-        @if (billFormBuilder?.get('description')?.hasError('required')) {
+        @if (billFormBuilder.get('description')?.hasError('required')) {
           <small class="error">{{ 'required' | translate}}</small>
         }
-        @else if (billFormBuilder?.get('description')?.hasError('invalidDescription')) {
+        @else if (billFormBuilder.get('description')?.hasError('invalidDescription')) {
           <small class="error">{{ 'minCharacters' | translate}}</small>
         }
       </div>
@@ -61,10 +62,10 @@
 
     @if (isControlInvalid('category')) {
       <div class="alert alert-danger">
-        @if (billFormBuilder?.get('category')?.hasError('required')) {
+        @if (billFormBuilder.get('category')?.hasError('required')) {
           <small class="error">{{ 'required' | translate}}</small>
         }
-        @else if (billFormBuilder?.get('category')?.hasError('invalidCategory')) {
+        @else if (billFormBuilder.get('category')?.hasError('invalidCategory')) {
           <small class="error">{{ 'somethingWentWrong' | translate }}</small>
         }
       </div>
@@ -77,3 +78,4 @@
     <p-button [disabled]="!billFormBuilder.valid" styleClass="p-button-help" type="submit">{{ 'save' | translate}}</p-button>
   </form>
 </p-card>
+</main>

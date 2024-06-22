@@ -5,6 +5,7 @@ import { Button } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -15,15 +16,22 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class NavbarComponent {
   protected readonly View = View;
+  private routeMap = {
+    [View.NEW_BILL]: 'create',
+    [View.SHOW_BILLS]: 'bills',
+    [View.SHOW_STATISTICS]: 'stats'
+  };
   @Input() debtAmount: number;
-  @Output() tabEmitter = new EventEmitter<number>();
-  @Output() debtEmitter = new EventEmitter<boolean>();
+  @Output() debtEmitter = new EventEmitter<void>();
 
-  payDebt(): void {
+  constructor(private router: Router) {}
+
+  showTab(view: View) {
+    const route = this.routeMap[view] || '';
+    this.router.navigate([route]);}
+
+  payDebt() {
     this.debtEmitter.emit();
   }
 
-  showTab(tab: number): void {
-    this.tabEmitter.emit(tab)
-  }
 }
