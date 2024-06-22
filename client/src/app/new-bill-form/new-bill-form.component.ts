@@ -1,5 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
@@ -11,14 +16,10 @@ import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { BlockUIModule } from 'primeng/blockui';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { getTranslatedEnum } from '../../utils/translate-enum';
-import { forkJoin, map } from 'rxjs';
-import {
-  isValidCategory,
-  isValidDescription
-} from '../../utils/formValidationUtils';
+import { TranslateModule } from '@ngx-translate/core';
+import { isValidCategory, isValidDescription } from '../../utils/formValidationUtils';
 import { Router } from '@angular/router';
+import { TranslationService } from '../../services/translation/translation.service';
 
 @Component({
     selector: 'app-new-bill-form',
@@ -44,8 +45,8 @@ export class NewBillFormComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
-              private translate: TranslateService,
-              private router: Router
+              private router: Router,
+              private translationService: TranslationService
   ) {
     this.blocked = false;
     this.submitButtonIsDisabled = false;
@@ -58,15 +59,7 @@ export class NewBillFormComponent implements OnInit {
       this.ownShareOfBill = Math.round((value.amount * (this.sliderPercent / 100)) * 100) / 100;
     })
 
-    const translations$ = Object.values(BillCategoryCode)
-    .filter(value => typeof value === 'number')
-    .map(value =>
-      getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
-        map(label => ({label, value: value as BillCategoryCode}))
-      )
-    );
-
-    forkJoin(translations$).subscribe(translatedCategories => {
+    this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
       this.categories = translatedCategories;
     });
   }

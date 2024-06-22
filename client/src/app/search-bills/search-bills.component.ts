@@ -11,7 +11,6 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { BillCategoryCode } from '../../constants/Categories';
 import { BillService } from '../../services/bill/bill.service';
 import { PrimeNGConfig } from 'primeng/api';
 import { USERS } from '../../constants/constants';
@@ -20,10 +19,9 @@ import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { getTranslatedEnum } from '../../utils/translate-enum';
-import { forkJoin, map } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
+import { TranslationService } from '../../services/translation/translation.service';
 
 @Component({
   selector: 'app-search-bills',
@@ -59,40 +57,30 @@ export class SearchBillsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
               private primengConfig: PrimeNGConfig,
-              private translate: TranslateService,
-              private sidebarService: SidebarService
-              ) {
-    const translations$ = Object.values(BillCategoryCode)
-    .filter(value => typeof value === 'number')
-    .map(value =>
-      getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
-        map(label => ({label, value: value as BillCategoryCode}))
-      )
-    );
-
-    forkJoin(translations$).subscribe(translatedCategories => {
-      this.categories = translatedCategories;
-    });
-
-    this.users = USERS.map(user => {
-      return {
-        label: user,
-        value: user,
-      }
-    })
-  }
+              private sidebarService: SidebarService,
+              private translationService: TranslationService
+              ) {}
 
   ngOnInit() {
-    this.categories = this.categories || [];
+    this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
+      this.categories = translatedCategories;
+      this.users = USERS.map(user => {
+        return {
+          label: user,
+          value: user,
+        }
+      })
+
+      this.searchForm = this.formBuilder.group({
+        description: [null],
+        categories: [[...this.categories]],
+        range: [null],
+        users: [[...this.users]],
+      });
+    });
+
     this.sidebarService.sidebarVisibility$.subscribe(visible => {
       this.sidebarVisible = visible;
-    });
-    
-    this.searchForm = this.formBuilder.group({
-      description: [null],
-      categories: [[...this.categories]],
-      range: [null],
-      users: [[...this.users]],
     });
 
     // TODO: Put these to translation file
