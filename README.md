@@ -54,7 +54,7 @@ Follow these steps to set up the application. Run the commands in `/client` dire
 
 1. Run `npm install` to install dependencies.
 2. Execute `npm run dbsetup` to populate the database with initial data, including inserting 2 users as defined in `application-setup.properties`.
-3. Start the application using `npm run bdev`.
+3. Start frontend with `npm start` and Spring Boot with `mvn spring-boot:run -Dspring-boot.run.profiles=dev` or just both with your IDE.
 
 After completing these steps, you can access the application at [http://localhost:8080](http://localhost:8080). 
 
