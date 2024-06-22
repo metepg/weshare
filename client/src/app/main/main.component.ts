@@ -14,7 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonDirective } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ShowStatisticsComponent } from '../show-statistics/show-statistics.component';
+import { ShowChartComponent } from '../show-chart/show-chart.component';
 import { ShowBillsComponent } from '../show-bills/show-bills.component';
 import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -37,7 +37,7 @@ import { Router } from '@angular/router';
     NavbarComponent,
     NewBillFormComponent,
     ShowBillsComponent,
-    ShowStatisticsComponent,
+    ShowChartComponent,
     ConfirmDialogModule,
     PrimeTemplate,
     ButtonDirective,

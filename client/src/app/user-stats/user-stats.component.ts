@@ -40,7 +40,6 @@ export class UserStatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.defaultUser);
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     this.billService.getTotalAmount().subscribe(total => this.totalAmount.set(total));

@@ -73,15 +73,17 @@
               <th pSortableColumn="amount">{{ 'amount' | translate}} <br>
                 <p-sortIcon field="amount"/>
               </th>
+              <th pSortableColumn="date">{{ 'dateShort' | translate}} <br>
+                <p-sortIcon field="date"/>
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-bill>
             <tr>
-              <td>{{ bill.owner}}
-                <i style="font-size: 8px">{{" (" + (bill.date | date: 'd.MM.YY') + ")" }}</i>
-              </td>
+              <td>{{ bill.owner}}</td>
               <td>{{ bill.description }}</td>
               <td>{{ bill.amount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
+              <td>{{ bill.date | date: 'd.MM.YY' }}</td>
             </tr>
           </ng-template>
         </p-table>
