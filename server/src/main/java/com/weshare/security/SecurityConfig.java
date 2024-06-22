@@ -1,6 +1,6 @@
 package com.weshare.security;
+import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,6 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Value("${spring.security.default-success-url:/}")
+    private String defaultSuccessUrl;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -26,11 +29,9 @@ public class SecurityConfig {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl(defaultSuccessUrl, true)
                         .failureUrl("/login?error"))
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedPage("/logout"))

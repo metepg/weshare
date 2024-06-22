@@ -24,6 +24,8 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { UserStatsComponent } from '../user-stats/user-stats.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgStyle } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-main',
@@ -45,12 +47,12 @@ import { TranslateModule } from '@ngx-translate/core';
     SelectButtonModule,
     FormsModule,
     UserStatsComponent,
-    TranslateModule
+    TranslateModule,
+    NgStyle
   ],
 })
 export class MainComponent implements OnInit, DoCheck {
   protected readonly View = View;
-  activeTab: number;
   bills$: Observable<Bill[]>;
   username: string;
   isLoading = false;
@@ -67,15 +69,21 @@ export class MainComponent implements OnInit, DoCheck {
     private billService: BillService,
     private messageService: MessageService,
     private userService: PersonService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private router: Router
   ) {
   }
   
   ngOnInit(): void {
     this.option = this.options[0];
-    this.loadBills();
-    this.showTab(View.SHOW_BILLS);
-    this.userService.getUsername().subscribe((username: string) => (this.username = username));
+    const username = localStorage.getItem('name');
+    if (!username) {
+      this.userService.getUsername().subscribe((username: string) => {
+        localStorage.setItem('name', username);
+        this.username = username;
+      });
+    }
+    this.getDebtAmount();
   }
 
   ngDoCheck(): void {
@@ -84,25 +92,10 @@ export class MainComponent implements OnInit, DoCheck {
     }
   }
   
-  loadBills(): void {
-    this.bills$ = this.billService.getBills();
+  getDebtAmount(): void {
     this.billService.getTotalAmount().subscribe((amount: number): void => {
       this.debt = amount;
     });
-  }
-
-  onFormSubmit(formIsValid: boolean): void {
-    if (!formIsValid) {
-      this.messageService.add(Messages.ERROR.invalidBillForm);
-      return;
-    }
-    this.messageService.add(Messages.SUCCESS.validBillForm);
-    this.loadBills();
-    this.showTab(View.SHOW_BILLS);
-  }
-
-  showTab(tab: number): void {
-    this.activeTab = tab;
   }
 
   payDebt(): void {
@@ -113,18 +106,17 @@ export class MainComponent implements OnInit, DoCheck {
         this.isLoading = true;
         const resetBill = new Bill(0, -1, '', this.debt, this.username);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
-          const status: number = response.status;
           const body: Bill[] | null = response.body;
-          if (status === 200 && body) {
+          if (response.ok && body) {
             this.isLoading = false;
-            this.loadBills();
+            this.getDebtAmount();
             this.bills$ = of(body);
             this.messageService.add({
               severity: 'success',
               summary: `Velat nollattu.`,
             });
-            this.isLoading = false;
-          } else {
+            this.router.navigate(['bills'])
+        } else {
             this.messageService.add(Messages.ERROR.unknownError);
           }
         });
@@ -135,7 +127,4 @@ export class MainComponent implements OnInit, DoCheck {
     });
   }
   
-  showSideBar(value: boolean) {
-    this.sidebarVisible = value;
-  }
 }
