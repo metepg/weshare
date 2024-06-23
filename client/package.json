@@ -13,7 +13,7 @@
     "dbsetup": "npm run package && npm run runSetup",
     "resetLocalDB": "cd ../server/src/main/resources/db && sh resetLocalDB.sh",
     "bdev": "ng build --configuration development && npm run package && npm run runJar",
-    "bprod": "ng build --configuration production && npm run package",
+    "bprod": "ng build --configuration production",
     "dev": "ng build --watch --configuration=development",
     "lint": "ng lint"
   },
