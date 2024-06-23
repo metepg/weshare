@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NewBillFormComponent } from './new-bill-form/new-bill-form.component';
 import { ShowBillsComponent } from './show-bills/show-bills.component';
-import {
-  ShowChartComponent
-} from './show-chart/show-chart.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ShowChartComponent } from './show-chart/show-chart.component';
 import { SearchBillsComponent } from './search-bills/search-bills.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
 import { StatsComponent } from './stats/stats.component';
@@ -25,8 +22,5 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
-  ]
 })
 export class AppRoutingModule { }

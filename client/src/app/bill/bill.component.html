@@ -11,7 +11,8 @@
     <i style="margin: 0 6px ;color: grey">{{ owner }}</i>
     <br>
     <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.YYYY' }}</i>
-    <div [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']" style="width: 185px;">
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+    <div (click)="editBill()" [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']" style="width: 185px;">
       <p id="amount">{{ +amount | number : '1.2-2' }} €</p>
       <p id="description">{{ description }}</p>
       <hr>
@@ -19,4 +20,38 @@
         osuus {{ (ownAmount || 0) | number : '1.2-2' }} €</p>
     </div>
   </div>
+}
+@if (showDialog) {
+  <p-dialog
+    header="Edit Bill"
+    [modal]="true"
+    [(visible)]="showDialog"
+    focusOnShow="false"
+    [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
+    <app-bill-form
+      style="margin-top: 20px"
+      [amount]="amount"
+      [description]="description"
+      [ownShareOfBill]="ownAmount"
+      [sliderPercent]="ownAmount / amount * 100"
+    ></app-bill-form>
+<!--    <div style="margin-top: 30px;" class="flex align-items-center">-->
+<!--    <span class="p-float-label p-input-icon-left">-->
+<!--      <i class="pi pi-tag"></i>-->
+<!--      <input class="customStyle" id="editDescription" [value]="description" pInputText>-->
+<!--      <label for="description">{{ 'description' | translate }}</label>-->
+<!--    </span>-->
+<!--    </div>-->
+<!--    <div class="flex align-items-center" style="margin-top: 20px;">-->
+<!--    <span class="p-float-label p-input-icon-left">-->
+<!--      <i class="pi pi-euro"></i>-->
+<!--      <input class="customStyle" id="editAmount" [value]="amount" pInputText type="number">-->
+<!--      <label for="amount">{{ 'amount' | translate }}</label>-->
+<!--    </span>-->
+<!--    </div>-->
+<!--    <div class="flex justify-content-end gap-2" style="margin-top: 20px;">-->
+<!--      <p-button label="Cancel" severity="secondary" (click)="showDialog = false"></p-button>-->
+<!--      <p-button label="Save" (click)="showDialog = false"></p-button>-->
+<!--    </div>-->
+  </p-dialog>
 }
