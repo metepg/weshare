@@ -1,0 +1,41 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_CONNECTION: ${{ secrets.SSH_CONNECTION }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      JAR_PATH: server/target/*.jar
+      SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build project with Maven
+        run: mvn clean package -f server/pom.xml
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Hetzner VM
+        run: |
+          echo "Deploying JAR to VM"
+          scp -6 server/target/*.jar ${{ secrets.SSH_CONNECTION }}:${{ secrets.DEPLOY_PATH }}
+#          ssh ${{ secrets.SSH_CONNECTION }} << 'EOF'
+#          cd ${{ secrets.DEPLOY_PATH }}
+#          ./deploy.sh
+#          EOF
