@@ -82,7 +82,7 @@ export class MainComponent implements OnInit, DoCheck {
       });
     }
 
-    this.billService.getTotalAmount().subscribe((amount: number): void => {
+    this.billService.getTotalDebtAmount().subscribe((amount: number): void => {
       this.debtService.setDebt(amount);
     });
     

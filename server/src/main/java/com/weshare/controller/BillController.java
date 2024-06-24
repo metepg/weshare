@@ -62,8 +62,8 @@ public class BillController {
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/total")
-    public double getTotalAmount(Principal auth) {
+    @GetMapping("/debt")
+    public double getTotalDebtAmount(Principal auth) {
         String currentUser = auth.getName();
         return billService.getTotalDebtByName(currentUser);
     }

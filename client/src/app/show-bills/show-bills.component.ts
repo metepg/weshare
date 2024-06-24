@@ -71,7 +71,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
       switchMap(updatedBill => {
         this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
         this.showEditBillDialog = false;
-        return this.billService.getTotalAmount();
+        return this.billService.getTotalDebtAmount();
       })).subscribe(amount => {
         this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
         this.debtService.setDebt(amount)
@@ -83,7 +83,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
       switchMap(() => {
         this.bills = this.bills.filter(bill => bill.id !== id);
         this.showEditBillDialog = false;
-        return this.billService.getTotalAmount();
+        return this.billService.getTotalDebtAmount();
       })).subscribe(amount => {
         this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
         this.debtService.setDebt(amount)

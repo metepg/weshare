@@ -37,8 +37,8 @@ export class BillService {
     );
   }
 
-  getTotalAmount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/total`);
+  getTotalDebtAmount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/debt`);
   }
 
   getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {

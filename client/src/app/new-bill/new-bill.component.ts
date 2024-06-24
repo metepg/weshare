@@ -28,7 +28,7 @@ export class NewBillComponent {
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
         this.messageService.add({severity: 'success', summary: `Tallennus onnistui.`,});
-        this.billService.getTotalAmount().subscribe(amount => {
+        this.billService.getTotalDebtAmount().subscribe(amount => {
           this.debtService.setDebt(amount)
         })
         this.router.navigate(['bills'])

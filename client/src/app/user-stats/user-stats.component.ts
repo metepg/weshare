@@ -42,7 +42,7 @@ export class UserStatsComponent implements OnInit {
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-    this.billService.getTotalAmount().subscribe(total => this.totalAmount.set(total));
+    this.billService.getTotalDebtAmount().subscribe(total => this.totalAmount.set(total));
 
     this.data = {
       labels: Object.keys(BillCategoryCode).filter(key => isNaN(Number(key))),
