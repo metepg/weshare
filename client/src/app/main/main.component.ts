@@ -1,12 +1,8 @@
-import { Component, DoCheck, OnInit, signal } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
-import {
-  ConfirmationService,
-  MessageService,
-  PrimeTemplate
-} from 'primeng/api';
+import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { PersonService } from '../../services/person/person.service';
 import Messages from '../../constants/Messages';
 import { View } from '../../constants/View';
@@ -26,6 +22,7 @@ import { UserStatsComponent } from '../user-stats/user-stats.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgStyle } from '@angular/common';
 import { Router } from '@angular/router';
+import { DebtService } from '../../services/debt/debt.service';
 
 @Component({
     selector: 'app-main',
@@ -56,7 +53,7 @@ export class MainComponent implements OnInit, DoCheck {
   bills$: Observable<Bill[]>;
   username: string;
   isLoading = false;
-  debt = signal<number>(0);
+  debt = this.debtService.debt;
   sidebarVisible = true;
   options: {icon: string, value: string}[] = [
     { icon: 'pi pi-chart-bar', value: 'chart' },
@@ -70,7 +67,8 @@ export class MainComponent implements OnInit, DoCheck {
     private messageService: MessageService,
     private userService: PersonService,
     private confirmationService: ConfirmationService,
-    private router: Router
+    private router: Router,
+    private debtService: DebtService
   ) {
   }
   
@@ -83,10 +81,13 @@ export class MainComponent implements OnInit, DoCheck {
         this.username = username;
       });
     }
-    this.getDebtAmount();
+
+    this.billService.getTotalAmount().subscribe((amount: number): void => {
+      this.debtService.setDebt(amount);
+    });
     
     this.billService.billCreated$.subscribe((amount) => {
-      this.debt.update(previousDebt => previousDebt + amount);
+      this.debtService.setDebt(this.debt() + amount);
     });
   }
 
@@ -95,13 +96,10 @@ export class MainComponent implements OnInit, DoCheck {
       this.sidebarVisible = true;
     }
   }
-  
-  getDebtAmount(): void {
-    this.billService.getTotalAmount().subscribe((amount: number): void => {
-      this.debt.set(amount);
-    });
-  }
 
+  /**
+   * Shows a confirmation dialog, creates a reset bill, and updates the state.
+   */ 
   payDebt(): void {
     this.confirmationService.confirm({
       header: 'Varmistus',
@@ -113,12 +111,9 @@ export class MainComponent implements OnInit, DoCheck {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {
             this.isLoading = false;
-            this.getDebtAmount();
+            this.debtService.setDebt(0);
             this.bills$ = of(body);
-            this.messageService.add({
-              severity: 'success',
-              summary: `Velat nollattu.`,
-            });
+            this.messageService.add({severity: 'success', summary: `Velat nollattu.`,});
             this.router.navigate(['bills'])
         } else {
             this.messageService.add(Messages.ERROR.unknownError);

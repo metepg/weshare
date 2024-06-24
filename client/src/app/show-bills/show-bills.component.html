@@ -1,4 +1,4 @@
-@if (bills$ | async; as bills) {
+@if (bills.length > 0) {
   <div style="display:grid; place-items: center;">
     @for (bill of bills; track bill.id) {
       <app-bill

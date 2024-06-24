@@ -1,6 +1,5 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { Bill } from '../../model/Bill';
-import { Observable } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
 import { AsyncPipe } from '@angular/common';
@@ -12,6 +11,9 @@ import { PersonService } from '../../services/person/person.service';
 import { BillFormComponent } from '../bill-form/bill-form.component';
 import { DialogModule } from 'primeng/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { DebtService } from '../../services/debt/debt.service';
+import { switchMap } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-show-bills',
@@ -23,14 +25,20 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
   protected readonly Math = Math;
   showEditBillDialog = false;
-  bills$: Observable<Bill[]>;
+  bills: Bill[] = [];
   bill: Bill;
   username: string | null;
 
-  constructor(private billService: BillService, private personService: PersonService) {}
+  constructor(
+    private billService: BillService,
+    private personService: PersonService,
+    private debtService: DebtService,
+    private messageService: MessageService) {}
 
   ngOnInit() {
-    this.bills$ = this.billService.getBills();
+    this.billService.getBills().subscribe(bills => {
+      this.bills = bills;
+    });
     this.username = localStorage.getItem('name');
     
     if (!this.username) {
@@ -50,11 +58,27 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     this.showEditBillDialog = true;
   }
 
+  /**
+   * Edits the given bill and updates the local bills and debt amount.
+   *
+   * @param bill The bill object with updated values.
+   */
   handleEditBill(bill: Bill) {
     bill.id = this.bill.id;
     bill.date = this.bill.date;
-    this.billService.editBill(bill).subscribe(() => {
-      location.reload()
+    this.billService.editBill(bill).pipe(
+      switchMap(updatedBill => {
+        this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
+        this.showEditBillDialog = false;
+        return this.billService.getTotalAmount();
+      })
+    ).subscribe(amount => {
+      if (amount) {
+        this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
+        this.debtService.setDebt(amount)
+      } else {
+        this.messageService.add({severity: 'danger', summary: `Muokkaus epäonnistui.`});
+      }
     });
   }
 
