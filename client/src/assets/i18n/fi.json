@@ -9,6 +9,7 @@
   "currency": "€",
   "dateShort": "Pvm",
   "description": "Kuvaus",
+  "delete": "Poista",
   "edit": "Muokkaa",
   "minCharacters": "Vähintään 3 merkkiä pitkä",
   "noBillsFound": "Ei laskuja",

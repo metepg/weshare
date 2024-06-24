@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,4 +73,9 @@ public class BillController {
         return billService.getStats(filter);
     }
 
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PutMapping()
+    public Bill editBill(@RequestBody Bill bill) {
+        return billService.editBill(bill);
+    }
 }

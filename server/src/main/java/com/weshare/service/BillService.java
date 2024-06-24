@@ -76,6 +76,7 @@ public class BillService {
         return billRepository.findAllByDateBetween(startDate, endDate);
     }
 
+
     private double getUnpaidAmount(String name, Bill bill) {
         double total = bill.getAmount() - bill.getOwnAmount();
         return bill.getOwner().equals(name)
@@ -86,6 +87,10 @@ public class BillService {
     private static LocalDate convertToLocalDate(String isoDate) {
         ZonedDateTime zdt = ZonedDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
         return zdt.toLocalDate();
+    }
+
+    public Bill editBill(Bill bill) {
+        return billRepository.save(bill);
     }
 
 }

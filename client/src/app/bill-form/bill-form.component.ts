@@ -11,6 +11,7 @@ import { BillCategoryCode } from '../../constants/Categories';
 import { isValidCategory, isValidDescription } from '../../utils/formValidationUtils';
 import { TranslationService } from '../../services/translation/translation.service';
 import { Subscription } from 'rxjs';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-bill-form',
@@ -46,7 +47,10 @@ export class BillFormComponent implements OnInit, OnDestroy {
     sliderPercent: FormControl<number | null>;
   }>      
 
-  constructor(private formBuilder: FormBuilder, private translationService: TranslationService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private translationService: TranslationService,
+    private confirmationService: ConfirmationService) {
     this.submitButtonIsDisabled = true;
   }
 
@@ -96,5 +100,18 @@ export class BillFormComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  deleteBill() {
+    this.confirmationService.confirm({
+      header: 'Varmistus',
+      message: `Haluatko varmasti poistaa laskun?`,
+      accept: (): void => {
+        console.log("YES")
+      },
+      reject: () => {
+        console.log("NO")
+      },
+    });
   }
 }

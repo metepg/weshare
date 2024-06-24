@@ -1,14 +1,35 @@
 @if (bills$ | async; as bills) {
   <div style="display:grid; place-items: center;">
-    @for (bill of bills; track bill) {
+    @for (bill of bills; track bill.id) {
       <app-bill
         [bill]="bill"
         [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner === this.username) ? 'end' : 'start'"
         [username]="username"
+        (editBillEmitter)="handleEditBillDialog($event)"
         style="margin-bottom: 10px">
       </app-bill>
     }
   </div>
+  
+  @if (showEditBillDialog) {
+    <p-dialog
+      [header]="'edit' | translate"
+      [modal]="true"
+      [(visible)]="showEditBillDialog"
+      focusOnShow="false"
+      [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
+      <app-bill-form
+        style="margin-top: 20px"
+        [amount]="bill.amount"
+        [description]="bill.description"
+        [ownShareOfBill]="bill.ownAmount"
+        [category]="bill.category"
+        [sliderPercent]="Math.round(bill.ownAmount / bill.amount * 100)"
+        (formEmitter)="handleEditBill($event)">
+      </app-bill-form>
+    </p-dialog>
+  }
+
 } @else {
   <div style="margin-top: 200px; display: grid; place-items: center">
     <p-progressSpinner></p-progressSpinner>

@@ -68,5 +68,15 @@
   <br>
   <br>
   <br>
-  <p-button [disabled]="!billFormBuilder.valid" styleClass="p-button-help" type="submit">{{ 'save' | translate}}</p-button>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <p-button
+      [disabled]="!billFormBuilder.valid"
+      styleClass="p-button-help"
+      type="submit">{{ 'save' | translate}}
+    </p-button>
+    <p-button
+      styleClass="p-button-danger"
+      (onClick)="deleteBill()">{{ 'delete' | translate}}
+    </p-button>
+  </div>
 </form>

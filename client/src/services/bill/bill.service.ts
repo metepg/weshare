@@ -49,6 +49,11 @@ export class BillService {
     });
   }
 
+  editBill(bill: Bill): Observable<Bill> {
+    const url = `${this.apiUrl}`;
+    return this.http.put<Bill>(url, bill);
+  }
+  
   notifyBillCreated(amount: number) {
     this.billCreatedSubject.next(amount);
   }

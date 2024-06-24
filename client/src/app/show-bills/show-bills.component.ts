@@ -9,16 +9,22 @@ import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { Button } from 'primeng/button';
 import { BillService } from '../../services/bill/bill.service';
 import { PersonService } from '../../services/person/person.service';
+import { BillFormComponent } from '../bill-form/bill-form.component';
+import { DialogModule } from 'primeng/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-bills',
   templateUrl: './show-bills.component.html',
   styleUrls: ['./show-bills.component.css'],
   standalone: true,
-  imports: [BillComponent, ProgressSpinnerModule, AsyncPipe, SidebarModule, SearchBillsComponent, Button]
+  imports: [BillComponent, ProgressSpinnerModule, AsyncPipe, SidebarModule, SearchBillsComponent, Button, BillFormComponent, DialogModule, TranslateModule]
 })
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
+  protected readonly Math = Math;
+  showEditBillDialog = false;
   bills$: Observable<Bill[]>;
+  bill: Bill;
   username: string | null;
 
   constructor(private billService: BillService, private personService: PersonService) {}
@@ -37,6 +43,19 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  handleEditBillDialog(bill: Bill) {
+    this.bill = bill;
+    this.showEditBillDialog = true;
+  }
+
+  handleEditBill(bill: Bill) {
+    bill.id = this.bill.id;
+    bill.date = this.bill.date;
+    this.billService.editBill(bill).subscribe(() => {
+      location.reload()
+    });
   }
 
 }

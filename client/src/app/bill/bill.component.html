@@ -21,20 +21,3 @@
     </div>
   </div>
 }
-@if (showDialog) {
-  <p-dialog
-    [header]="'edit' | translate"
-    [modal]="true"
-    [(visible)]="showDialog"
-    focusOnShow="false"
-    [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
-    <app-bill-form
-      style="margin-top: 20px"
-      [amount]="amount"
-      [description]="description"
-      [ownShareOfBill]="ownAmount"
-      [category]="category"
-      [sliderPercent]="ownAmount / amount * 100"
-    ></app-bill-form>
-  </p-dialog>
-}
