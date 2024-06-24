@@ -1,25 +1,24 @@
 <div>
 <form style="display: flex; flex-direction: column; text-align: center; margin-bottom: 15px" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-  <div>
-    <p-calendar
-      formControlName="range"
-      [showIcon]="true"
-      [showOnFocus]="false"
-      selectionMode="range"
-      placeholder="{{ 'selectDate' | translate }}"
-      [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"
-      [showButtonBar]="true"
-      inputId="buttondisplay"
-    ></p-calendar>
-  </div>
+<!--  <div>-->
+<!--    <p-calendar-->
+<!--      formControlName="range"-->
+<!--      [showIcon]="true"-->
+<!--      [showOnFocus]="false"-->
+<!--      selectionMode="range"-->
+<!--      placeholder="{{ 'selectDate' | translate }}"-->
+<!--      [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"-->
+<!--      [showButtonBar]="true"-->
+<!--      inputId="buttondisplay"-->
+<!--    ></p-calendar>-->
+<!--  </div>-->
   <div>
     <p-dropdown
-      [(ngModel)]="defaultUser"
       formControlName="user"
       [options]="users"
       [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"
-      [placeholder]="'user' | translate"
-    ></p-dropdown>
+      [placeholder]="'user' | translate">
+    </p-dropdown>
   </div>
   <div>
     <p-button
@@ -29,7 +28,9 @@
   </div>
 </form>
   <p-divider />
-  <p-chart type="pie" [data]="data" [options]="options"/>
+  @if (result?.categorizedTotals) {
+    <p-chart type="pie" [data]="data" [options]="options"/>
+  }
 </div>
 <div class="flex justify-content-center">
   <h1 style="text-align: center">

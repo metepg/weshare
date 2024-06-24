@@ -105,4 +105,8 @@ public class BillService {
         }
     }
 
+    public List<Bill> getBillsByUserName(String name) {
+        return billRepository.findByOwnerAndCategory(name);
+    }
+
 }
