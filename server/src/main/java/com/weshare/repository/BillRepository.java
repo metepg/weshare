@@ -1,6 +1,7 @@
 package com.weshare.repository;
 
 import com.weshare.model.Bill;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,7 @@ import java.util.List;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
 
-    List<Bill> findAllByDateBetween(LocalDate startDate, LocalDate endDate);
+    List<Bill> findAllByDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
     @Query("SELECT bill FROM Bill bill WHERE bill.isPaid = false")
     List<Bill> findAllUnpaidBills();

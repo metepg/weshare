@@ -5,6 +5,7 @@ import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
 import com.weshare.repository.BillRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @Transactional
 public class BillService {
     private final BillRepository billRepository;
+    private final static Sort SORT_BY_ID = Sort.by(Sort.Direction.ASC, "id");
 
     BillService(BillRepository billRepository){
         this.billRepository = billRepository;
@@ -28,7 +30,7 @@ public class BillService {
     public List<Bill> findAllFromLastSixMonths() {
         LocalDate today = LocalDate.now();
         LocalDate sixMonthsAgo = today.minusMonths(6);
-        return billRepository.findAllByDateBetween(sixMonthsAgo, today);
+        return billRepository.findAllByDateBetween(sixMonthsAgo, today, SORT_BY_ID);
     }
 
     public List<Bill> findBillsByFilter(SearchFilter filter) {
@@ -58,7 +60,7 @@ public class BillService {
     public List<Bill> findAllByYear(Integer year) {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 12, 31);
-        return billRepository.findAllByDateBetween(startDate, endDate);
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID);
     }
 
     public List<Bill> getStats(StatsFilter filter) {
@@ -73,7 +75,7 @@ public class BillService {
         LocalDate startDate = range.size() == 1
                 ? LocalDate.now().minusYears(10)
                 : convertToLocalDate(range.get(1));
-        return billRepository.findAllByDateBetween(startDate, endDate);
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID);
     }
 
 
