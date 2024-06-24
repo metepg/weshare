@@ -9,6 +9,7 @@
   "currency": "€",
   "dateShort": "Pvm",
   "description": "Kuvaus",
+  "edit": "Muokkaa",
   "minCharacters": "Vähintään 3 merkkiä pitkä",
   "noBillsFound": "Ei laskuja",
   "noBillsFromSelectedYear": "Ei laskuja tältä vuodelta",
