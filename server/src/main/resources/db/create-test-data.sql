@@ -16,11 +16,11 @@ $$
         FOR i IN 1..1000
             LOOP
                 owner := ownerNames[1 + (i % array_length(ownerNames, 1))];
-                amount := 20 + (random() * (100 - 20));
+                amount := (20 + (floor(random() * 9) * 10)) * 100;
                 description := descriptions[1 + (i % array_length(descriptions, 1))];
                 category := floor(random() * 6);
                 date := NOW() - ((1000 - i) * INTERVAL '1 day');
-                own_amount := random() * 80;
+                own_amount := floor(random() * 9) * 1000;
                 is_paid := i < 980;
 
                 INSERT INTO weshare.bill (owner, amount, description, category,date, own_amount, is_paid)
