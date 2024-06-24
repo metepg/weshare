@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { environment } from '../../environments/environment';
 import { SearchFilter } from '../../model/SearchFilter';
@@ -8,8 +8,6 @@ import { SearchFilter } from '../../model/SearchFilter';
 @Injectable({providedIn: 'root'})
 export class BillService {
   private apiUrl = environment.apiUrl + '/bills';
-  private billCreatedSubject = new Subject<number>();
-  billCreated$ = this.billCreatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
   }
@@ -53,8 +51,10 @@ export class BillService {
     const url = `${this.apiUrl}`;
     return this.http.put<Bill>(url, bill);
   }
-  
-  notifyBillCreated(amount: number) {
-    this.billCreatedSubject.next(amount);
+
+  deleteBillById(id: number): Observable<boolean> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<boolean>(url);
   }
+  
 }

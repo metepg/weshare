@@ -6,6 +6,8 @@ import { CardModule } from 'primeng/card';
 import { Router } from '@angular/router';
 import { BillFormComponent } from '../bill-form/bill-form.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { MessageService } from 'primeng/api';
+import { DebtService } from '../../services/debt/debt.service';
 
 @Component({
   selector: 'app-new-bill-form',
@@ -17,12 +19,18 @@ import { TranslateModule } from '@ngx-translate/core';
 export class NewBillComponent {
 
   constructor(
-    private billService: BillService, private router: Router) {}
+    private billService: BillService,
+    private router: Router,
+    private messageService: MessageService,
+    private debtService: DebtService) {}
   
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
-        this.billService.notifyBillCreated(bill.amount);
+        this.messageService.add({severity: 'success', summary: `Tallennus onnistui.`,});
+        this.billService.getTotalAmount().subscribe(amount => {
+          this.debtService.setDebt(amount)
+        })
         this.router.navigate(['bills'])
       }
     });

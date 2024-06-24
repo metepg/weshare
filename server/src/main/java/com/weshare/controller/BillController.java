@@ -7,6 +7,7 @@ import com.weshare.service.BillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,5 +78,10 @@ public class BillController {
     @PutMapping()
     public Bill editBill(@RequestBody Bill bill) {
         return billService.editBill(bill);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteBill(@PathVariable Long id) {
+        return ResponseEntity.ok(billService.deleteBillById(id));
     }
 }

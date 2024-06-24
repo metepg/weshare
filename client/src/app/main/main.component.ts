@@ -86,9 +86,6 @@ export class MainComponent implements OnInit, DoCheck {
       this.debtService.setDebt(amount);
     });
     
-    this.billService.billCreated$.subscribe((amount) => {
-      this.debtService.setDebt(this.debt() + amount);
-    });
   }
 
   ngDoCheck(): void {
