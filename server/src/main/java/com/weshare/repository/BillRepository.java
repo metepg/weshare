@@ -19,6 +19,9 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT bill FROM Bill bill WHERE bill.isPaid = false")
     List<Bill> findAllUnpaidBills();
 
+    @Query("SELECT bill FROM Bill bill WHERE bill.owner = :owner AND bill.category != -1")
+    List<Bill> findByOwnerAndCategory(@Param("owner") String owner);
+
     @Modifying
     @Query("UPDATE Bill bill SET bill.isPaid = true WHERE bill.isPaid = false")
     void payDebt();

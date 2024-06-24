@@ -80,6 +80,13 @@ public class BillController {
         return billService.editBill(bill);
     }
 
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @GetMapping("/total/{name}")
+    public List<Bill> getBillsByUserName(@PathVariable String name) {
+        return billService.getBillsByUserName(name);
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteBill(@PathVariable Long id) {
         return ResponseEntity.ok(billService.deleteBillById(id));
