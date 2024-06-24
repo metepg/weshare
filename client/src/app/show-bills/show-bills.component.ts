@@ -8,6 +8,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { Button } from 'primeng/button';
 import { BillService } from '../../services/bill/bill.service';
+import { PersonService } from '../../services/person/person.service';
 
 @Component({
   selector: 'app-show-bills',
@@ -18,13 +19,20 @@ import { BillService } from '../../services/bill/bill.service';
 })
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
   bills$: Observable<Bill[]>;
-  username: string;
+  username: string | null;
 
-  constructor(private billService: BillService) {}
+  constructor(private billService: BillService, private personService: PersonService) {}
 
   ngOnInit() {
     this.bills$ = this.billService.getBills();
-    this.username = localStorage.getItem('name') || '';
+    this.username = localStorage.getItem('name');
+    
+    if (!this.username) {
+      this.personService.getUsername().subscribe(username => {
+        this.username = username
+        localStorage.setItem('name', username);
+      });
+    }
   }
 
   ngAfterViewChecked(): void {

@@ -23,7 +23,7 @@
 }
 @if (showDialog) {
   <p-dialog
-    header="Edit Bill"
+    [header]="'edit' | translate"
     [modal]="true"
     [(visible)]="showDialog"
     focusOnShow="false"
@@ -33,25 +33,8 @@
       [amount]="amount"
       [description]="description"
       [ownShareOfBill]="ownAmount"
+      [category]="category"
       [sliderPercent]="ownAmount / amount * 100"
     ></app-bill-form>
-<!--    <div style="margin-top: 30px;" class="flex align-items-center">-->
-<!--    <span class="p-float-label p-input-icon-left">-->
-<!--      <i class="pi pi-tag"></i>-->
-<!--      <input class="customStyle" id="editDescription" [value]="description" pInputText>-->
-<!--      <label for="description">{{ 'description' | translate }}</label>-->
-<!--    </span>-->
-<!--    </div>-->
-<!--    <div class="flex align-items-center" style="margin-top: 20px;">-->
-<!--    <span class="p-float-label p-input-icon-left">-->
-<!--      <i class="pi pi-euro"></i>-->
-<!--      <input class="customStyle" id="editAmount" [value]="amount" pInputText type="number">-->
-<!--      <label for="amount">{{ 'amount' | translate }}</label>-->
-<!--    </span>-->
-<!--    </div>-->
-<!--    <div class="flex justify-content-end gap-2" style="margin-top: 20px;">-->
-<!--      <p-button label="Cancel" severity="secondary" (click)="showDialog = false"></p-button>-->
-<!--      <p-button label="Save" (click)="showDialog = false"></p-button>-->
-<!--    </div>-->
   </p-dialog>
 }

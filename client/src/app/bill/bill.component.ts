@@ -17,7 +17,7 @@ import { BillFormComponent } from '../bill-form/bill-form.component';
 })
 export class BillComponent implements OnInit, OnChanges {
   @Input() bill: Bill;
-  @Input() username: string;
+  @Input() username: string | null;
   amount: number;
   category: number;
   date: Date;

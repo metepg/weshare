@@ -33,15 +33,15 @@ export class BillFormComponent implements OnInit, OnDestroy {
   categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   username: string | null;
-  @Input() description = '';
-  @Input() ownShareOfBill = 0;
+  @Input() description: string;
+  @Input() ownShareOfBill: number;
   @Input() sliderPercent = 50;
-  @Input() amount = 0;
-  @Input() category = null;
+  @Input() amount: number;
+  @Input() category: number;
   @Output() formEmitter = new EventEmitter<Bill>();
   billFormBuilder: FormGroup<{
     amount: FormControl<number | null>;
-    category: FormControl<null>;
+    category: FormControl<number | null>;
     description: FormControl<string | null>;
     sliderPercent: FormControl<number | null>;
   }>      
@@ -75,8 +75,9 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
-    this.username = localStorage.getItem('name');
     const {amount, category, description} = this.billFormBuilder.value;
+    this.username = localStorage.getItem('name');
+    
     const formIsNotValid = !this.billFormBuilder.valid || !amount || !category || !description;
     if (formIsNotValid || !this.username) {
       return;
