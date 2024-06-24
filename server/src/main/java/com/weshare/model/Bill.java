@@ -1,5 +1,6 @@
 package com.weshare.model;
 
+import com.weshare.util.MoneyConverter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,9 +14,11 @@ public class Bill {
     private Long id;
     private String owner;
     private String description;
+    @Convert(converter = MoneyConverter.class)
     private double amount;
     private int category;
     private LocalDate date;
+    @Convert(converter = MoneyConverter.class)
     private double ownAmount;
     private boolean isPaid;
 
