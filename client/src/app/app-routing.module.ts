@@ -6,6 +6,7 @@ import { ShowChartComponent } from './show-chart/show-chart.component';
 import { SearchBillsComponent } from './search-bills/search-bills.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
 import { StatsComponent } from './stats/stats.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 const routes: Routes = [
   { path: 'create', component: NewBillComponent },
@@ -22,5 +23,9 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+  ]
+
 })
 export class AppRoutingModule { }

@@ -1,5 +1,5 @@
 export class Bill {
-  id: string;
+  id: number;
   amount: number;
   category: number;
   date: Date;

@@ -34,12 +34,15 @@ export class BillFormComponent implements OnInit, OnDestroy {
   categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   username: string | null;
+  @Input() id: number | undefined;
+  @Input() showDeleteBillButton = false;
   @Input() description: string;
   @Input() ownShareOfBill: number;
   @Input() sliderPercent = 50;
   @Input() amount: number;
   @Input() category: number;
   @Output() formEmitter = new EventEmitter<Bill>();
+  @Output() deleteBillEmitter = new EventEmitter<number>();
   billFormBuilder: FormGroup<{
     amount: FormControl<number | null>;
     category: FormControl<number | null>;
@@ -95,6 +98,18 @@ export class BillFormComponent implements OnInit, OnDestroy {
     this.sliderPercent = e.value
   }
 
+  deleteBill() {
+    if (!this.id) return;
+    
+    this.confirmationService.confirm({header: 'Varmistus', message: `Haluatko varmasti poistaa laskun?`,
+      accept: (): void => {
+        this.deleteBillEmitter.emit(this.id);
+      },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      reject: () => {},
+    });
+  }
+  
   ngOnDestroy() {
     this.billFormBuilder.reset();
     if (this.subscription) {
@@ -102,16 +117,4 @@ export class BillFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteBill() {
-    this.confirmationService.confirm({
-      header: 'Varmistus',
-      message: `Haluatko varmasti poistaa laskun?`,
-      accept: (): void => {
-        console.log("YES")
-      },
-      reject: () => {
-        console.log("NO")
-      },
-    });
-  }
 }

@@ -54,6 +54,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   }
 
   handleEditBillDialog(bill: Bill) {
+    if (this.username !== bill.owner) return;
     this.bill = bill;
     this.showEditBillDialog = true;
   }
@@ -71,15 +72,21 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
         this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
         this.showEditBillDialog = false;
         return this.billService.getTotalAmount();
-      })
-    ).subscribe(amount => {
-      if (amount) {
+      })).subscribe(amount => {
         this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
         this.debtService.setDebt(amount)
-      } else {
-        this.messageService.add({severity: 'danger', summary: `Muokkaus epäonnistui.`});
-      }
     });
   }
 
+  handleDeleteBill(id: number) {
+    this.billService.deleteBillById(id).pipe(
+      switchMap(() => {
+        this.bills = this.bills.filter(bill => bill.id !== id);
+        this.showEditBillDialog = false;
+        return this.billService.getTotalAmount();
+      })).subscribe(amount => {
+        this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
+        this.debtService.setDebt(amount)
+    });
+  }
 }

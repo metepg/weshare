@@ -20,12 +20,15 @@
       [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
       <app-bill-form
         style="margin-top: 20px"
+        [showDeleteBillButton]="true"
         [amount]="bill.amount"
         [description]="bill.description"
+        [id]="bill.id"
         [ownShareOfBill]="bill.ownAmount"
         [category]="bill.category"
         [sliderPercent]="Math.round(bill.ownAmount / bill.amount * 100)"
-        (formEmitter)="handleEditBill($event)">
+        (formEmitter)="handleEditBill($event)"
+        (deleteBillEmitter)="handleDeleteBill($event)">
       </app-bill-form>
     </p-dialog>
   }

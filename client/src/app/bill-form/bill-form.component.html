@@ -71,12 +71,14 @@
   <div style="display: flex; justify-content: space-between; width: 100%;">
     <p-button
       [disabled]="!billFormBuilder.valid"
-      styleClass="p-button-help"
+      styleClass="p-button-primary"
       type="submit">{{ 'save' | translate}}
     </p-button>
-    <p-button
-      styleClass="p-button-danger"
-      (onClick)="deleteBill()">{{ 'delete' | translate}}
-    </p-button>
+    @if (showDeleteBillButton) {
+      <p-button
+        styleClass="p-button-danger"
+        (onClick)="deleteBill()">{{ 'delete' | translate}}
+      </p-button>
+    }
   </div>
 </form>

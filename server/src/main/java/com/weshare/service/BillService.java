@@ -95,4 +95,14 @@ public class BillService {
         return billRepository.save(bill);
     }
 
+    public boolean deleteBillById(Long id) {
+        try {
+            billRepository.deleteById(id);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
 }
