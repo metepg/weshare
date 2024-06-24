@@ -16,7 +16,7 @@ import { ButtonDirective } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ShowChartComponent } from '../show-chart/show-chart.component';
 import { ShowBillsComponent } from '../show-bills/show-bills.component';
-import { NewBillFormComponent } from '../new-bill-form/new-bill-form.component';
+import { NewBillComponent } from '../new-bill/new-bill.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -35,7 +35,7 @@ import { Router } from '@angular/router';
     standalone: true,
   imports: [
     NavbarComponent,
-    NewBillFormComponent,
+    NewBillComponent,
     ShowBillsComponent,
     ShowChartComponent,
     ConfirmDialogModule,

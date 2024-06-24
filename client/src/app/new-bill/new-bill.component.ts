@@ -9,14 +9,15 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-bill-form',
-  templateUrl: './new-bill-form.component.html',
-  styleUrls: ['./new-bill-form.component.css'],
+  templateUrl: './new-bill.component.html',
+  styleUrls: ['./new-bill.component.css'],
   standalone: true, 
   imports: [CardModule, BillFormComponent, TranslateModule]
 })
-export class NewBillFormComponent {
+export class NewBillComponent {
 
-  constructor(private billService: BillService, private router: Router) {}
+  constructor(
+    private billService: BillService, private router: Router) {}
   
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {
