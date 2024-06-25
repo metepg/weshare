@@ -63,6 +63,13 @@ export class SearchBillsComponent implements OnInit {
               ) {}
 
   ngOnInit() {
+    this.searchForm = this.formBuilder.group({
+      description: [null],
+      categories: [null],
+      range: [null],
+      users: [null],
+    });
+    
     this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
       this.categories = translatedCategories;
       this.userService.getUsers().subscribe(users => {
@@ -73,13 +80,6 @@ export class SearchBillsComponent implements OnInit {
           }
         })
       })
-
-      this.searchForm = this.formBuilder.group({
-        description: [null],
-        categories: [[...this.categories]],
-        range: [null],
-        users: [[...this.users]],
-      });
     });
 
     this.sidebarService.sidebarVisibility$.subscribe(visible => {
@@ -125,7 +125,8 @@ export class SearchBillsComponent implements OnInit {
     this.isLoading = true;
     this.billService.getBillsByFilter(searchFilter).subscribe(response => {
       if (response.ok && response.body) {
-        this.bills = response.body;
+        const bills = response.body;
+        this.bills = bills.filter(bill => bill.ownAmount !== 0);
         this.isLoading = false;
         this.sidebarVisibleChange.emit(this.sidebarVisible);
       } else {
