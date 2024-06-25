@@ -1,5 +1,6 @@
 package com.weshare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,7 +10,9 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String username;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String role;
 
     public Person() {}

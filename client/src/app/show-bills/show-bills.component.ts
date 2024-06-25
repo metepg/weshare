@@ -39,12 +39,17 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     this.billService.getBills().subscribe(bills => {
       this.bills = bills;
     });
-    this.username = localStorage.getItem('name');
-    
-    if (!this.username) {
-      this.personService.getUsername().subscribe(username => {
-        this.username = username
-        localStorage.setItem('name', username);
+    this.setUserName();
+  }
+
+  setUserName() {
+    const userFromStorage = localStorage.getItem('user');
+    if (userFromStorage) {
+      this.username = JSON.parse(userFromStorage).username;
+    } else {
+      this.personService.getCurrentUser().subscribe(user => {
+        localStorage.setItem('user', JSON.stringify(user));
+        this.username = user.username
       });
     }
   }

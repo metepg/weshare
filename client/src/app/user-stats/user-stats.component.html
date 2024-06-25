@@ -1,37 +1,15 @@
-<div>
-<form style="display: flex; flex-direction: column; text-align: center; margin-bottom: 15px" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-<!--  <div>-->
-<!--    <p-calendar-->
-<!--      formControlName="range"-->
-<!--      [showIcon]="true"-->
-<!--      [showOnFocus]="false"-->
-<!--      selectionMode="range"-->
-<!--      placeholder="{{ 'selectDate' | translate }}"-->
-<!--      [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"-->
-<!--      [showButtonBar]="true"-->
-<!--      inputId="buttondisplay"-->
-<!--    ></p-calendar>-->
-<!--  </div>-->
-  <div>
-    <p-dropdown
-      formControlName="user"
-      [options]="users"
-      [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}"
-      [placeholder]="'user' | translate">
-    </p-dropdown>
-  </div>
-  <div>
-    <p-button
-      styleClass="p-button-submit"
-      [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"
-      type="submit">{{ 'search' | translate}}</p-button>
-  </div>
+<form style="display: flex; flex-direction: column; text-align: center;" [formGroup]="filterForm" (ngSubmit)="handleOnChange()">
+  <p-dropdown 
+    formControlName="user" 
+    [options]="users" 
+    [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}" 
+    (onChange)="handleOnChange()" 
+    [placeholder]="'user' | translate">
+  </p-dropdown>
 </form>
-  <p-divider />
-  @if (result?.categorizedTotals) {
-    <p-chart type="pie" [data]="data" [options]="options"/>
-  }
-</div>
+
+<p-chart type="pie" [data]="data" [options]="options" ariaLabel="Data"/>
+
 <div class="flex justify-content-center">
   <h1 style="text-align: center">
     {{ 'total' | translate }}: {{ totalAmount() | number : '1.2-2' }} {{ 'currency' | translate}}</h1>

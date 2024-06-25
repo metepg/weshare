@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { User } from '../../model/User';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,11 @@ export class PersonService {
   constructor(private http: HttpClient) {
   }
 
-  getUsername(): Observable<string> {
-    return this.http.get(`${this.apiUrl}/current`, {responseType: 'text'});
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/current`);
   }
-  
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}`);
+  }
 }
