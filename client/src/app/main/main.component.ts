@@ -3,7 +3,7 @@ import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
-import { PersonService } from '../../services/person/person.service';
+import { UserService } from '../../services/user/user.service';
 import Messages from '../../constants/Messages';
 import { View } from '../../constants/View';
 import { HttpResponse } from '@angular/common/http';
@@ -28,7 +28,7 @@ import { DebtService } from '../../services/debt/debt.service';
     selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.css'],
-    providers: [MessageService, PersonService],
+    providers: [MessageService, UserService],
     standalone: true,
   imports: [
     NavbarComponent,
@@ -65,7 +65,7 @@ export class MainComponent implements OnInit, DoCheck {
   constructor(
     private billService: BillService,
     private messageService: MessageService,
-    private userService: PersonService,
+    private userService: UserService,
     private confirmationService: ConfirmationService,
     private router: Router,
     private debtService: DebtService

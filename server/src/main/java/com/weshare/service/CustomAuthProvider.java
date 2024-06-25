@@ -1,7 +1,7 @@
 package com.weshare.service;
 
-import com.weshare.model.Person;
-import com.weshare.repository.PersonRepository;
+import com.weshare.model.User;
+import com.weshare.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,21 +21,21 @@ import java.util.Optional;
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
-    private final PersonRepository repository;
+    private final UserRepository repository;
     private final PasswordEncoder encoder;
     Logger logger = LoggerFactory.getLogger(CustomAuthProvider.class);
 
-    public CustomAuthProvider(PersonRepository repository, PasswordEncoder encoder) {
+    public CustomAuthProvider(UserRepository repository, PasswordEncoder encoder) {
         this.encoder = encoder;
         this.repository = repository;
     }
 
     /**
-     * Get the username and password from authentication object and validate with password encoders matching method
+     * Get the username and password from the authentication object and validate with the password encoder's matching method.
      *
-     * @param authentication
-     * @return
-     * @throws AuthenticationException
+     * @param authentication the authentication request object containing the user's credentials
+     * @return a fully authenticated object including credentials and authorities if successful
+     * @throws AuthenticationException if authentication fails
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -43,15 +43,15 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<Person> person = repository.findByUsername(username);
-        if (person.isEmpty()) {
+        Optional<User> user = repository.findByUsername(username);
+        if (user.isEmpty()) {
             throw new BadCredentialsException("Väärä nimi tai salasana");
         }
-        Person loggedPerson = person.get();
+        User loggedUser = user.get();
 
-        if (encoder.matches(password, loggedPerson.getPassword())) {
+        if (encoder.matches(password, loggedUser.getPassword())) {
             logger.info("Successfully Authenticated the user");
-            String role = loggedPerson.getRole();
+            String role = loggedUser.getRole();
 
             return new UsernamePasswordAuthenticationToken(username, password, getUserRoles(role));
         }
@@ -61,15 +61,15 @@ public class CustomAuthProvider implements AuthenticationProvider {
     }
 
     /**
-     * An user can have more than one roles separated by ",". We are splitting each role separately
+     * An user can have more than one role separated by ",". This method splits the roles and returns them as a list of granted authorities.
      *
-     * @param personRole
-     * @return
+     * @param userRole a string containing roles separated by commas
+     * @return a list of granted authorities derived from the user roles
      */
-    private List<GrantedAuthority> getUserRoles(String personRole) {
+    private List<GrantedAuthority> getUserRoles(String userRole) {
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        logger.info("Role: {}", personRole);
-        String fullRole = "ROLE_" + personRole;
+        logger.info("Role: {}", userRole);
+        String fullRole = "ROLE_" + userRole;
         grantedAuthorityList.add(new SimpleGrantedAuthority(fullRole));
 
         return grantedAuthorityList;
