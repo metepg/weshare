@@ -1,7 +1,7 @@
 package com.weshare.controller;
 
-import com.weshare.model.Person;
-import com.weshare.service.PersonService;
+import com.weshare.model.User;
+import com.weshare.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,25 +10,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/persons")
-public class PersonController {
+@RequestMapping("/api/users")
+public class UserController {
 
-    private final PersonService personService;
+    private final UserService userService;
 
-    public PersonController(PersonService personService) {
-        this.personService = personService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/current")
-    public Person findPerson() {
-        return personService.findCurrentPerson();
+    public User findCurrentUser() {
+        return userService.findCurrentUser();
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("")
-    public List<Person> findPersons() {
-        return personService.findPersons();
+    public List<User> findUsers() {
+        return userService.findUsers();
     }
 
 }

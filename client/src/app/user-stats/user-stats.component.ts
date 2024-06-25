@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Bill } from '../../model/Bill';
 import { CalculationResult } from '../../model/Stats';
 import { TranslationService } from '../../services/translation/translation.service';
-import { PersonService } from '../../services/person/person.service';
+import { UserService } from '../../services/user/user.service';
 import { BillCategoryCode } from '../../constants/Categories';
 import { ChartData, ChartOptions } from 'chart.js';
 
@@ -41,14 +41,14 @@ export class UserStatsComponent implements OnInit {
     private billService: BillService,
     private fb: FormBuilder,
     private translationService: TranslationService,
-    private personService: PersonService) {
+    private userService: UserService) {
   }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('user') || '')?.username;
 
-    this.personService.getUsers().subscribe(persons => {
-      this.users = persons.map(person => ({ label: person.username, value: person.username }));
+    this.userService.getUsers().subscribe(users => {
+      this.users = users.map(user => ({ label: user.username, value: user.username }));
       this.initializeChart();
     });
 

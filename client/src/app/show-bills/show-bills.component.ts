@@ -7,7 +7,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { Button } from 'primeng/button';
 import { BillService } from '../../services/bill/bill.service';
-import { PersonService } from '../../services/person/person.service';
+import { UserService } from '../../services/user/user.service';
 import { BillFormComponent } from '../bill-form/bill-form.component';
 import { DialogModule } from 'primeng/dialog';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private billService: BillService,
-    private personService: PersonService,
+    private userService: UserService,
     private debtService: DebtService,
     private messageService: MessageService) {}
 
@@ -47,7 +47,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     if (userFromStorage) {
       this.username = JSON.parse(userFromStorage).username;
     } else {
-      this.personService.getCurrentUser().subscribe(user => {
+      this.userService.getCurrentUser().subscribe(user => {
         localStorage.setItem('user', JSON.stringify(user));
         this.username = user.username
       });

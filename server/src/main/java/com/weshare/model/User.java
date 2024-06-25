@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "person", schema = "weshare")
-public class Person {
+@Table(name = "users", schema = "weshare")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
@@ -15,7 +15,7 @@ public class Person {
     @JsonIgnore
     private String role;
 
-    public Person() {}
+    public User() {}
 
     public String getId() {
         return id;

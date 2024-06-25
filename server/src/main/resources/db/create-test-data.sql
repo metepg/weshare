@@ -1,4 +1,11 @@
--- -- Generate 1000 bills between last year and this year with random owners
+BEGIN;
+
+-- Insert initial user records
+INSERT INTO weshare.users (username, password, role)
+VALUES ('user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1'),
+       ('user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2');
+
+-- Generate 1000 bills between last year and this year with random owners
 DO
 $$
     DECLARE
@@ -33,8 +40,10 @@ $$
 
                 is_paid := i < 980;
 
-                INSERT INTO weshare.bill (owner, amount, description, category, date, own_amount, is_paid)
+                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, is_paid)
                 VALUES (owner, amount, description, category, date, own_amount, is_paid);
             END LOOP;
     END
 $$;
+
+COMMIT;
