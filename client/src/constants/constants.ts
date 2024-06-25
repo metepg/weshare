@@ -17,8 +17,6 @@ export const CATEGORY_COLORS = [
   "lightgreen", "pink", "gold", "red", "skyblue", "grey"
 ];
 
-export const USERS = ['user', 'user2'];
-
 export const BAR_CHART_OPTIONS  = {
   maintainAspectRatio: false,
   plugins: {

@@ -82,7 +82,7 @@
             <tr>
               <td>{{ bill.owner}}</td>
               <td>{{ bill.description }}</td>
-              <td>{{ bill.amount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
+              <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
               <td>{{ bill.date | date: 'd.M.YY' }}</td>
             </tr>
           </ng-template>
