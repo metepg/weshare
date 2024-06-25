@@ -1,4 +1,5 @@
 .idea
+*.iml
 
 # Compiled output
 client/dist
