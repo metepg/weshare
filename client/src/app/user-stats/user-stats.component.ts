@@ -76,6 +76,14 @@ export class UserStatsComponent implements OnInit {
     };
   }
 
+  getTotalAmountByUserName(username: string) {
+    this.billService.getTotalAmountByUserName(username).subscribe(bills => {
+      const result = this.calculateTotals(bills);
+      this.totalAmount.set(result.totalOwnAmount);
+      this.updateChart(result);
+    });
+  }
+  
   updateChart(result: CalculationResult) {
     if (this.chartLabels.length === 0) return;
 
@@ -85,7 +93,7 @@ export class UserStatsComponent implements OnInit {
         {
           data: Object.values(result.categorizedTotals),
           backgroundColor: CATEGORY_COLORS,
-          hoverBackgroundColor: CATEGORY_COLORS.map(color => this.adjustHoverColor(color))
+          hoverBackgroundColor: CATEGORY_COLORS.map(color => color)
         }
       ]
     };
@@ -96,31 +104,17 @@ export class UserStatsComponent implements OnInit {
       acc.totalOwnAmount += bill.ownAmount;
 
       if (bill.category >= 0 && bill.category <= 5) {
-        if (!acc.categorizedTotals[bill.category]) {
-          acc.categorizedTotals[bill.category] = 0;
-        }
-        acc.categorizedTotals[bill.category] += bill.ownAmount;
+        acc.categorizedTotals[bill.category] = (acc.categorizedTotals[bill.category] || 0) + bill.ownAmount;
       }
 
       return acc;
-    }, { totalOwnAmount: 0, categorizedTotals: {} });
+      }, { totalOwnAmount: 0, categorizedTotals: {}});
   }
 
-  adjustHoverColor(color: string): string {
-    return color;
-  }
   
   handleOnChange() {
     const user = this.filterForm.get('user')?.value;
     this.getTotalAmountByUserName(user);
   }
 
-
-  getTotalAmountByUserName(username: string) {
-    this.billService.getTotalAmountByUserName(username).subscribe(bills => {
-      const result = this.calculateTotals(bills);
-      this.totalAmount.set(result.totalOwnAmount);
-      this.updateChart(result);
-    });
-  }
 }

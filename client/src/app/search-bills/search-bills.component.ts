@@ -13,7 +13,6 @@ import {
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
 import { PrimeNGConfig } from 'primeng/api';
-import { USERS } from '../../constants/constants';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -22,6 +21,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { TranslationService } from '../../services/translation/translation.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-search-bills',
@@ -58,17 +58,20 @@ export class SearchBillsComponent implements OnInit {
               private billService: BillService,
               private primengConfig: PrimeNGConfig,
               private sidebarService: SidebarService,
-              private translationService: TranslationService
+              private translationService: TranslationService,
+              private userService: UserService
               ) {}
 
   ngOnInit() {
     this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
       this.categories = translatedCategories;
-      this.users = USERS.map(user => {
-        return {
-          label: user,
-          value: user,
-        }
+      this.userService.getUsers().subscribe(users => {
+        this.users = users.map(user => {
+          return {
+            label: user.username,
+            value: user.username,
+          }
+        })
       })
 
       this.searchForm = this.formBuilder.group({
