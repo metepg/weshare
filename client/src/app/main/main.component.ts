@@ -74,11 +74,12 @@ export class MainComponent implements OnInit, DoCheck {
   
   ngOnInit(): void {
     this.option = this.options[0];
-    const username = localStorage.getItem('name');
+    const username = JSON.parse(localStorage.getItem('user') || '')?.username;
     if (!username) {
-      this.userService.getUsername().subscribe((username: string) => {
-        localStorage.setItem('name', username);
-        this.username = username;
+      this.userService.getCurrentUser().subscribe(user => {
+        if (!user) return;
+        this.username = user.username;
+        localStorage.setItem('user', JSON.stringify(user));
       });
     }
 

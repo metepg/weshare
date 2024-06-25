@@ -1,17 +1,17 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { BillCategoryCode } from '../../constants/Categories';
 import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
-import { CalendarModule } from 'primeng/calendar';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-import { DividerModule } from 'primeng/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import { Bill } from '../../model/Bill';
 import { CalculationResult } from '../../model/Stats';
 import { TranslationService } from '../../services/translation/translation.service';
+import { PersonService } from '../../services/person/person.service';
+import { BillCategoryCode } from '../../constants/Categories';
+import { ChartData, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-user-stats',
@@ -19,10 +19,8 @@ import { TranslationService } from '../../services/translation/translation.servi
   imports: [
     ChartModule,
     DecimalPipe,
-    CalendarModule,
     DropdownModule,
     ReactiveFormsModule,
-    DividerModule,
     TranslateModule
   ],
   templateUrl: './user-stats.component.html',
@@ -33,63 +31,64 @@ export class UserStatsComponent implements OnInit {
   filterForm: FormGroup;
   users: {label: string, value: string}[] = [];
   totalAmount = signal(0);
-  data: unknown;
-  result: CalculationResult;
-  options: unknown;
-  username = localStorage.getItem('name') || 'user';
-  defaultUser: {label: string, value: string};
+  data: ChartData;
+  options: ChartOptions;
+  currentUser: string;
+  categories: { label: string; value: BillCategoryCode }[];
+  chartLabels: string [] = [];
   
   constructor(
     private billService: BillService,
     private fb: FormBuilder,
-    private translationService: TranslationService) {
+    private translationService: TranslationService,
+    private personService: PersonService) {
   }
 
   ngOnInit() {
-    this.defaultUser = {label: this.username, value: this.username}
-    this.users.push(this.defaultUser);
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    this.initializeChart()
+    this.currentUser = JSON.parse(localStorage.getItem('user') || '')?.username;
 
+    this.personService.getUsers().subscribe(persons => {
+      this.users = persons.map(person => ({ label: person.username, value: person.username }));
+      this.initializeChart();
+    });
+
+    this.filterForm = this.fb.group({
+      range: [null],
+      user: [this.currentUser]
+    });
+  }
+  
+  initializeChart() {
+    if (this.currentUser) {
+      this.translationService.getTranslatedCategories().subscribe(categories => {
+        this.chartLabels = categories.map(c => c.label);
+        this.getTotalAmountByUserName(this.currentUser);
+      })
+    }
     this.options = {
       plugins: {
         legend: {
           labels: {
-            usePointStyle: true,
-            color: textColor
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
           }
         }
       }
     };
-    
-    this.filterForm = this.fb.group({
-      range: [null],
-      user: [this.defaultUser.value]
-    });
   }
 
-  initializeChart() {
-    if (this.defaultUser) {
-      this.billService.getTotalAmountByUserName(this.defaultUser.value).subscribe(bills => {
-        this.result = this.calculateTotals(bills);
-        this.totalAmount.set(this.result.totalOwnAmount);
+  updateChart(result: CalculationResult) {
+    if (this.chartLabels.length === 0) return;
 
-        this.translationService.getTranslatedCategories().subscribe(categories => {
-          const labels = categories.map(c => c.label);
-          this.data = {
-            labels: labels,
-            datasets: [
-              {
-                data: Object.values(this.result.categorizedTotals),
-                backgroundColor: CATEGORY_COLORS,
-                hoverBackgroundColor: CATEGORY_COLORS.map(color => this.adjustHoverColor(color))
-              }
-            ]
-          };
-        })
-      })
-    }
+    this.data = {
+      labels: this.chartLabels,
+      datasets: [
+        {
+          data: Object.values(result.categorizedTotals),
+          backgroundColor: CATEGORY_COLORS,
+          hoverBackgroundColor: CATEGORY_COLORS.map(color => this.adjustHoverColor(color))
+        }
+      ]
+    };
   }
 
   calculateTotals(bills: Bill[]): CalculationResult {
@@ -106,16 +105,22 @@ export class UserStatsComponent implements OnInit {
       return acc;
     }, { totalOwnAmount: 0, categorizedTotals: {} });
   }
-  
+
   adjustHoverColor(color: string): string {
     return color;
   }
   
-  onSubmit() {
-    const range = (this.filterForm?.get('range')?.value || []).filter((date: Date | null) => date !== null);
+  handleOnChange() {
     const user = this.filterForm.get('user')?.value;
-
-    console.log(range, user);
+    this.getTotalAmountByUserName(user);
   }
 
+
+  getTotalAmountByUserName(username: string) {
+    this.billService.getTotalAmountByUserName(username).subscribe(bills => {
+      const result = this.calculateTotals(bills);
+      this.totalAmount.set(result.totalOwnAmount);
+      this.updateChart(result);
+    });
+  }
 }
