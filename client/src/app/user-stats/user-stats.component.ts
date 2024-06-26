@@ -12,6 +12,8 @@ import { TranslationService } from '../../services/translation/translation.servi
 import { UserService } from '../../services/user/user.service';
 import { BillCategoryCode } from '../../constants/Categories';
 import { ChartData, ChartOptions } from 'chart.js';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { User } from '../../model/User';
 
 @Component({
   selector: 'app-user-stats',
@@ -31,9 +33,9 @@ export class UserStatsComponent implements OnInit {
   filterForm: FormGroup;
   users: {label: string, value: string}[] = [];
   totalAmount = signal(0);
-  data: ChartData;
-  options: ChartOptions;
-  currentUser: string;
+  chartData: ChartData;
+  chartOptions: ChartOptions;
+  currentUser: User | null;
   categories: { label: string; value: BillCategoryCode }[];
   chartLabels: string [] = [];
   
@@ -41,11 +43,12 @@ export class UserStatsComponent implements OnInit {
     private billService: BillService,
     private fb: FormBuilder,
     private translationService: TranslationService,
-    private userService: UserService) {
+    private userService: UserService,
+    private localStorageService: LocalStorageService) {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('user') || '')?.username;
+    this.currentUser = this.localStorageService.getUser();
 
     this.userService.getUsers().subscribe(users => {
       this.users = users.map(user => ({ label: user.name, value: user.name }));
@@ -54,18 +57,17 @@ export class UserStatsComponent implements OnInit {
 
     this.filterForm = this.fb.group({
       range: [null],
-      user: [this.currentUser]
+      user: [this.currentUser?.name]
     });
   }
   
   initializeChart() {
-    if (this.currentUser) {
-      this.translationService.getTranslatedCategories().subscribe(categories => {
-        this.chartLabels = categories.map(c => c.label);
-        this.getTotalAmountByUserName(this.currentUser);
-      })
-    }
-    this.options = {
+    this.translationService.getTranslatedCategories().subscribe(categories => {
+      this.chartLabels = categories.map(c => c.label);
+      if (this.currentUser) 
+        this.getTotalAmountByUserName(this.currentUser.name);
+    })
+    this.chartOptions = {
       plugins: {
         legend: {
           labels: {
@@ -87,7 +89,7 @@ export class UserStatsComponent implements OnInit {
   updateChart(result: CalculationResult) {
     if (this.chartLabels.length === 0) return;
 
-    this.data = {
+    this.chartData = {
       labels: this.chartLabels,
       datasets: [
         {
