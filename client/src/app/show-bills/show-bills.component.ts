@@ -15,6 +15,7 @@ import { DebtService } from '../../services/debt/debt.service';
 import { switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { User } from '../../model/User';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-show-bills',
@@ -34,7 +35,8 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     private billService: BillService,
     private userService: UserService,
     private debtService: DebtService,
-    private messageService: MessageService) {}
+    private messageService: MessageService,
+    private localStorageService: LocalStorageService) {}
 
   ngOnInit() {
     this.billService.getBills().subscribe(bills => {
@@ -44,15 +46,10 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   }
 
   setUserName() {
-    const userFromStorage = localStorage.getItem('user');
-    if (userFromStorage) {
-      this.user = JSON.parse(userFromStorage);
-    } else {
-      this.userService.getCurrentUser().subscribe(user => {
-        localStorage.setItem('user', JSON.stringify(user));
-        this.user = user;
-      });
-    }
+    this.userService.getCurrentUser().subscribe(user => {
+      this.localStorageService.setUser(user)
+      this.user = user;
+    });
   }
 
   ngAfterViewChecked(): void {

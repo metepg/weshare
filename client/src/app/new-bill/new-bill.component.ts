@@ -25,7 +25,6 @@ export class NewBillComponent {
     private debtService: DebtService) {}
   
   handleSubmit(bill: Bill) {
-    console.log(bill)
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
         this.messageService.add({severity: 'success', summary: `Tallennus onnistui.`,});
