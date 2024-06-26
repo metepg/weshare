@@ -1,3 +1,5 @@
+import { User } from './User';
+
 export class Bill {
   id: number;
   amount: number;
@@ -6,9 +8,9 @@ export class Bill {
   description: string;
   paid: boolean
   ownAmount: number;
-  owner: string;
+  owner: User;
 
-  constructor(amount: number, category: number, description: string, ownAmount: number, owner: string) {
+  constructor(amount: number, category: number, description: string, ownAmount: number, owner: User) {
     this.amount = amount;
     this.category = category;
     this.description = description;

@@ -48,7 +48,7 @@ export class UserStatsComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('user') || '')?.username;
 
     this.userService.getUsers().subscribe(users => {
-      this.users = users.map(user => ({ label: user.username, value: user.username }));
+      this.users = users.map(user => ({ label: user.name, value: user.name }));
       this.initializeChart();
     });
 

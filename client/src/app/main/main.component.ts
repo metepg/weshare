@@ -23,6 +23,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgStyle } from '@angular/common';
 import { Router } from '@angular/router';
 import { DebtService } from '../../services/debt/debt.service';
+import { User } from '../../model/User';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
     selector: 'app-main',
@@ -51,7 +53,7 @@ import { DebtService } from '../../services/debt/debt.service';
 export class MainComponent implements OnInit, DoCheck {
   protected readonly View = View;
   bills$: Observable<Bill[]>;
-  username: string;
+  user: User | null;
   isLoading = false;
   debt = this.debtService.debt;
   sidebarVisible = true;
@@ -68,18 +70,20 @@ export class MainComponent implements OnInit, DoCheck {
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private router: Router,
-    private debtService: DebtService
+    private debtService: DebtService,
+    private localStorageService: LocalStorageService
   ) {
   }
   
   ngOnInit(): void {
     this.option = this.options[0];
-    const username = JSON.parse(localStorage.getItem('user') || '')?.username;
-    if (!username) {
+    this.user = this.localStorageService.getUser();
+    if (!this.user) {
       this.userService.getCurrentUser().subscribe(user => {
         if (!user) return;
-        this.username = user.username;
-        localStorage.setItem('user', JSON.stringify(user));
+        this.user = user;
+        this.localStorageService.setUser(user)
+        console.log(this.user)
       });
     }
 
@@ -103,8 +107,9 @@ export class MainComponent implements OnInit, DoCheck {
       header: 'Varmistus',
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
+        if (!this.user) return;
         this.isLoading = true;
-        const resetBill = new Bill(0, -1, '', this.debt(), this.username);
+        const resetBill = new Bill(0, -1, '', this.debt(), this.user);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {

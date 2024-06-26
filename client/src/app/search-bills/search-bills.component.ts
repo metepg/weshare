@@ -75,8 +75,8 @@ export class SearchBillsComponent implements OnInit {
       this.userService.getUsers().subscribe(users => {
         this.users = users.map(user => {
           return {
-            label: user.username,
-            value: user.username,
+            label: user.name,
+            value: user.name,
           }
         })
       })

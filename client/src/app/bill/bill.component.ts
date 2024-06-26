@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { Bill } from '../../model/Bill';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { User } from '../../model/User';
 
 @Component({
   selector: 'app-bill',
@@ -17,14 +18,14 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class BillComponent implements OnInit, OnChanges {
   @Input() bill: Bill;
-  @Input() username: string | null;
+  @Input() user: User;
   amount: number;
   category: number;
   date: Date;
   description: string;
   isPaid: boolean;
   ownAmount: number;
-  owner: string;
+  owner: User;
   userIsOwnerOfBill: boolean;
   @Output() editBillEmitter = new EventEmitter<Bill>();
 
@@ -46,7 +47,7 @@ export class BillComponent implements OnInit, OnChanges {
     this.isPaid = this.bill.paid;
     this.ownAmount = Math.abs(this.bill.ownAmount);
     this.owner = this.bill.owner;
-    this.userIsOwnerOfBill = this.owner === this.username;
+    this.userIsOwnerOfBill = this.owner.name === this.user?.name;
   }
 
   editBill() {
