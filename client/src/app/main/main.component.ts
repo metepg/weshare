@@ -23,7 +23,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgStyle } from '@angular/common';
 import { Router } from '@angular/router';
 import { DebtService } from '../../services/debt/debt.service';
-import { User } from '../../model/User';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
@@ -53,7 +52,6 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
 export class MainComponent implements OnInit, DoCheck {
   protected readonly View = View;
   bills$: Observable<Bill[]>;
-  user: User | null;
   isLoading = false;
   debt = this.debtService.debt;
   sidebarVisible = true;
@@ -77,16 +75,6 @@ export class MainComponent implements OnInit, DoCheck {
   
   ngOnInit(): void {
     this.option = this.options[0];
-    this.user = this.localStorageService.getUser();
-    if (!this.user) {
-      this.userService.getCurrentUser().subscribe(user => {
-        if (!user) return;
-        this.user = user;
-        this.localStorageService.setUser(user)
-        console.log(this.user)
-      });
-    }
-
     this.billService.getTotalDebtAmount().subscribe((amount: number): void => {
       this.debtService.setDebt(amount);
     });
@@ -107,9 +95,14 @@ export class MainComponent implements OnInit, DoCheck {
       header: 'Varmistus',
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
-        if (!this.user) return;
+        const user = this.localStorageService.getUser();
+        
+        if (user == null) {
+          return; 
+        }
+        
         this.isLoading = true;
-        const resetBill = new Bill(0, -1, '', this.debt(), this.user);
+        const resetBill = new Bill(0, -1, '', this.debt(), user);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {

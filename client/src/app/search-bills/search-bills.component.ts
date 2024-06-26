@@ -72,6 +72,9 @@ export class SearchBillsComponent implements OnInit {
     
     this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
       this.categories = translatedCategories;
+      this.searchForm.patchValue({
+        categories: [...this.categories]
+      });
       this.userService.getUsers().subscribe(users => {
         this.users = users.map(user => {
           return {

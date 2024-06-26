@@ -35,5 +35,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findByFilter(
             @Param("description") String description,
             @Param("categories") List<Integer> categories,
-            @Param("users") List<User> users);
+            @Param("users") List<User> users,
+            Sort sort);
 }

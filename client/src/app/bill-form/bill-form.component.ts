@@ -88,11 +88,11 @@ export class BillFormComponent implements OnInit, OnDestroy {
     const {amount, category, description} = this.billFormBuilder.value;
     this.user = this.localStorageService.getUser();
     
-    const formIsNotValid = !this.billFormBuilder.valid || !amount || !category || !description;
-    if (formIsNotValid || !this.user) {
+    if (!this.billFormBuilder.valid || !this.user) {
       return;
     }
-    this.formEmitter.emit(new Bill(amount, category, description, this.ownShareOfBill, this.user));
+    
+    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user));
     this.submitButtonIsDisabled = false;
   }
 
