@@ -10,6 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByName(String name);
 
-    Optional<List<User>> findAllByNameIn(List<String> names);
+    Optional<List<User>> findUsersByNameIn(List<String> names);
 
 }

@@ -40,9 +40,6 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     this.billService.getBills().subscribe(bills => {
       this.bills = bills;
     });
-    this.billService.getTotalDebtAmount().subscribe(amount => {
-      this.debtService.setDebt(amount);
-    })
     this.setUserName();
   }
 

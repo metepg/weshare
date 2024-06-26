@@ -31,9 +31,9 @@ public class Bill implements Serializable {
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
+    @JsonIgnore
     private Group group;
 
     private String description;
