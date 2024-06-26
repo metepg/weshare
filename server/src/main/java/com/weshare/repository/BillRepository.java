@@ -21,9 +21,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     List<Bill> findBillsByGroupAndPaidIsFalse(Group group);
 
-    @Query("SELECT bill FROM Bill bill WHERE bill.owner = :owner AND bill.category != -1")
-    List<Bill> findByOwnerAndCategory(@Param("owner") String owner);
-
     List<Bill> findBillsByOwner(User user);
 
     @Modifying
