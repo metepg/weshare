@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DebtService } from '../../services/debt/debt.service';
 import { switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { User } from '../../model/User';
 
 @Component({
   selector: 'app-show-bills',
@@ -27,7 +28,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   showEditBillDialog = false;
   bills: Bill[] = [];
   bill: Bill;
-  username: string | null;
+  user: User;
 
   constructor(
     private billService: BillService,
@@ -48,11 +49,11 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   setUserName() {
     const userFromStorage = localStorage.getItem('user');
     if (userFromStorage) {
-      this.username = JSON.parse(userFromStorage).username;
+      this.user = JSON.parse(userFromStorage);
     } else {
       this.userService.getCurrentUser().subscribe(user => {
         localStorage.setItem('user', JSON.stringify(user));
-        this.username = user.username
+        this.user = user;
       });
     }
   }
@@ -62,7 +63,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   }
 
   handleEditBillDialog(bill: Bill) {
-    if (this.username !== bill.owner) return;
+    if (this.user?.name !== bill.owner.name) return;
     this.bill = bill;
     this.showEditBillDialog = true;
   }

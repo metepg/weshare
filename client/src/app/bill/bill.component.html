@@ -3,12 +3,12 @@
   <hr>
   <p style="text-align: center;"><i>{{ date | date: 'd.M.YYYY' }}</i></p>
   <p style="text-align: center"><i>
-    {{ userIsOwnerOfBill ? 'Maksoit velat' : owner + ' maksoi velat' }}
+    {{ userIsOwnerOfBill ? 'Maksoit velat' : owner.name + ' maksoi velat' }}
     {{ ownAmount | number: '1.2-2' }} {{ 'currency' | translate }}</i></p>
   <hr>
 } @else {
   <div [ngClass]="isPaid ? 'isPaid' : ''">
-    <i style="margin: 0 6px ;color: grey">{{ owner }}</i>
+    <i style="margin: 0 6px ;color: grey">{{ owner.name }}</i>
     <br>
     <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.YYYY' }}</i>
     <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
@@ -16,7 +16,7 @@
       <p id="amount">{{ +amount | number : '1.2-2' }} €</p>
       <p id="description">{{ description }}</p>
       <hr>
-      <p id="own">{{ userIsOwnerOfBill ? 'Oma' : owner + 'n' }}
+      <p id="own">{{ userIsOwnerOfBill ? 'Oma' : owner.name + 'n' }}
         osuus {{ (ownAmount || 0) | number : '1.2-2' }} €</p>
     </div>
   </div>

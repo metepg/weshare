@@ -3,8 +3,8 @@
     @for (bill of bills; track bill.id) {
       <app-bill
         [bill]="bill"
-        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner === this.username) ? 'end' : 'start'"
-        [username]="username"
+        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner.name === user.name) ? 'end' : 'start'"
+        [user]="user"
         (editBillEmitter)="handleEditBillDialog($event)"
         style="margin-bottom: 10px">
       </app-bill>

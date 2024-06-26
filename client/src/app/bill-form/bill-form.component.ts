@@ -12,6 +12,8 @@ import { isValidCategory, isValidDescription } from '../../utils/formValidationU
 import { TranslationService } from '../../services/translation/translation.service';
 import { Subscription } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
+import { User } from '../../model/User';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-bill-form',
@@ -33,7 +35,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
-  username: string | null;
+  user: User | null;
   @Input() id: number | undefined;
   @Input() showDeleteBillButton = false;
   @Input() description: string;
@@ -53,7 +55,8 @@ export class BillFormComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private translationService: TranslationService,
-    private confirmationService: ConfirmationService) {
+    private confirmationService: ConfirmationService,
+    private localStorageService: LocalStorageService) {
     this.submitButtonIsDisabled = true;
   }
 
@@ -83,13 +86,13 @@ export class BillFormComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
     const {amount, category, description} = this.billFormBuilder.value;
-    this.username = JSON.parse(localStorage.getItem('user') || '')?.username;
+    this.user = this.localStorageService.getUser();
     
     const formIsNotValid = !this.billFormBuilder.valid || !amount || !category || !description;
-    if (formIsNotValid || !this.username) {
+    if (formIsNotValid || !this.user) {
       return;
     }
-    this.formEmitter.emit(new Bill(amount, category, description, this.ownShareOfBill, this.username));
+    this.formEmitter.emit(new Bill(amount, category, description, this.ownShareOfBill, this.user));
     this.submitButtonIsDisabled = false;
   }
 
