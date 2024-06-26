@@ -1,9 +1,15 @@
 BEGIN;
 
--- Insert initial user records
-INSERT INTO weshare.users (username, password, role)
-VALUES ('user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1'),
-       ('user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2');
+DO $$
+DECLARE
+    group_uuid UUID := uuid_generate_v4();
+BEGIN
+    -- Insert initial user records with the same group_id
+    INSERT INTO weshare.users (name, password, role, group_id)
+    VALUES
+        ('user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1', group_uuid),
+        ('user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2', group_uuid);
+END $$;
 
 -- Generate 1000 bills between last year and this year with random owners
 DO
