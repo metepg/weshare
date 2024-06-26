@@ -3,34 +3,43 @@ package com.weshare.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "users", schema = "weshare")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String username;
+    private Long id;
+
+    private String name;
+
     @JsonIgnore
     private String password;
+
     @JsonIgnore
     private String role;
 
+    @Column(name = "group_id", nullable = false)
+    @JsonIgnore
+    private UUID groupId;
+
     public User() {}
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -45,8 +54,15 @@ public class User {
         return role;
     }
 
-    public void setRole(String roles) {
-        this.role = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
+    public UUID getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(UUID groupId) {
+        this.groupId = groupId;
+    }
 }
