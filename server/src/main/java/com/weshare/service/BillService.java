@@ -3,24 +3,30 @@ package com.weshare.service;
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
+import com.weshare.model.User;
 import com.weshare.repository.BillRepository;
+import com.weshare.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class BillService {
     private final BillRepository billRepository;
+    private final UserRepository userRepository;
     private final static Sort SORT_BY_ID = Sort.by(Sort.Direction.ASC, "id");
 
-    BillService(BillRepository billRepository){
+    BillService(BillRepository billRepository, UserRepository userRepository){
         this.billRepository = billRepository;
+        this.userRepository = userRepository;
     }
 
     public Bill create(Bill bill) {
@@ -39,9 +45,14 @@ public class BillService {
         }
         String description = filter.description();
         List<Integer> categories = filter.categories();
-        List<String> users = filter.users();
 
-        return billRepository.findByFilter(description, categories, users);
+        Optional<List<User>> users = userRepository.findAllByNameIn(filter.users());
+
+        if (users.isEmpty()) {
+            return List.of();
+        }
+
+        return billRepository.findByFilter(description, categories, users.get());
     }
 
     public List<Bill> payDebt() {
@@ -50,8 +61,13 @@ public class BillService {
     }
 
     public double getTotalDebtByName(String name) {
-        List<Bill> bills = billRepository.findAllUnpaidBills();
-        return bills
+        Optional<User> user = userRepository.findByName(name);
+
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User not found: " + name);
+        }
+
+        return billRepository.findBillsByGroupAndPaidIsFalse(user.get().getGroup())
                 .stream()
                 .mapToDouble(bill -> getUnpaidAmount(name, bill))
                 .sum();
@@ -81,7 +97,7 @@ public class BillService {
 
     private double getUnpaidAmount(String name, Bill bill) {
         double total = bill.getAmount() - bill.getOwnAmount();
-        return bill.getOwner().equals(name)
+        return bill.getOwner().getName().equals(name)
                 ? total
                 : -total;
     }
@@ -106,7 +122,13 @@ public class BillService {
     }
 
     public List<Bill> getBillsByUserName(String name) {
-        return billRepository.findByOwnerAndCategory(name);
+        Optional<User> user = userRepository.findByName(name);
+
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User not found: " + name);
+        }
+
+        return billRepository.findBillsByOwner(user.get());
     }
 
 }

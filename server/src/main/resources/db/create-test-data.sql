@@ -1,10 +1,12 @@
 BEGIN;
 
--- Insert initial user records with the same group_id and ensure ids start from 1
+-- Insert a new group and capture its generated ID
 DO $$
     DECLARE
-        group_uuid UUID := uuid_generate_v4();
+        group_uuid UUID;
     BEGIN
+        INSERT INTO weshare.groups (name) VALUES ('Test Group') RETURNING id INTO group_uuid;
+
         -- Insert initial user records with the same group_id
         INSERT INTO weshare.users (id, name, password, role, group_id)
         VALUES
@@ -15,6 +17,7 @@ DO $$
 -- Generate 1000 bills between last year and this year with random owners
 DO $$
     DECLARE
+        group_uuid UUID := (SELECT group_id FROM weshare.users LIMIT 1);
         descriptions TEXT[] := ARRAY ['Food', 'Gasoline', 'Food for cats', 'Electric bill', 'Water bill', 'Walmart'];
         owner        INTEGER;
         amount       NUMERIC;
@@ -22,7 +25,7 @@ DO $$
         category     INTEGER;
         date         TIMESTAMP;
         own_amount   NUMERIC;
-        is_paid      BOOLEAN;
+        paid         BOOLEAN;
         i            INT;
         percentage   INTEGER;
     BEGIN
@@ -43,10 +46,10 @@ DO $$
                 -- Calculate own_amount as percentage of amount
                 own_amount := (amount * percentage) / 100;
 
-                is_paid := i < 980;
+                paid := i < 980;
 
-                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, is_paid)
-                VALUES (owner, amount, description, category, date, own_amount, is_paid);
+                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid, group_id)
+                VALUES (owner, amount, description, category, date, own_amount, paid, group_uuid);
             END LOOP;
     END $$;
 

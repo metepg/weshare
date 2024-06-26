@@ -23,7 +23,7 @@ export class BillComponent implements OnInit, OnChanges {
   category: number;
   date: Date;
   description: string;
-  isPaid: boolean;
+  paid: boolean;
   ownAmount: number;
   owner: User;
   userIsOwnerOfBill: boolean;
@@ -44,7 +44,7 @@ export class BillComponent implements OnInit, OnChanges {
     this.category = this.bill.category;
     this.date = this.bill.date;
     this.description = this.bill.description;
-    this.isPaid = this.bill.paid;
+    this.paid = this.bill.paid;
     this.ownAmount = Math.abs(this.bill.ownAmount);
     this.owner = this.bill.owner;
     this.userIsOwnerOfBill = this.owner.name === this.user?.name;

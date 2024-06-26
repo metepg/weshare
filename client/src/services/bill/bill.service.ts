@@ -46,7 +46,7 @@ export class BillService {
   }
   
   getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {
-    return this.http.post<Bill[]>(`${this.apiUrl}`, searchFilter, {
+    return this.http.post<Bill[]>(`${this.apiUrl}/search`, searchFilter, {
       observe: 'response',
     });
   }

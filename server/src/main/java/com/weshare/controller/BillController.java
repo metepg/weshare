@@ -42,7 +42,7 @@ public class BillController {
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @PostMapping("")
+    @PostMapping("/search")
     public List<Bill> findBillsByFilter(@RequestBody SearchFilter filter) {
         return billService.findBillsByFilter(filter);
     }
