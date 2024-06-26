@@ -7,7 +7,7 @@
     {{ ownAmount | number: '1.2-2' }} {{ 'currency' | translate }}</i></p>
   <hr>
 } @else {
-  <div [ngClass]="isPaid ? 'isPaid' : ''">
+  <div [ngClass]="paid ? 'isPaid' : ''">
     <i style="margin: 0 6px ;color: grey">{{ owner.name }}</i>
     <br>
     <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.YYYY' }}</i>

@@ -87,7 +87,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-bill>
             <tr>
-              <td>{{ bill.owner}}</td>
+              <td>{{ bill.owner.name}}</td>
               <td>{{ bill.description }}</td>
               <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
               <td>{{ bill.date | date: 'd.M.YY' }}</td>

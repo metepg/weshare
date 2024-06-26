@@ -1,12 +1,15 @@
 package com.weshare.repository;
 
 import com.weshare.model.Bill;
+import com.weshare.model.Group;
+import com.weshare.model.User;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,14 +19,16 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     List<Bill> findAllByDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
-    @Query("SELECT bill FROM Bill bill WHERE bill.isPaid = false")
-    List<Bill> findAllUnpaidBills();
+    List<Bill> findBillsByGroupAndPaidIsFalse(Group group);
 
     @Query("SELECT bill FROM Bill bill WHERE bill.owner = :owner AND bill.category != -1")
     List<Bill> findByOwnerAndCategory(@Param("owner") String owner);
 
+    List<Bill> findBillsByOwner(User user);
+
     @Modifying
-    @Query("UPDATE Bill bill SET bill.isPaid = true WHERE bill.isPaid = false")
+    @Transactional
+    @Query("UPDATE Bill bill SET bill.paid = true WHERE bill.paid = false")
     void payDebt();
 
     @Query("SELECT b FROM Bill b WHERE "
@@ -33,5 +38,5 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findByFilter(
             @Param("description") String description,
             @Param("categories") List<Integer> categories,
-            @Param("users") List<String> users);
+            @Param("users") List<User> users);
 }

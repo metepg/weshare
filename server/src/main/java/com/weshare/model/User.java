@@ -3,11 +3,15 @@ package com.weshare.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.UUID;
+import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "users", schema = "weshare")
-public class User {
+public class User implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,9 +24,10 @@ public class User {
     @JsonIgnore
     private String role;
 
-    @Column(name = "group_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
     @JsonIgnore
-    private UUID groupId;
+    private Group group;
 
     public User() {}
 
@@ -58,11 +63,11 @@ public class User {
         this.role = role;
     }
 
-    public UUID getGroupId() {
-        return groupId;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setGroupId(UUID groupId) {
-        this.groupId = groupId;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

@@ -1,13 +1,27 @@
 package com.weshare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.weshare.util.MoneyConverter;
-import jakarta.persistence.*;
 
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "bills", schema = "weshare")
-public class Bill {
+public class Bill implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +30,11 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     private String description;
 
@@ -29,7 +48,7 @@ public class Bill {
     @Convert(converter = MoneyConverter.class)
     private double ownAmount;
 
-    private boolean isPaid;
+    private boolean paid;
 
     public Long getId() {
         return id;
@@ -88,10 +107,19 @@ public class Bill {
     }
 
     public boolean isPaid() {
-        return isPaid;
+        return paid;
     }
 
-    public void setPaid(boolean isPaid) {
-        this.isPaid = isPaid;
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
 }
