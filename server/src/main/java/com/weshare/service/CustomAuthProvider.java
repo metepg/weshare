@@ -40,10 +40,10 @@ public class CustomAuthProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String username = authentication.getName();
+        String name = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<User> user = repository.findByUsername(username);
+        Optional<User> user = repository.findByName(name);
         if (user.isEmpty()) {
             throw new BadCredentialsException("Väärä nimi tai salasana");
         }
@@ -53,7 +53,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
             logger.info("Successfully Authenticated the user");
             String role = loggedUser.getRole();
 
-            return new UsernamePasswordAuthenticationToken(username, password, getUserRoles(role));
+            return new UsernamePasswordAuthenticationToken(name, password, getUserRoles(role));
         }
         else {
             throw new BadCredentialsException("Väärä nimi tai salasana");

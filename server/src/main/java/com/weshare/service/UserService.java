@@ -23,8 +23,8 @@ public class UserService {
 
     public User findCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth != null ? auth.getName() : "";
-        Optional<User> user = userRepository.findByUsername(username);
+        String name = auth != null ? auth.getName() : "";
+        Optional<User> user = userRepository.findByName(name);
         return user.orElse(null);
     }
 

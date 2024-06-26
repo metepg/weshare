@@ -12,14 +12,23 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String owner;
+
+    @ManyToOne
+    @JoinColumn(name = "owner", nullable = false)
+    private User owner;
+
     private String description;
+
     @Convert(converter = MoneyConverter.class)
     private double amount;
+
     private int category;
+
     private LocalDate date;
+
     @Convert(converter = MoneyConverter.class)
     private double ownAmount;
+
     private boolean isPaid;
 
     public Long getId() {
@@ -30,11 +39,11 @@ public class Bill {
         this.id = id;
     }
 
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
@@ -82,8 +91,7 @@ public class Bill {
         return isPaid;
     }
 
-    public void setPaid(boolean paid) {
-        isPaid = paid;
+    public void setPaid(boolean isPaid) {
+        this.isPaid = isPaid;
     }
-
 }
