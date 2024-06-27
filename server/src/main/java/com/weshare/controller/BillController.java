@@ -32,13 +32,19 @@ public class BillController {
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PostMapping("/create")
     public ResponseEntity<Bill> createBill(@RequestBody Bill bill) {
-        return new ResponseEntity<>(billService.create(bill), HttpStatus.CREATED);
+        return new ResponseEntity<>(billService.save(bill), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("")
     public List<Bill> findBillsFromLastSixMonths() {
         return billService.findAllFromLastSixMonths();
+    }
+
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @GetMapping("/{id}")
+    public List<Bill> getBillsByUserId(@PathVariable Long id) {
+        return billService.getBillsByUserId(id);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
@@ -77,15 +83,8 @@ public class BillController {
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PutMapping()
     public Bill editBill(@RequestBody Bill bill) {
-        return billService.editBill(bill);
+        return billService.save(bill);
     }
-
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("/total/{name}")
-    public List<Bill> getBillsByUserName(@PathVariable String name) {
-        return billService.getBillsByUserName(name);
-    }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteBill(@PathVariable Long id) {

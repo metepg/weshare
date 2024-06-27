@@ -14,7 +14,7 @@ export const MONTHS = [
 ];
 
 export const CATEGORY_COLORS = [
-  "lightgreen", "pink", "gold", "red", "skyblue", "grey"
+  "lightgreen", "pink", "gold", "red", "skyblue", "grey", "black"
 ];
 
 export const BAR_CHART_OPTIONS  = {

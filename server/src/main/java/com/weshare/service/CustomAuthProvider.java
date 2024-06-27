@@ -43,7 +43,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Optional<User> user = repository.findByName(name);
+        Optional<User> user = repository.findUserByName(name);
         if (user.isEmpty()) {
             throw new BadCredentialsException("Väärä nimi tai salasana");
         }
