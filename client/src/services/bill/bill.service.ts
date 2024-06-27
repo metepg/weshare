@@ -41,8 +41,8 @@ export class BillService {
     return this.http.get<number>(`${this.apiUrl}/debt`);
   }
 
-  getTotalAmountByUserName(name: string): Observable<Bill[]> {
-    return this.http.get<Bill[]>(`${this.apiUrl}/total/${name}`);
+  getBillsByUserId(id: number): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.apiUrl}/${id}`);
   }
   
   getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {

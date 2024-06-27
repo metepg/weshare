@@ -28,10 +28,11 @@ public class BillService {
         this.userRepository = userRepository;
     }
 
-    public Bill create(Bill bill) {
-        User user = userRepository.findByName(bill.getOwner().getName())
+    public Bill save(Bill bill) {
+        User user = userRepository.findUserById(bill.getOwner().getId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         bill.setGroup(user.getGroup());
+
         return billRepository.save(bill);
     }
 
@@ -63,13 +64,10 @@ public class BillService {
     }
 
     public double getTotalDebtByName(String name) {
-        Optional<User> user = userRepository.findByName(name);
+        User user = userRepository.findUserByName(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found: " + name);
-        }
-
-        return billRepository.findBillsByGroupAndPaidIsFalse(user.get().getGroup())
+        return billRepository.findBillsByGroupAndPaidIsFalse(user.getGroup())
                 .stream()
                 .mapToDouble(bill -> getUnpaidAmount(name, bill))
                 .sum();
@@ -92,13 +90,6 @@ public class BillService {
         return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID);
     }
 
-    public Bill editBill(Bill bill) {
-        User user = userRepository.findByName(bill.getOwner().getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        bill.setGroup(user.getGroup());
-        return billRepository.save(bill);
-    }
-
     public boolean deleteBillById(Long id) {
         try {
             billRepository.deleteById(id);
@@ -109,14 +100,11 @@ public class BillService {
         }
     }
 
-    public List<Bill> getBillsByUserName(String name) {
-        Optional<User> user = userRepository.findByName(name);
+    public List<Bill> getBillsByUserId(Long id) {
+        User user = userRepository.findUserById(id)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found: " + name);
-        }
-
-        return billRepository.findBillsByOwner(user.get());
+        return billRepository.findBillsByOwner(user);
     }
 
 
