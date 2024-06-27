@@ -67,9 +67,9 @@ export class UserStatsComponent implements OnInit {
   initializeChart() {
     this.translationService.getTranslatedCategories().subscribe(categories => {
       this.chartLabels = categories.map(c => c.label);
-      this.chartLabels = [...this.chartLabels, 'Nollaus']
-      if (this.currentUser) 
+      if (this.currentUser) {
         this.getTotalAmountByUserId(this.currentUser.id);
+      }
     })
     this.chartOptions = {
       plugins: {
@@ -93,6 +93,11 @@ export class UserStatsComponent implements OnInit {
     this.billService.getBillsByUserId(id).subscribe(bills => {
       this.calculationResult = this.calculateTotals(bills);
       this.totalAmount.set(this.calculationResult.totalOwnAmount);
+      if (-1 in this.calculationResult.categorizedTotals) {
+        this.chartLabels = [...this.chartLabels, 'Nollaus']
+      } else {
+        this.chartLabels = this.chartLabels.filter(v => v !== 'Nollaus')
+      }
       this.updateChart(this.calculationResult);
     });
   }
