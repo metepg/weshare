@@ -32,7 +32,7 @@ public class User implements Serializable {
     private String role;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     @JsonIgnore
     private Group group;
 
