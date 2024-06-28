@@ -51,7 +51,7 @@ export class BillService {
     });
   }
 
-  editBill(bill: Bill): Observable<Bill> {
+  updateBill(bill: Bill): Observable<Bill> {
     const url = `${this.apiUrl}`;
     return this.http.put<Bill>(url, bill);
   }

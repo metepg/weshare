@@ -36,6 +36,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
   categories: { label: string, value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   user: User | null;
+  @Input() disabledFields: string[] = [];
   @Input() id: number | undefined;
   @Input() showDeleteBillButton = false;
   @Input() description: string;
@@ -62,10 +63,10 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.billFormBuilder = this.formBuilder.group({
-      amount: [this.amount, [Validators.required, Validators.min(1)]],
-      category: [this.category, [Validators.required, isValidCategory]],
-      description: [this.description, [Validators.required, isValidDescription]],
-      sliderPercent: this.sliderPercent
+      amount: [{value: this.amount, disabled: this.disabledFields.includes('amount')},[Validators.required, Validators.min(1)]],
+      category: [{value: this.category, disabled: this.disabledFields.includes('category')}, [Validators.required, isValidCategory]],
+      description: [{value: this.description, disabled: this.disabledFields.includes('description')}, [Validators.required, isValidDescription]],
+      sliderPercent: {value: this.sliderPercent, disabled: this.disabledFields.includes('sliderPercent')}
     })
     
     this.billFormBuilder.valueChanges.subscribe(value => {

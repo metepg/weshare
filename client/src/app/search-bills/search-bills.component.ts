@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -22,6 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { TranslationService } from '../../services/translation/translation.service';
 import { UserService } from '../../services/user/user.service';
+import { BillFormComponent } from '../bill-form/bill-form.component';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-search-bills',
@@ -40,17 +42,22 @@ import { UserService } from '../../services/user/user.service';
     DatePipe,
     SidebarModule,
     ProgressSpinnerModule,
-    TranslateModule
+    TranslateModule,
+    BillFormComponent,
+    DialogModule
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
 })
 export class SearchBillsComponent implements OnInit {
+  protected readonly Math = Math;
+  selectedBill: Bill;
   bills: Bill[];
   categories: { label: string, value: number }[];
   users: { label: string, value: string }[];
   searchForm: FormGroup;
   isLoading = false;
+  showEditBillDialog = false;
   @Input() sidebarVisible = true;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
@@ -59,7 +66,8 @@ export class SearchBillsComponent implements OnInit {
               private primengConfig: PrimeNGConfig,
               private sidebarService: SidebarService,
               private translationService: TranslationService,
-              private userService: UserService
+              private userService: UserService,
+              private messageService: MessageService,
               ) {}
 
   ngOnInit() {
@@ -142,4 +150,28 @@ export class SearchBillsComponent implements OnInit {
   handleSidebarHide() {
     this.sidebarService.toggleSidebar(false);
   }
+  
+  showEditView(bill: Bill) {
+    this.selectedBill = bill;
+    this.showEditBillDialog = true;
+  }
+  
+  handleEditBill(bill: Bill): void {
+    if (!bill) return;
+    
+    const {amount, description, id, date, ownAmount, owner} = this.selectedBill;
+    const editedBill = new Bill(amount!, bill.category!, description!, ownAmount!, owner);
+    editedBill.setId(id);
+    editedBill.setDate(date);
+    this.billService.updateBill(editedBill).subscribe(editedBill => {
+      if (!editedBill) {
+        this.messageService.add({severity: 'error', summary: `Kategorian päivitys epäonnistui.`,});
+      } else {
+        this.messageService.add({severity: 'success', summary: `Kategorian päivitys onnistui`,});
+        this.bills = this.bills.map(b => b.id === editedBill.id ? editedBill : b);
+        this.showEditBillDialog = false;
+      }
+    })
+  }
+
 }

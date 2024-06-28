@@ -84,7 +84,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-bill>
-            <tr>
+            <tr (click)="showEditView(bill)">
               <td>{{ bill.owner.name}}</td>
               <td>{{ bill.description }}</td>
               <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
@@ -96,6 +96,29 @@
     </div>
   } @else {
     <p style="text-align: center; font-size: 16px; margin-top: 30px">{{ 'noBillsFound' | translate}}</p>
+  }
+
+  @if (showEditBillDialog) {
+    <p-dialog
+      [header]="'edit' | translate"
+      [modal]="true"
+      [(visible)]="showEditBillDialog"
+      focusOnShow="false"
+      [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
+      <app-bill-form
+        style="margin-top: 20px"
+        [disabledFields]="['amount', 'sliderPercent', 'description']"
+        [showDeleteBillButton]="false"
+        [amount]="selectedBill.amount"
+        [description]="selectedBill.description"
+        [id]="selectedBill.id"
+        [ownShareOfBill]="selectedBill.ownAmount"
+        [category]="selectedBill.category"
+        [sliderPercent]="Math.round(selectedBill.ownAmount / selectedBill.amount * 100)"
+        (formEmitter)="handleEditBill($event)">
+      </app-bill-form>
+    </p-dialog>
+
   }
 }
 

@@ -19,4 +19,13 @@ export class Bill {
     this.paid = false;
     this.owner = owner;
   }
+  
+  setId(id: number) {
+    this.id = id;
+  }
+  
+  setDate(date: Date) {
+    this.date = date;
+  }
+  
 }

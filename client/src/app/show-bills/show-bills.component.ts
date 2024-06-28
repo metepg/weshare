@@ -70,7 +70,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   handleEditBill(bill: Bill) {
     bill.id = this.bill.id;
     bill.date = this.bill.date;
-    this.billService.editBill(bill).pipe(
+    this.billService.updateBill(bill).pipe(
       switchMap(updatedBill => {
         this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
         this.showEditBillDialog = false;

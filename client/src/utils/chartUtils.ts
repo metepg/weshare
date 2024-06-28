@@ -40,7 +40,8 @@ export function generateChartData(data: Map<string, number[]>): ChartData {
     Category2: "Laskut",
     Category3: "Ravintola",
     Category4: "Ruoka",
-    Category5: "Muut"
+    Category5: "Muut",
+    Category6: "Koti"
   };
   
   return {
