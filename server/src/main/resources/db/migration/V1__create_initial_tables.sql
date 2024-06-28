@@ -1,6 +1,6 @@
-CREATE SCHEMA ${schema};
+CREATE SCHEMA weshare
 
-CREATE TABLE ${schema}.person
+CREATE TABLE weshare.person
 (
     id       SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
@@ -8,7 +8,7 @@ CREATE TABLE ${schema}.person
     role     TEXT
 );
 
-CREATE TABLE ${schema}.bill
+CREATE TABLE weshare.bill
 (
     id          SERIAL PRIMARY KEY,
     owner       TEXT REFERENCES weshare.person (username),
