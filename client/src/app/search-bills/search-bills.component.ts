@@ -24,6 +24,9 @@ import { TranslationService } from '../../services/translation/translation.servi
 import { UserService } from '../../services/user/user.service';
 import { BillFormComponent } from '../bill-form/bill-form.component';
 import { DialogModule } from 'primeng/dialog';
+import { SearchFilter } from '../../model/SearchFilter';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { User } from '../../model/User';
 
 @Component({
   selector: 'app-search-bills',
@@ -53,11 +56,13 @@ export class SearchBillsComponent implements OnInit {
   protected readonly Math = Math;
   selectedBill: Bill;
   bills: Bill[];
+  currentUser: User | null;
   categories: { label: string, value: number }[];
   users: { label: string, value: string }[];
   searchForm: FormGroup;
   isLoading = false;
   showEditBillDialog = false;
+  searchFilter: SearchFilter;
   @Input() sidebarVisible = true;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
@@ -68,9 +73,11 @@ export class SearchBillsComponent implements OnInit {
               private translationService: TranslationService,
               private userService: UserService,
               private messageService: MessageService,
+              private localStorageService: LocalStorageService,
               ) {}
 
   ngOnInit() {
+    this.currentUser = this.localStorageService.getUser();
     this.searchForm = this.formBuilder.group({
       description: [null],
       categories: [null],
@@ -125,7 +132,7 @@ export class SearchBillsComponent implements OnInit {
     const categories = this.searchForm?.get('categories')?.value?.map((category: { label: string, value: number }) => category.value) || [];
     const range = (this.searchForm?.get('range')?.value || []).filter((date: Date | null) => date !== null);
     const users = this.searchForm?.get('users')?.value?.map((user: { label: string, value: string }) => user.value) || [];
-    const searchFilter = {
+    this.searchFilter = {
       description,
       categories,
       range,
@@ -134,7 +141,7 @@ export class SearchBillsComponent implements OnInit {
 
     this.sidebarVisible = false;
     this.isLoading = true;
-    this.billService.getBillsByFilter(searchFilter).subscribe(response => {
+    this.billService.getBillsByFilter(this.searchFilter).subscribe(response => {
       if (response.ok && response.body) {
         const bills = response.body;
         this.bills = bills.filter(bill => bill.ownAmount !== 0);
@@ -159,8 +166,8 @@ export class SearchBillsComponent implements OnInit {
   handleEditBill(bill: Bill): void {
     if (!bill) return;
     
-    const {amount, description, id, date, ownAmount, ownerId, ownerName} = this.selectedBill;
-    const editedBill = new Bill(amount!, bill.categoryId!, description!, ownAmount!, ownerId, ownerName);
+    const {amount, description, id, date, ownAmount, ownerId, ownerName, paid} = this.selectedBill;
+    const editedBill = new Bill(amount!, bill.categoryId!, description!, ownAmount!, ownerId, ownerName, paid);
     editedBill.setId(id);
     editedBill.setDate(date);
     this.billService.updateBill(editedBill).subscribe(editedBill => {
@@ -168,7 +175,10 @@ export class SearchBillsComponent implements OnInit {
         this.messageService.add({severity: 'error', summary: `Kategorian päivitys epäonnistui.`,});
       } else {
         this.messageService.add({severity: 'success', summary: `Kategorian päivitys onnistui`,});
-        this.bills = this.bills.map(b => b.id === editedBill.id ? editedBill : b);
+        const categoryIds = new Set(this.searchFilter.categories);
+        this.bills = this.bills
+          .map(b => b.id === editedBill.id ? editedBill : b)
+          .filter(b => categoryIds.has(b.categoryId));
         this.showEditBillDialog = false;
       }
     })

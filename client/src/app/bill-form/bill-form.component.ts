@@ -44,6 +44,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
   @Input() sliderPercent = 50;
   @Input() amount: number;
   @Input() category: number;
+  @Input() paid = false;
   @Output() formEmitter = new EventEmitter<Bill>();
   @Output() deleteBillEmitter = new EventEmitter<number>();
   billFormBuilder: FormGroup<{
@@ -93,7 +94,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
       return;
     }
     
-    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user.id, this.user.name));
+    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user.id, this.user.name, this.paid));
     this.submitButtonIsDisabled = false;
   }
 

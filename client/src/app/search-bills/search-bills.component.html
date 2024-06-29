@@ -98,7 +98,7 @@
     <p style="text-align: center; font-size: 16px; margin-top: 30px">{{ 'noBillsFound' | translate}}</p>
   }
 
-  @if (showEditBillDialog) {
+  @if (showEditBillDialog && selectedBill.ownerName === currentUser?.name) {
     <p-dialog
       [header]="'edit' | translate"
       [modal]="true"
@@ -113,6 +113,7 @@
         [description]="selectedBill.description"
         [id]="selectedBill.id"
         [ownShareOfBill]="selectedBill.ownAmount"
+        [paid]="selectedBill.paid"
         [category]="selectedBill.categoryId"
         [sliderPercent]="Math.round(selectedBill.ownAmount / selectedBill.amount * 100)"
         (formEmitter)="handleEditBill($event)">

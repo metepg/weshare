@@ -9,13 +9,13 @@ export class Bill {
   ownerId: number;
   ownerName: string;
 
-  constructor(amount: number, categoryId: number, description: string, ownAmount: number, ownerId: number, ownerName: string) {
+  constructor(amount: number, categoryId: number, description: string, ownAmount: number, ownerId: number, ownerName: string, paid = false) {
     this.amount = amount;
     this.categoryId = categoryId;
     this.description = description;
     this.ownAmount = ownAmount;
     this.date = new Date();
-    this.paid = false;
+    this.paid = paid;
     this.ownerId = ownerId;
     this.ownerName = ownerName;
   }
