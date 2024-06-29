@@ -1,4 +1,4 @@
-CREATE TABLE weshare.categories
+CREATE TABLE IF NOT EXISTS weshare.categories
 (
     id       SERIAL PRIMARY KEY,
     name     TEXT NOT NULL,
