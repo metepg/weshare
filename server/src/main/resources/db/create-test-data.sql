@@ -12,6 +12,17 @@ DO $$
         VALUES
             (1, 'user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1', group_uuid),
             (2, 'user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2', group_uuid);
+
+        -- Insert categories
+        INSERT INTO weshare.categories (id, name, group_id)
+        VALUES (-1, 'Nollaus', group_uuid),
+               (0, 'Auto', group_uuid),
+               (1, 'Kissat', group_uuid),
+               (2, 'Laskut', group_uuid),
+               (3, 'Ravintola', group_uuid),
+               (4, 'Ruoka', group_uuid),
+               (5, 'Muut', group_uuid),
+               (6, 'Koti', group_uuid);
     END $$;
 
 -- Generate 1000 bills between last year and this year with random owners

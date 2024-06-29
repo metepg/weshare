@@ -30,6 +30,7 @@
     "3": "Ravintola",
     "4": "Ruoka",
     "5": "Muut",
-    "6": "Koti"
+    "6": "Koti",
+    "-1": "Nollaus"
   }
 }
