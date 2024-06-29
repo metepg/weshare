@@ -69,7 +69,7 @@ export class ShowChartComponent implements OnInit {
       tap((bills: Bill[]) => {
         const monthlyValuesByCategory = this.aggregateMonthlyValues(bills);
         this.monthlyValuesByCategory.set(new Map(monthlyValuesByCategory));
-        this.data.set(generateChartData(monthlyValuesByCategory))
+        this.data.set(generateChartData(monthlyValuesByCategory, false))
       })
     )
   }
@@ -102,14 +102,18 @@ export class ShowChartComponent implements OnInit {
  */
   private aggregateMonthlyValues(bills: Bill[]): Map<string, number[]> {
     const monthlyValuesByCategory = new Map<string, number[]>();
+    const removedCategory = bills.filter(b => b.categoryId !== -1);
 
-    for (const bill of bills) {
+    for (const bill of removedCategory) {
       const month = new Date(bill.date).getMonth();
-      const category = BillCategoryCode[bill.category];
-      const amount = bill.amount;
-      this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
+      const category = BillCategoryCode[bill.categoryId];
+      // Exclude SettlementBillCategory
+      if (category !== BillCategoryCode[BillCategoryCode.SettlementBillCategory]) {
+        const amount = bill.amount;
+        this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
+      }
     }
-
+    
     return monthlyValuesByCategory;
   }
 

@@ -30,9 +30,10 @@ export function generateYearOptions(yearsToGoBack: number): { name: string, code
  * Generates chart data from the provided map of monthly values by category.
  *
  * @param data - The map containing monthly values by category.
+ * @param includeSettlementCategory If settlementBillCategory needs to be included. By default = true
  * @returns A ChartData object structured for charting.
  */
-export function generateChartData(data: Map<string, number[]>): ChartData {
+export function generateChartData(data: Map<string, number[]>, includeSettlementCategory = true): ChartData {
   // Quick fix for finnish translations for now
   const CATEGORY_TRANSLATIONS: { [key in keyof typeof BillCategoryCode]: string } = {
     Category0: "Auto",
@@ -41,17 +42,23 @@ export function generateChartData(data: Map<string, number[]>): ChartData {
     Category3: "Ravintola",
     Category4: "Ruoka",
     Category5: "Muut",
-    Category6: "Koti"
+    Category6: "Koti",
+    SettlementBillCategory: "Nollaus",
   };
-  
+
+  const categories = Object.keys(BillCategoryCode)
+    .filter(value => isNaN(Number(value)) && value !== 'SettlementBillCategory') as (keyof typeof BillCategoryCode)[];
+
+  if (includeSettlementCategory) {
+    categories.push('SettlementBillCategory' as keyof typeof BillCategoryCode);
+  }
+    
   return {
     labels: MONTHS,
-    datasets: Object.values(BillCategoryCode)
-    .filter(value => typeof value === 'string')
-    .map((category, index) => ({
-      label: CATEGORY_TRANSLATIONS[category as keyof typeof CATEGORY_TRANSLATIONS].toString() || category.toString(),
-      backgroundColor: CATEGORY_COLORS[index] || "grey",
-      data: data.get(category as string) || new Array(MONTHS.length).fill(0) as number[],
+    datasets: categories.map((category, index) => ({
+      label: CATEGORY_TRANSLATIONS[category] || category.toString(),
+      backgroundColor: CATEGORY_COLORS[index],
+      data: data.get(category) || new Array(MONTHS.length).fill(0) as number[],
     })),
   };
 }

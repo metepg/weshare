@@ -1,6 +1,7 @@
 package mocks;
 
 import com.weshare.model.Bill;
+import com.weshare.model.Category;
 import com.weshare.model.Group;
 import com.weshare.model.User;
 
@@ -19,7 +20,6 @@ public class MockDataProvider {
 
     public static User createMockUser(Group group) {
         User user = new User();
-        user.setId(1L);
         user.setName("Test User");
         user.setPassword("password");
         user.setRole("USER");
@@ -28,18 +28,22 @@ public class MockDataProvider {
         return user;
     }
 
-    public static Bill createMockBill(User user, Group group) {
+    public static Bill createMockBill(User user, Category category) {
         Bill bill = new Bill();
-        bill.setId(1L);
         bill.setOwner(user);
-        bill.setGroup(group);
         bill.setOwnAmount(50.0);
         bill.setAmount(100.0);
-        bill.setCategory(1);
+        bill.setCategory(category);
         bill.setDate(LocalDate.now());
         bill.setPaid(true);
         bill.setDescription("Test description");
-        group.setBills(List.of(bill));
         return bill;
+    }
+
+    public static Category createMockCategory(Group group) {
+        Category category = new Category();
+        category.setDescription("Mock Category");
+        category.setGroup(group);
+        return category;
     }
 }

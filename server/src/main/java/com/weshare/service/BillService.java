@@ -1,11 +1,13 @@
 package com.weshare.service;
 
+import com.weshare.dto.BillDTO;
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
 import com.weshare.model.User;
 import com.weshare.repository.BillRepository;
 import com.weshare.repository.UserRepository;
+import com.weshare.util.BillConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,66 +22,65 @@ import java.util.Optional;
 public class BillService {
     private final BillRepository billRepository;
     private final UserRepository userRepository;
+    private final BillConverter billConverter;
     private final static Sort SORT_BY_ID = Sort.by(Sort.Direction.ASC, "id");
     private final static Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
 
-    BillService(BillRepository billRepository, UserRepository userRepository){
+    BillService(BillRepository billRepository, UserRepository userRepository, BillConverter billConverter){
         this.billRepository = billRepository;
         this.userRepository = userRepository;
+        this.billConverter = billConverter;
     }
 
-    public Bill save(Bill bill) {
-        User user = userRepository.findUserById(bill.getOwner().getId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        bill.setGroup(user.getGroup());
-
-        return billRepository.save(bill);
+    public BillDTO save(BillDTO dto) {
+        Bill bill = billRepository.save(billConverter.dtoToBill(dto));
+        return billConverter.billToDTO(bill);
     }
 
-    public List<Bill> findAllFromLastSixMonths() {
+    public List<BillDTO> findAllFromLastSixMonths() {
         LocalDate today = LocalDate.now();
         LocalDate sixMonthsAgo = today.minusMonths(6);
-        return billRepository.findAllByDateBetween(sixMonthsAgo, today, SORT_BY_ID);
+        return billRepository.findAllByDateBetween(sixMonthsAgo, today, SORT_BY_ID).stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
-    public List<Bill> findBillsByFilter(SearchFilter filter) {
+    public List<BillDTO> findBillsByFilter(SearchFilter filter) {
         if (filter == null) {
             return List.of();
         }
 
         String description = filter.description();
-        List<Integer> categories = filter.categories();
+        List<Integer> categories = filter.categories().stream()
+                .filter(category -> category >= 0)
+                .toList();
+
         Optional<List<User>> users = userRepository.findUsersByNameIn(filter.users());
 
         if (users.isEmpty() || categories.isEmpty()) {
             return List.of();
         }
 
-        return billRepository.findByFilter(description, categories, users.get(), SORT_BY_DATE);
+        return billRepository.findByFilter(description, categories, users.get(), SORT_BY_DATE).stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
-    public List<Bill> payDebt() {
+    public List<BillDTO> payDebt() {
         billRepository.payDebt();
         return findAllFromLastSixMonths();
     }
 
-    public double getTotalDebtByName(String name) {
-        User user = userRepository.findUserByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return billRepository.findBillsByGroupAndPaidIsFalse(user.getGroup())
-                .stream()
-                .mapToDouble(bill -> getUnpaidAmount(name, bill))
-                .sum();
-    }
-
-    public List<Bill> findAllByYear(Integer year) {
+    public List<BillDTO> findAllByYear(Integer year) {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 12, 31);
-        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID);
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID)
+                .stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
-    public List<Bill> getStats(StatsFilter filter) {
+    public List<BillDTO> getStats(StatsFilter filter) {
         if (filter == null) return List.of();
         if (filter.range().isEmpty()) return List.of();
         if (filter.username().isBlank()) return List.of();
@@ -87,10 +88,12 @@ public class BillService {
         // TODO: Range filter
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = LocalDate.now().minusYears(10);
-        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID);
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID).stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
-    public boolean deleteBillById(Long id) {
+    public boolean deleteBillById(Integer id) {
         try {
             billRepository.deleteById(id);
             return true;
@@ -100,19 +103,13 @@ public class BillService {
         }
     }
 
-    public List<Bill> getBillsByUserId(Long id) {
+    public List<BillDTO> getBillsByUserId(Integer id) {
         User user = userRepository.findUserById(id)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return billRepository.findBillsByOwner(user);
-    }
-
-
-    private double getUnpaidAmount(String name, Bill bill) {
-        double total = bill.getAmount() - bill.getOwnAmount();
-        return bill.getOwner().getName().equals(name)
-                ? total
-                : -total;
+        return billRepository.findBillsByOwner(user).stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
 }

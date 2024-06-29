@@ -159,8 +159,8 @@ export class SearchBillsComponent implements OnInit {
   handleEditBill(bill: Bill): void {
     if (!bill) return;
     
-    const {amount, description, id, date, ownAmount, owner} = this.selectedBill;
-    const editedBill = new Bill(amount!, bill.category!, description!, ownAmount!, owner);
+    const {amount, description, id, date, ownAmount, ownerId, ownerName} = this.selectedBill;
+    const editedBill = new Bill(amount!, bill.categoryId!, description!, ownAmount!, ownerId, ownerName);
     editedBill.setId(id);
     editedBill.setDate(date);
     this.billService.updateBill(editedBill).subscribe(editedBill => {

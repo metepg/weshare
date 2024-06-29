@@ -65,20 +65,22 @@ export class MainComponent implements OnInit, DoCheck {
   constructor(
     private billService: BillService,
     private messageService: MessageService,
-    private userService: UserService,
     private confirmationService: ConfirmationService,
     private router: Router,
     private debtService: DebtService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private userService: UserService,
   ) {
   }
   
   ngOnInit(): void {
     this.option = this.options[0];
-    this.billService.getTotalDebtAmount().subscribe((amount: number): void => {
-      this.debtService.setDebt(amount);
+    this.userService.getCurrentUser().subscribe(user => {
+      this.localStorageService.setUser(user);
+      this.userService.getTotalDebtAmount(user.id).subscribe((amount: number): void => {
+        this.debtService.setDebt(amount);
+      });
     });
-    
   }
 
   ngDoCheck(): void {
@@ -102,7 +104,7 @@ export class MainComponent implements OnInit, DoCheck {
         }
         
         this.isLoading = true;
-        const resetBill = new Bill(0, -1, '', this.debt(), user);
+        const resetBill = new Bill(0, -1, '', this.debt(), user.id, user.name);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {

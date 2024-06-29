@@ -25,7 +25,8 @@ export class BillComponent implements OnInit, OnChanges {
   description: string;
   paid: boolean;
   ownAmount: number;
-  owner: User;
+  ownerId: number;
+  ownerName: string;
   userIsOwnerOfBill: boolean;
   @Output() editBillEmitter = new EventEmitter<Bill>();
 
@@ -41,13 +42,14 @@ export class BillComponent implements OnInit, OnChanges {
 
   private assignBillProperties(): void {
     this.amount = this.bill.amount;
-    this.category = this.bill.category;
+    this.category = this.bill.categoryId;
     this.date = this.bill.date;
     this.description = this.bill.description;
     this.paid = this.bill.paid;
     this.ownAmount = Math.abs(this.bill.ownAmount);
-    this.owner = this.bill.owner;
-    this.userIsOwnerOfBill = this.owner.name === this.user?.name;
+    this.ownerId = this.bill.ownerId;
+    this.ownerName = this.bill.ownerName;
+    this.userIsOwnerOfBill = this.ownerId === this.user.id;
   }
 
   editBill() {

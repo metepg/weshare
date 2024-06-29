@@ -37,10 +37,6 @@ export class BillService {
     );
   }
 
-  getTotalDebtAmount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/debt`);
-  }
-
   getBillsByUserId(id: number): Observable<Bill[]> {
     return this.http.get<Bill[]>(`${this.apiUrl}/${id}`);
   }

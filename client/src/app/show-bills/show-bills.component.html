@@ -3,7 +3,7 @@
     @for (bill of bills; track bill.id) {
       <app-bill
         [bill]="bill"
-        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.owner.name === user.name) ? 'end' : 'start'"
+        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.ownerId === user.id) ? 'end' : 'start'"
         [user]="user"
         (editBillEmitter)="handleEditBillDialog($event)"
         style="margin-bottom: 10px">
@@ -25,7 +25,7 @@
         [description]="bill.description"
         [id]="bill.id"
         [ownShareOfBill]="bill.ownAmount"
-        [category]="bill.category"
+        [category]="bill.categoryId"
         [sliderPercent]="Math.round(bill.ownAmount / bill.amount * 100)"
         (formEmitter)="handleEditBill($event)"
         (deleteBillEmitter)="handleDeleteBill($event)">

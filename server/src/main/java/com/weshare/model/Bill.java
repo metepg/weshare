@@ -1,6 +1,5 @@
 package com.weshare.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.weshare.util.MoneyConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -32,16 +31,11 @@ public class Bill implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    @JsonIgnore
-    private Group group;
 
     @Convert(converter = MoneyConverter.class)
     private double ownAmount;
@@ -49,7 +43,10 @@ public class Bill implements Serializable {
     @Convert(converter = MoneyConverter.class)
     private double amount;
 
-    private int category;
+    @ManyToOne
+    @JoinColumn(name = "category", nullable = false)
+    private Category category;
+
     private LocalDate date;
     private boolean paid;
     private String description;

@@ -85,7 +85,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-bill>
             <tr (click)="showEditView(bill)">
-              <td>{{ bill.owner.name}}</td>
+              <td>{{ bill.ownerName}}</td>
               <td>{{ bill.description }}</td>
               <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
               <td>{{ bill.date | date: 'd.M.YY' }}</td>
@@ -113,7 +113,7 @@
         [description]="selectedBill.description"
         [id]="selectedBill.id"
         [ownShareOfBill]="selectedBill.ownAmount"
-        [category]="selectedBill.category"
+        [category]="selectedBill.categoryId"
         [sliderPercent]="Math.round(selectedBill.ownAmount / selectedBill.amount * 100)"
         (formEmitter)="handleEditBill($event)">
       </app-bill-form>

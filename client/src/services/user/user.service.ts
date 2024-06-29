@@ -21,4 +21,9 @@ export class UserService {
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}`);
   }
+
+  getTotalDebtAmount(userId: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/${userId}/debt`);
+  }
+
 }

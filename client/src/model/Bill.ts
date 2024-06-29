@@ -1,23 +1,23 @@
-import { User } from './User';
-
 export class Bill {
   id: number;
   amount: number;
-  category: number;
+  categoryId: number;
   date: Date;
   description: string;
   paid: boolean
   ownAmount: number;
-  owner: User;
+  ownerId: number;
+  ownerName: string;
 
-  constructor(amount: number, category: number, description: string, ownAmount: number, owner: User) {
+  constructor(amount: number, categoryId: number, description: string, ownAmount: number, ownerId: number, ownerName: string) {
     this.amount = amount;
-    this.category = category;
+    this.categoryId = categoryId;
     this.description = description;
     this.ownAmount = ownAmount;
     this.date = new Date();
     this.paid = false;
-    this.owner = owner;
+    this.ownerId = ownerId;
+    this.ownerName = ownerName;
   }
   
   setId(id: number) {

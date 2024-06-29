@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { CATEGORY_COLORS } from '../../constants/constants';
+import { CATEGORY_COLOR_MAP } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -93,55 +93,60 @@ export class UserStatsComponent implements OnInit {
     this.billService.getBillsByUserId(id).subscribe(bills => {
       this.calculationResult = this.calculateTotals(bills);
       this.totalAmount.set(this.calculationResult.totalOwnAmount);
-      if (-1 in this.calculationResult.categorizedTotals) {
-        this.chartLabels = [...this.chartLabels, 'Nollaus']
-      } else {
-        this.chartLabels = this.chartLabels.filter(v => v !== 'Nollaus')
-      }
+      // if (-1 in this.calculationResult.categorizedTotals) {
+      //   this.chartLabels = [...this.chartLabels, 'Nollaus']
+      // } else {
+      //   this.chartLabels = this.chartLabels.filter(v => v !== 'Nollaus')
+      // }
       this.updateChart(this.calculationResult);
     });
   }
-  
+
   updateChart(result: CalculationResult) {
     if (this.chartLabels.length === 0) return;
 
+    const backgroundColors = this.chartLabels.map((label, index) => {
+      const categoryCode = index as BillCategoryCode;
+      return CATEGORY_COLOR_MAP[categoryCode];
+    });
     this.chartData = {
       labels: this.chartLabels,
       datasets: [
         {
           data: Object.values(result.categorizedTotals),
-          backgroundColor: CATEGORY_COLORS,
-          hoverBackgroundColor: CATEGORY_COLORS.map(color => color)
+          backgroundColor: backgroundColors,
+          hoverBackgroundColor: backgroundColors.map(color => color)
         }
       ]
     };
   }
-  
-updateTotalAmount(category: number) {
-    if (category === 6) category = UserStatsComponent.SETTLEMENT_BILL_CATEGORY;
-  
+
+  updateTotalAmount(category: number) {
+    const maxCategoryIndex = Math.max(...Object.keys(this.calculationResult.categorizedTotals).map(Number));
+
+    if (category === maxCategoryIndex + 1) category = UserStatsComponent.SETTLEMENT_BILL_CATEGORY;
+
     const categoryAmount = this.calculationResult.categorizedTotals[category];
-    
     if (this.categoryVisibilityState[category]) {
-      this.totalAmount.update(value => value + categoryAmount)
+      this.totalAmount.update(value => value + categoryAmount);
     } else {
-      this.totalAmount.update(value => value - categoryAmount)
+      this.totalAmount.update(value => value - categoryAmount);
     }
     this.categoryVisibilityState[category] = !this.categoryVisibilityState[category];
   }
-  
+
   calculateTotals(bills: Bill[]): CalculationResult {
     return bills.reduce((acc: CalculationResult, bill: Bill) => {
       bill.ownAmount = Math.abs(bill.ownAmount);
       acc.totalOwnAmount += bill.ownAmount;
 
-      acc.categorizedTotals[bill.category] = (acc.categorizedTotals[bill.category] || 0) + bill.ownAmount;
-      
+      acc.categorizedTotals[bill.categoryId] = (acc.categorizedTotals[bill.categoryId] || 0) + bill.ownAmount;
+
       return acc;
     }, {totalOwnAmount: 0, categorizedTotals: {}});
   }
 
-  
+
   handleOnChange() {
     const user = this.filterForm.get('user')?.value;
     this.categoryVisibilityState = Array(this.categoryVisibilityState.length).fill(false);

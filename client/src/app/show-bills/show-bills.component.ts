@@ -16,6 +16,7 @@ import { switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { User } from '../../model/User';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { CategoryService } from '../../services/category/category.service';
 
 @Component({
   selector: 'app-show-bills',
@@ -36,20 +37,26 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     private userService: UserService,
     private debtService: DebtService,
     private messageService: MessageService,
-    private localStorageService: LocalStorageService) {}
+    private localStorageService: LocalStorageService,
+    private categoryService: CategoryService,
+    ) {}
 
   ngOnInit() {
     this.billService.getBills().subscribe(bills => {
       this.bills = bills;
+      this.setUserAndCategories();
     });
-    this.setUserName();
   }
 
-  setUserName() {
-    this.userService.getCurrentUser().subscribe(user => {
-      this.localStorageService.setUser(user)
-      this.user = user;
-    });
+  setUserAndCategories() {
+    const currentUser = this.localStorageService.getUser();
+    if (!currentUser) return;
+
+    this.user = currentUser;
+
+    this.categoryService.findCategoriesByGroupId(this.user.groupId).subscribe(categories => {
+      this.localStorageService.setCategories(categories);
+    })
   }
 
   ngAfterViewChecked(): void {
@@ -57,7 +64,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
   }
 
   handleEditBillDialog(bill: Bill) {
-    if (this.user?.name !== bill.owner.name) return;
+    if (this.user.id !== bill.ownerId) return;
     this.bill = bill;
     this.showEditBillDialog = true;
   }
@@ -74,7 +81,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
       switchMap(updatedBill => {
         this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
         this.showEditBillDialog = false;
-        return this.billService.getTotalDebtAmount();
+        return this.userService.getTotalDebtAmount(this.user.id);
       })).subscribe(amount => {
         this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
         this.debtService.setDebt(amount)
@@ -86,7 +93,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
       switchMap(() => {
         this.bills = this.bills.filter(bill => bill.id !== id);
         this.showEditBillDialog = false;
-        return this.billService.getTotalDebtAmount();
+        return this.userService.getTotalDebtAmount(this.user.id);
       })).subscribe(amount => {
         this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
         this.debtService.setDebt(amount)

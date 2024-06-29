@@ -1,7 +1,7 @@
 package com.weshare.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,12 +34,11 @@ public class Group implements Serializable {
     private UUID id;
 
     @OneToMany(mappedBy = "group")
-    @JsonManagedReference
+    @JsonIgnore
     private List<User> users;
 
-    @OneToMany(mappedBy = "group")
-    @JsonIgnore
-    private List<Bill> bills;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> categories;
 
     private String name;
 }

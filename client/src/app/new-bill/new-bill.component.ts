@@ -8,6 +8,8 @@ import { BillFormComponent } from '../bill-form/bill-form.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { DebtService } from '../../services/debt/debt.service';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-new-bill-form',
@@ -22,13 +24,20 @@ export class NewBillComponent {
     private billService: BillService,
     private router: Router,
     private messageService: MessageService,
-    private debtService: DebtService) {}
+    private debtService: DebtService,
+    private localStorageService: LocalStorageService,
+    private userService: UserService,
+    ) {}
   
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
         this.messageService.add({severity: 'success', summary: `Tallennus onnistui.`,});
-        this.billService.getTotalDebtAmount().subscribe(amount => {
+
+        const currentUser = this.localStorageService.getUser();
+        if (!currentUser) return;
+        
+        this.userService.getTotalDebtAmount(currentUser.id).subscribe(amount => {
           this.debtService.setDebt(amount)
         })
         this.router.navigate(['bills'])

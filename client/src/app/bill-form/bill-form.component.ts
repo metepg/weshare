@@ -93,7 +93,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
       return;
     }
     
-    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user));
+    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user.id, this.user.name));
     this.submitButtonIsDisabled = false;
   }
 
