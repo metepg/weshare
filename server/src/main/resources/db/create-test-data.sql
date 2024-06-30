@@ -28,7 +28,6 @@ DO $$
 -- Generate 1000 bills between last year and this year with random owners
 DO $$
     DECLARE
-        group_uuid UUID := (SELECT group_id FROM weshare.users LIMIT 1);
         descriptions TEXT[] := ARRAY ['Food', 'Gasoline', 'Food for cats', 'Electric bill', 'Water bill', 'Walmart'];
         owner        INTEGER;
         amount       NUMERIC;
@@ -59,8 +58,8 @@ DO $$
 
                 paid := i < 980;
 
-                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid, group_id)
-                VALUES (owner, amount, description, category, date, own_amount, paid, group_uuid);
+                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid)
+                VALUES (owner, amount, description, category, date, own_amount, paid);
             END LOOP;
     END $$;
 
