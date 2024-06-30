@@ -43,14 +43,14 @@ export function generateChartData(data: Map<string, number[]>, includeSettlement
     Category4: "Ruoka",
     Category5: "Muut",
     Category6: "Koti",
-    SettlementBillCategory: "Nollaus",
+    Category7: "Nollaus",
   };
 
   const categories = Object.keys(BillCategoryCode)
-    .filter(value => isNaN(Number(value)) && value !== 'SettlementBillCategory') as (keyof typeof BillCategoryCode)[];
+    .filter(value => isNaN(Number(value)) && value !== 'Category7') as (keyof typeof BillCategoryCode)[];
 
   if (includeSettlementCategory) {
-    categories.push('SettlementBillCategory' as keyof typeof BillCategoryCode);
+    categories.push('Category7' as keyof typeof BillCategoryCode);
   }
     
   return {

@@ -27,7 +27,7 @@ export const CATEGORY_COLOR_MAP: { [key in BillCategoryCode]: string } = {
   [BillCategoryCode.Category4]: CATEGORY_COLORS[4],
   [BillCategoryCode.Category5]: CATEGORY_COLORS[5],
   [BillCategoryCode.Category6]: CATEGORY_COLORS[6],
-  [BillCategoryCode.SettlementBillCategory]: CATEGORY_COLORS[7]
+  [BillCategoryCode.Category7]: CATEGORY_COLORS[7]
 };
 
 export const BAR_CHART_OPTIONS  = {

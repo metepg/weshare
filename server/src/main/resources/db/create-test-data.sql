@@ -15,14 +15,15 @@ DO $$
 
         -- Insert categories
         INSERT INTO weshare.categories (id, name, group_id)
-        VALUES (-1, 'Nollaus', group_uuid),
+        VALUES
                (0, 'Auto', group_uuid),
                (1, 'Kissat', group_uuid),
                (2, 'Laskut', group_uuid),
                (3, 'Ravintola', group_uuid),
                (4, 'Ruoka', group_uuid),
                (5, 'Muut', group_uuid),
-               (6, 'Koti', group_uuid);
+               (6, 'Koti', group_uuid),
+               (7, 'Nollaus', group_uuid);
     END $$;
 
 -- Generate 1000 bills between last year and this year with random owners

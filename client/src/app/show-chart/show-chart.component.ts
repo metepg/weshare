@@ -102,13 +102,13 @@ export class ShowChartComponent implements OnInit {
  */
   private aggregateMonthlyValues(bills: Bill[]): Map<string, number[]> {
     const monthlyValuesByCategory = new Map<string, number[]>();
-    const removedCategory = bills.filter(b => b.categoryId !== -1);
+    const removedCategory = bills.filter(b => b.categoryId !== 7);
 
     for (const bill of removedCategory) {
       const month = new Date(bill.date).getMonth();
       const category = BillCategoryCode[bill.categoryId];
       // Exclude SettlementBillCategory
-      if (category !== BillCategoryCode[BillCategoryCode.SettlementBillCategory]) {
+      if (category !== BillCategoryCode[BillCategoryCode.Category7]) {
         const amount = bill.amount;
         this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
       }

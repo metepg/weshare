@@ -104,7 +104,7 @@ export class MainComponent implements OnInit, DoCheck {
         }
         
         this.isLoading = true;
-        const resetBill = new Bill(0, -1, '', this.debt(), user.id, user.name);
+        const resetBill = new Bill(0, 7, '', this.debt(), user.id, user.name);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
           const body: Bill[] | null = response.body;
           if (response.ok && body) {
