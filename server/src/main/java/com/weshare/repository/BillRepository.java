@@ -44,8 +44,8 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
      * @return the total debt of the user within their group, in euros
      */
     @Query("SELECT " +
-            "(SUM(CASE WHEN b.owner.id = :userId THEN (b.amount - b.ownAmount) ELSE 0 END) - " +
-            "SUM(CASE WHEN b.owner.id != :userId THEN (b.amount - b.ownAmount) ELSE 0 END)) / 100.0 " +
+            "COALESCE((SUM(CASE WHEN b.owner.id = :userId THEN (b.amount - b.ownAmount) ELSE 0 END) - " +
+            "SUM(CASE WHEN b.owner.id != :userId THEN (b.amount - b.ownAmount) ELSE 0 END)) / 100.0, 0) " +
             "FROM Bill b " +
             "WHERE b.owner.id IN (" +
             "SELECT u.id FROM User u WHERE u.group.id = (" +
