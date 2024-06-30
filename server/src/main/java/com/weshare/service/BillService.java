@@ -51,9 +51,7 @@ public class BillService {
         }
 
         String description = filter.description();
-        List<Integer> categories = filter.categories().stream()
-                .filter(category -> category >= 0)
-                .toList();
+        List<Integer> categories = filter.categories();
 
         Optional<List<User>> users = userRepository.findUsersByNameIn(filter.users());
 

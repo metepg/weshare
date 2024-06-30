@@ -25,6 +25,15 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     @Query("UPDATE Bill bill SET bill.paid = true WHERE bill.paid = false")
     void payDebt();
 
+    /**
+     * Finds bills by description, categories, and users, with sorting.
+     *
+     * @param description The bill description to filter (optional).
+     * @param categories  List of category IDs to filter (optional).
+     * @param users       List of users to filter (optional).
+     * @param sort        Sorting criteria.
+     * @return List of bills matching the filters.
+     */
     @Query("SELECT b FROM Bill b WHERE "
             + "(:description IS NULL OR b.description ILIKE %:description%) AND "
             + "(:#{#categories == null || #categories.isEmpty()} = true OR b.category.id IN :categories) AND "
