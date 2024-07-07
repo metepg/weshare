@@ -34,7 +34,7 @@ jobs:
       - name: Deploy to Hetzner VM
         run: |
           echo "Deploying JAR to VM"
-          scp -6 server/target/*.jar ${{ secrets.SSH_CONNECTION }}:${{ secrets.DEPLOY_PATH }}
+          scp server/target/*.jar ${{ secrets.SSH_CONNECTION }}:${{ secrets.DEPLOY_PATH }}
 #          ssh ${{ secrets.SSH_CONNECTION }} << 'EOF'
 #          cd ${{ secrets.DEPLOY_PATH }}
 #          ./deploy.sh
