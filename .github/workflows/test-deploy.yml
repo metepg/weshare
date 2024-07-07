@@ -12,7 +12,7 @@ jobs:
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
-      SERVER_COMMANDS: ${{ secrets.SERVER_COMMANDS_TEST }}
+      SERVER_COMMANDS: ${{ secrets.TEST_SERVER_COMMANDS }}
 
     steps:
       - name: Set up JDK
