@@ -1,7 +1,7 @@
 # Weshare
 
 - App for splitting bills between 2 users.
-- Built with Spring Boot (Java 17) / Angular 18 / Flyway / PostgreSQL.
+- Built with Spring Boot (Java 21) / Angular 18 / Flyway / PostgreSQL.
 - Runs in browser and is styled just enough to look good with my current phone.
 - I built this because MobilePay discontinued their own app Weshare at the start of 2023. This app is intended for my personal use only as it is hardcoded for 2 people but feel free to do whatever you want with it.
 
@@ -28,7 +28,7 @@
 ## Prerequisites
 
 - PostgreSQL (can be run locally or optionally in a Docker container)
-- Java 17
+- Java 21
 - Maven
 - NodeJS
 - (Optional) Docker and Docker-compose
