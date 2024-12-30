@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -53,13 +52,9 @@ public class BillService {
         String description = filter.description();
         List<Integer> categories = filter.categories();
 
-        Optional<List<User>> users = userRepository.findUsersByNameIn(filter.users());
+        List<User> users = userRepository.findUsersByNameIn(filter.users());
 
-        if (users.isEmpty() || categories.isEmpty()) {
-            return List.of();
-        }
-
-        return billRepository.findByFilter(description, categories, users.get(), SORT_BY_DATE).stream()
+        return billRepository.findByFilter(description, categories, users, SORT_BY_DATE).stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
@@ -108,6 +103,10 @@ public class BillService {
         return billRepository.findBillsByOwner(user).stream()
                 .map(billConverter::billToDTO)
                 .toList();
+    }
+
+    public double findUserDebtByUserId(Integer userId) {
+        return billRepository.findUserDebtByUserId(userId);
     }
 
 }

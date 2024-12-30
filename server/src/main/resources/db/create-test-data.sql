@@ -1,67 +1,46 @@
 BEGIN;
 
--- Insert a new group and capture its generated ID
-DO $$
-    DECLARE
-        group_uuid UUID;
-    BEGIN
-        INSERT INTO weshare.groups (name) VALUES ('Test Group') RETURNING id INTO group_uuid;
+-- Insert a new group
+INSERT INTO weshare.groups (id, name)
+VALUES (gen_random_uuid(), 'Test Group');
 
-        -- Insert initial user records with the same group_id
-        INSERT INTO weshare.users (id, name, password, role, group_id)
-        VALUES
-            (1, 'user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1', group_uuid),
-            (2, 'user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2', group_uuid);
+-- Retrieve the group ID
+INSERT INTO weshare.users (id, name, password, role, group_id)
+VALUES
+    (1, 'user', '$2a$10$aBNsZVVWtDI0ZxcYue/30ebE0qsL7qT49uhxEvU1xJ3lp9GHVgSD6', 'Role1',
+     (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (2, 'user2', '$2a$10$uM20SAvEWY9X1b5wVEoZ3uBv0Xr8ucHatGZgGowEJ9ETWwZZWseaW', 'Role2',
+     (SELECT id FROM weshare.groups WHERE name = 'Test Group'));
 
-        -- Insert categories
-        INSERT INTO weshare.categories (id, name, group_id)
-        VALUES
-               (0, 'Auto', group_uuid),
-               (1, 'Kissat', group_uuid),
-               (2, 'Laskut', group_uuid),
-               (3, 'Ravintola', group_uuid),
-               (4, 'Ruoka', group_uuid),
-               (5, 'Muut', group_uuid),
-               (6, 'Koti', group_uuid),
-               (7, 'Nollaus', group_uuid);
-    END $$;
+-- Insert categories linked to the group
+INSERT INTO weshare.categories (id, name, group_id)
+VALUES
+    (0, 'Auto', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (1, 'Kissat', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (2, 'Laskut', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (3, 'Ravintola', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (4, 'Ruoka', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (5, 'Muut', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (6, 'Koti', (SELECT id FROM weshare.groups WHERE name = 'Test Group')),
+    (7, 'Nollaus', (SELECT id FROM weshare.groups WHERE name = 'Test Group'));
 
--- Generate 1000 bills between last year and this year with random owners
-DO $$
-    DECLARE
-        descriptions TEXT[] := ARRAY ['Food', 'Gasoline', 'Food for cats', 'Electric bill', 'Water bill', 'Walmart'];
-        owner        INTEGER;
-        amount       NUMERIC;
-        description  TEXT;
-        category     INTEGER;
-        date         TIMESTAMP;
-        own_amount   NUMERIC;
-        paid         BOOLEAN;
-        i            INT;
-        percentage   INTEGER;
-    BEGIN
-        FOR i IN 1..1000 LOOP
-                -- Randomly select owner (1 or 2)
-                owner := 1 + floor(random() * 2)::int;
-
-                -- Generate amount in cents (range 2000 to 10000 cents)
-                amount := (20 + (floor(random() * 9) * 10)) * 100;
-
-                description := descriptions[1 + (i % array_length(descriptions, 1))];
-                category := floor(random() * 6);
-                date := NOW() - ((1000 - i) * INTERVAL '1 day');
-
-                -- Generate percentage in steps of 10% (0, 10, 20, ..., 100)
-                percentage := floor(random() * 11) * 10;
-
-                -- Calculate own_amount as percentage of amount
-                own_amount := (amount * percentage) / 100;
-
-                paid := i < 980;
-
-                INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid)
-                VALUES (owner, amount, description, category, date, own_amount, paid);
-            END LOOP;
-    END $$;
+-- Insert 1000 bills with random data
+INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid)
+SELECT
+    1 + floor(random() * 2)::int AS owner,
+    (2000 + floor(random() * 8000))::numeric AS amount,
+    CASE mod(generate_series, 6)
+        WHEN 0 THEN 'Food'
+        WHEN 1 THEN 'Gasoline'
+        WHEN 2 THEN 'Food for cats'
+        WHEN 3 THEN 'Electric bill'
+        WHEN 4 THEN 'Water bill'
+        WHEN 5 THEN 'Walmart'
+        END AS description,
+    mod(generate_series, 6) AS category,
+    NOW() - (generate_series * INTERVAL '1 day') AS date,
+    (2000 + floor(random() * 8000)) * (mod(generate_series, 11) * 10) / 100 AS own_amount,
+    generate_series < 980
+FROM generate_series(1, 1000);
 
 COMMIT;

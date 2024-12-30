@@ -1,11 +1,9 @@
-package repository;
+package com.weshare.repository;
 
 import com.weshare.Application;
 import com.weshare.model.Group;
 import com.weshare.model.User;
-import com.weshare.repository.GroupRepository;
-import com.weshare.repository.UserRepository;
-import mocks.MockDataProvider;
+import com.weshare.mocks.MockDataProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,12 +63,11 @@ class UserRepositoryTest {
         userRepository.save(anotherUser);
 
         List<String> names = Arrays.asList(testUser.getName(), "Another User");
-        Optional<List<User>> foundUsers = userRepository.findUsersByNameIn(names);
+        List<User> foundUsers = userRepository.findUsersByNameIn(names);
 
-        assertThat(foundUsers).isPresent();
-        assertThat(foundUsers.get()).hasSize(2);
-        assertThat(foundUsers.get().get(0).getName()).isIn(names);
-        assertThat(foundUsers.get().get(1).getName()).isIn(names);
+        assertThat(foundUsers).hasSize(2);
+        assertThat(foundUsers.getFirst().getName()).isIn(names);
+        assertThat(foundUsers.get(1).getName()).isIn(names);
     }
 
     @Test

@@ -1,15 +1,11 @@
-package repository;
+package com.weshare.repository;
 
 import com.weshare.Application;
 import com.weshare.model.Bill;
 import com.weshare.model.Category;
 import com.weshare.model.Group;
 import com.weshare.model.User;
-import com.weshare.repository.BillRepository;
-import com.weshare.repository.CategoryRepository;
-import com.weshare.repository.GroupRepository;
-import com.weshare.repository.UserRepository;
-import mocks.MockDataProvider;
+import com.weshare.mocks.MockDataProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +50,7 @@ class BillRepositoryTest {
         Bill bill = MockDataProvider.createMockBill(testUser, testCategory);
         billRepository.save(bill);
 
-        Bill savedBill = billRepository.findAll().get(0);
+        Bill savedBill = billRepository.findAll().getFirst();
         assertThat(savedBill.getDescription()).isEqualTo(bill.getDescription());
         assertThat(savedBill.getAmount()).isEqualTo(bill.getAmount());
         assertThat(savedBill.getOwnAmount()).isEqualTo(bill.getOwnAmount());
@@ -67,7 +63,7 @@ class BillRepositoryTest {
         Bill bill = MockDataProvider.createMockBill(testUser, testCategory);
         billRepository.save(bill);
 
-        Bill savedBill = billRepository.findAll().get(0);
+        Bill savedBill = billRepository.findAll().getFirst();
         savedBill.setDescription("Updated Description");
         savedBill.setAmount(200.0);
         billRepository.save(savedBill);
@@ -82,7 +78,7 @@ class BillRepositoryTest {
         Bill bill = MockDataProvider.createMockBill(testUser, testCategory);
         billRepository.save(bill);
 
-        Bill savedBill = billRepository.findAll().get(0);
+        Bill savedBill = billRepository.findAll().getFirst();
         billRepository.delete(savedBill);
 
         assertThat(billRepository.findById(savedBill.getId())).isEmpty();

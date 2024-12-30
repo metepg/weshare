@@ -13,7 +13,7 @@ export class BillService {
   }
 
   createBill(bill: Bill): Observable<HttpResponse<Bill>> {
-    return this.http.post<Bill>(`${this.apiUrl}/create`, bill, {
+    return this.http.post<Bill>(`${this.apiUrl}`, bill, {
       observe: 'response',
     });
   }

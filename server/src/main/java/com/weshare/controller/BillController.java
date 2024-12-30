@@ -5,7 +5,6 @@ import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
 import com.weshare.service.BillService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,13 +29,14 @@ public class BillController {
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @PostMapping("/create")
-    public ResponseEntity<BillDTO> createBill(@RequestBody BillDTO bill) {
-        return new ResponseEntity<>(billService.save(bill), HttpStatus.CREATED);
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public BillDTO createBill(@RequestBody BillDTO bill) {
+        return billService.save(bill);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
-    @GetMapping("")
+    @GetMapping()
     public List<BillDTO> findBillsFromLastSixMonths() {
         return billService.findAllFromLastSixMonths();
     }
@@ -60,10 +61,11 @@ public class BillController {
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PostMapping("/pay")
-    public ResponseEntity<List<BillDTO>> payDebt(@RequestBody BillDTO bill) {
+    @ResponseStatus(HttpStatus.OK)
+    public List<BillDTO> payDebt(@RequestBody BillDTO bill) {
         // Bill created here is used in UI to indicate all bills are paid
         createBill(bill);
-        return new ResponseEntity<>(billService.payDebt(), HttpStatus.OK);
+        return billService.payDebt();
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
@@ -79,7 +81,8 @@ public class BillController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteBill(@PathVariable Integer id) {
-        return ResponseEntity.ok(billService.deleteBillById(id));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Boolean deleteBill(@PathVariable Integer id) {
+        return billService.deleteBillById(id);
     }
 }
