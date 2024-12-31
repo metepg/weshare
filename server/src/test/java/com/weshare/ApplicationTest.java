@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ApplicationTest extends AbstractApplicationTest {
+public class ApplicationTest extends TestcontainersConfig {
 
     @Autowired
     private ApplicationContext applicationContext;

@@ -17,9 +17,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 
+/**
+ * Abstract base class for integration tests using Testcontainers and Spring Boot.
+ * <p>
+ * Provides:
+ * <ul>
+ *   <li>Test user and group setup</li>
+ *   <li>Pre-configured RestAssured {@link RequestSpecification}</li>
+ * </ul>
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public abstract class AbstractApplicationTest {
+public abstract class TestcontainersConfig {
 
     protected RequestSpecification requestSpecification;
     protected User user;
@@ -30,6 +39,7 @@ public abstract class AbstractApplicationTest {
 
     @Autowired
     GroupRepository groupRepository;
+
     @Autowired
     UserRepository userRepository;
 
