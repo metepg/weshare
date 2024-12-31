@@ -43,8 +43,8 @@ public class BillController {
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/{id}")
-    public List<BillDTO> getBillsByUserId(@PathVariable Integer id) {
-        return billService.getBillsByUserId(id);
+    public List<BillDTO> findBillsByUserId(@PathVariable Integer id) {
+        return billService.findBillsByUserId(id);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")

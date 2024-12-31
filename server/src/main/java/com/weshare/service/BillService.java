@@ -96,7 +96,7 @@ public class BillService {
         }
     }
 
-    public List<BillDTO> getBillsByUserId(Integer id) {
+    public List<BillDTO> findBillsByUserId(Integer id) {
         User user = userRepository.findUserById(id)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
