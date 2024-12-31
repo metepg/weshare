@@ -101,7 +101,6 @@
                 <executions>
                     <execution>
                         <id>install node and npm</id>
-                        <phase>prepare-package</phase>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -112,7 +111,6 @@
                     </execution>
                     <execution>
                         <id>npm install</id>
-                        <phase>prepare-package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -123,24 +121,24 @@
                     </execution>
                     <execution>
                         <id>npm rebuild</id>
-                        <phase>prepare-package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>rebuild node-sass</arguments>
-                            <workingDirectory>${project.basedir}/../client</workingDirectory>
+                            <workingDirectory>${project.basedir}/../client
+                            </workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
                         <id>npm run build</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>run bprod</arguments>
-                            <workingDirectory>${project.basedir}/../client</workingDirectory>
+                            <workingDirectory>${project.basedir}/../client
+                            </workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
