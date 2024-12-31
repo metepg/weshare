@@ -8,22 +8,21 @@ import com.weshare.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
             "spring.datasource.url=jdbc:tc:postgresql:16-alpine:///",
             "Role1=Role1",
             "Role2=Role2"
         })
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractApplicationTest {
 
     protected RequestSpecification requestSpecification;
@@ -38,8 +37,8 @@ public abstract class AbstractApplicationTest {
     @Autowired
     UserRepository userRepository;
 
-    @BeforeAll
-    void setupEnvironment() {
+    @BeforeEach
+    protected void setupEnvironment() {
         // Set required data for login
         this.group = groupRepository.save(MockDataProvider.createMockGroup());
         this.user = userRepository.save(MockDataProvider.createMockUser(group));
@@ -60,8 +59,8 @@ public abstract class AbstractApplicationTest {
                 .build();
     }
 
-    @AfterAll
-    void tearDown() {
+    @AfterEach
+    protected void resetEnvironment() {
         userRepository.deleteAll();
         groupRepository.deleteAll();
     }
