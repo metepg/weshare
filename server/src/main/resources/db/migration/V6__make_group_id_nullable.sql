@@ -1,6 +1,0 @@
-BEGIN;
-
-ALTER TABLE weshare.users
-    ALTER COLUMN group_id DROP NOT NULL;
-
-COMMIT;
