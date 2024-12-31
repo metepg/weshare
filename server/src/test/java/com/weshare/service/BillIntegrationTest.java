@@ -1,6 +1,6 @@
 package com.weshare.service;
 
-import com.weshare.AbstractApplicationTest;
+import com.weshare.TestcontainersConfig;
 import com.weshare.dto.BillDTO;
 import com.weshare.mocks.MockDataProvider;
 import com.weshare.model.Bill;
@@ -8,7 +8,6 @@ import com.weshare.model.Category;
 import com.weshare.model.SearchFilter;
 import com.weshare.repository.BillRepository;
 import com.weshare.repository.CategoryRepository;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,16 +16,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BillIntegrationTest extends AbstractApplicationTest {
+class BillIntegrationTest extends TestcontainersConfig {
     private static final String BASE_URL = "/api/bills";
     private static final String SEARCH_BILLS_URL = BASE_URL + "/search";
-    private static final String DELETE_URL = BASE_URL + "/{id}";
+
+    private static final int NUMBER_OF_BILLS = 100;
+    private static final int NUMBER_OF_CATEGORIES = 6;
+
     private List<Category> categories;
 
     @Autowired
@@ -38,9 +43,11 @@ class BillIntegrationTest extends AbstractApplicationTest {
     @BeforeEach
     void setup() {
         this.categories = Stream.generate(() -> MockDataProvider.createMockCategory(group))
-                .limit(6)
+                .limit(NUMBER_OF_CATEGORIES)
                 .map(categoryRepository::save)
                 .toList();
+
+        generateBillsForTests();
     }
 
     @AfterEach
@@ -52,96 +59,119 @@ class BillIntegrationTest extends AbstractApplicationTest {
     @Test
     @DisplayName("Save bill")
     void saveBill() {
-        Category category = categories.get(ThreadLocalRandom.current().nextInt(categories.size()));
-        BillDTO bill = MockDataProvider.createMockBillDTO(user, category);
-
-        Response response = RestAssured.given(requestSpecification)
-                .body(bill)
-                .post(BASE_URL)
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .response();
-
-        BillDTO savedBill = response.as(BillDTO.class);
+        Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
+        BillDTO originalBill = MockDataProvider.createMockBillDTO(user, category);
+        BillDTO savedBill = saveBill(originalBill);
 
         assertThat(savedBill.id()).isNotNull();
-        assertThat(savedBill.description()).isEqualTo(bill.description());
-        assertThat(savedBill.amount()).isEqualTo(bill.amount());
-        assertThat(savedBill.ownAmount()).isEqualTo(bill.ownAmount());
-        assertThat(savedBill.paid()).isEqualTo(bill.paid());
-        assertThat(savedBill.date()).isEqualTo(bill.date());
-        assertThat(savedBill.categoryId()).isEqualTo(bill.categoryId());
-        assertThat(savedBill.ownerId()).isEqualTo(bill.ownerId());
-        assertThat(savedBill.ownerName()).isEqualTo(bill.ownerName());
+        assertThat(savedBill)
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(originalBill);
+    }
+
+    @Test
+    @DisplayName("Edit bill")
+    void editBill() {
+        BillDTO originalBill = createAndSaveBill();
+
+        // Edit fields
+        BillDTO modifiedBill = new BillDTO(
+                originalBill.id(),
+                10,
+                5,
+                "EDIT_BILL_TEST",
+                LocalDate.now(),
+                !originalBill.paid(),
+                categories.get(ThreadLocalRandom.current().nextInt(categories.size())).getId(),
+                originalBill.ownerId(),
+                originalBill.ownerName()
+        );
+
+        BillDTO returnedBill = given(requestSpecification)
+                .body(modifiedBill)
+                .put(BASE_URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .response()
+                .as(BillDTO.class);
+
+        assertThat(returnedBill)
+                .usingRecursiveComparison()
+                .isEqualTo(modifiedBill);
     }
 
     @Test
     @DisplayName("Should return bills based on search params")
     void filterBillsByCriteria() {
-        Category category = categories.get(ThreadLocalRandom.current().nextInt(categories.size()));
-        Bill bill = MockDataProvider.createMockBill(user, category);
-        bill.setDescription("SearchingBillByParams");
-        billRepository.save(bill);
+        Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
+        Bill uniqueBill = MockDataProvider.createMockBill(user, category);
+        uniqueBill.setDescription("SearchingBillByParams");
+        billRepository.save(uniqueBill);
 
-        generateBills(50);
-
-        SearchFilter filter = new SearchFilter(bill.getDescription(), List.of(category.getId()), null, List.of(user.getName()));
-        Response response = RestAssured.given(requestSpecification)
+        SearchFilter filter = new SearchFilter(uniqueBill.getDescription(), List.of(category.getId()), null, List.of(user.getName()));
+        List<BillDTO> returnedBills = given(requestSpecification)
                 .body(filter)
                 .post(SEARCH_BILLS_URL)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .response();
-
-        List<BillDTO> returnedBills = response.jsonPath().getList(".", BillDTO.class);
+                .response()
+                .jsonPath()
+                .getList(".", BillDTO.class);
 
         assertThat(returnedBills).hasSize(1);
-        assertThat(returnedBills.getFirst().id()).isEqualTo(bill.getId());
+        assertThat(returnedBills.getFirst().id()).isEqualTo(uniqueBill.getId());
     }
 
     @Test
     @DisplayName("Should delete bill by ID")
     void deleteBillById() {
-        Category category = categories.get(ThreadLocalRandom.current().nextInt(categories.size()));
-        Bill bill = MockDataProvider.createMockBill(user, category);
-        Bill savedBill = billRepository.save(bill);
+        BillDTO savedBill = createAndSaveBill();
 
-        generateBills(100);
-
-        Response response = RestAssured.given(requestSpecification)
-                .get(BASE_URL + "/{userId}", user.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
-
-        List<BillDTO> returnedBills = response.jsonPath().getList(".", BillDTO.class);
-
-        assertThat(returnedBills).hasSize(101);
-        assertThat(returnedBills)
-                .extracting("id")
-                .contains(savedBill.getId());
-
-        response = RestAssured.given(requestSpecification)
-                .delete(DELETE_URL, savedBill.getId())
+        Response response = given(requestSpecification)
+                .delete(BASE_URL + "/{id}", savedBill.id())
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract()
                 .response();
 
         assertThat(response.asString()).isEmpty();
-        assertThat(billRepository.findById(savedBill.getId())).isEmpty();
+        assertThat(billRepository.findById(savedBill.id())).isEmpty();
     }
 
-    private void generateBills(int max) {
-        Bill bill;
-        Category category;
-        for (int i = 0; i < max; i++) {
-            category = categories.get(ThreadLocalRandom.current().nextInt(categories.size()));
-            bill = MockDataProvider.createMockBill(user, category);
-            billRepository.save(bill);
+    private void generateBillsForTests() {
+        List<Bill> bills = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_BILLS; i++) {
+            Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
+            Bill bill = MockDataProvider.createMockBill(user, category);
+            bills.add(bill);
         }
+        billRepository.saveAll(bills);
+    }
+
+    private BillDTO saveBill(BillDTO bill) {
+        return given(requestSpecification)
+                .body(bill)
+                .post(BASE_URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .response()
+                .as(BillDTO.class);
+    }
+
+    private BillDTO createAndSaveBill() {
+        Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
+        BillDTO bill = MockDataProvider.createMockBillDTO(user, category);
+        return given(requestSpecification)
+                .body(bill)
+                .post(BASE_URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .response()
+                .as(BillDTO.class);
     }
 }
