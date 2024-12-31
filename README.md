@@ -10,13 +10,13 @@
 
 - [Installation](#installation)
 - [Start the app](#start-the-app)
-  - [Recommended way](#recommended-way)
-  - [Testcontainers way](#testcontainers-way)
-  - [Local database way](#local-database-way)
+  - [1. Recommended way](#1-recommended-way)
+  - [2. Testcontainers way](#2-testcontainers-way)
+  - [3. Local database way](#3-local-database-way)
 - [Resetting database](#resetting-database)
 - [Features](#features)
   - [Create bills](#create-bills)
-  - [Show bills](#show-bills)
+  - [Show added bills](#show-added-bills)
   - [Pay debt](#pay-debt)
 - [Extra](#extra)
 - [TODO](#todo)
@@ -43,51 +43,91 @@ Users to login with after the application is running:
   - Password: `password`
 
 # Start the app
+The app can be started in three ways:
 
-## Recommended way
+### 1. Recommended way
 
-- Run `docker-compose up -d` in project root. This will start containerized database.
-- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory. This will start Spring Boot.
-- Run `npm start` in `/client` directory. This will start Angular.
+---
+This is the normal way with local Spring Boot, Angular and containerized database.
+
+- Run `docker-compose up -d` in project root.
+- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+```sh
+# Insert test data
+docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
+```
+- Run `npm start` in `/client` directory.
 - Navigate to http://localhost:8080
 
-## Testcontainers way
+### 2. Testcontainers way
+
+---
+
+This is the easiest setup, requiring only Docker to run both Spring Boot and PostgreSQL in one container. Note: the database resets on restart. 
 
 - Run `mvn spring-boot:test-run` in `server` directory
-- Run `npm start` in `/client` directory. This will start Angular.
+- Run `npm start` in `/client` directory.
 - Navigate to http://localhost:8080
 
-## Local database way
+### 3. Local database way
+
+---
+
+This is same as 'Recommended way' but with local database
 
 - Create database with the name `weshare`
 - Change `spring.datasource.url` in `application-dev.properties` to the port your database instance is running on.
-- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory. This will start Spring Boot.
+- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+```sh
+# Insert test data
+psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
+```
 - Run `npm start` in `/client` directory. This will start Angular.
-- Insert test data with users
-  ```sh
-  psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
-  ```
 - Navigate to http://localhost:8080
 
 # Resetting database
 
 - **Using Local Database**:
-1.   ```sh
-     npm run resetLocalDB
-     ```
-
+```sh
+cd client && npm run resetLocalDB
+```
+```sh
+cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+```sh
+psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
+```
+---
 - **Using Container Database**:
-  ```sh
-  docker-compose down -v && docker-compose up -d
-  ```
- 
+```sh
+docker-compose down -v && docker-compose up -d 
+```
+```sh
+cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+```sh
+docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
+```
 # Features
+
+# Features
+
+Six features have been implemented, with their implementation and preview statuses outlined below:
+
+| Feature          | Implemented | Preview Recorded |
+|------------------|-------------|------------------|
+| Create bills     | ✅           | ✅                |
+| Show added bills | ✅           | ✅                |
+| Pay debt         | ✅           | ✅                |
+| Edit bills       | ✅           | ❌                |
+| Delete bills     | ✅           | ❌                |
+| Show statistics  | ✅           | ❌                |
 
 ## Create bills
 
 ![Create bill](resources/videos/CreateBill.gif)
 
-## Show bills
+## Show added bills
 
 ![Show bills](resources/videos/Bills.gif)
 
@@ -102,7 +142,7 @@ For production optimized .jar run `mvn clean package` in `/server` directory.
 # TODO:
 - Add GIFs for all implemented features
 - Support for more than 2 users
-- Implement tests
+- Implement more tests
 - Internationalization and localization
 
 ---
