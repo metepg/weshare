@@ -14,15 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-            "spring.datasource.url=jdbc:tc:postgresql:16-alpine:///",
-            "Role1=Role1",
-            "Role2=Role2"
-        })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public abstract class AbstractApplicationTest {
 
     protected RequestSpecification requestSpecification;
