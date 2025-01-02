@@ -4,14 +4,14 @@
 - Built with Spring Boot (Java 21) / Angular 18 / Flyway / PostgreSQL.
 - Runs in browser and is styled just enough to look good with my current phone.
 - I built this because MobilePay discontinued their own app Weshare at the start of 2023. This app is intended for my personal use only as it is hardcoded for 2 people but feel free to do whatever you want with it.
-- Using this repository to try out Testcontainers for integration testing.
+- Using this repository to try out Testcontainers for integration tests and local development.
 
 # Table of Contents
 
 - [Installation](#installation)
 - [Start the app](#start-the-app)
-  - [1. Recommended way](#1-recommended-way)
-  - [2. Testcontainers way](#2-testcontainers-way)
+  - [1. Recommended way (Testcontainers)](#1-recommended-way-testcontainers)
+  - [2. Normal way with containerized PostgreSQL](#2-normal-way-with-containerized-postgresql)
   - [3. Local database way](#3-local-database-way)
 - [Resetting database](#resetting-database)
 - [Features](#features)
@@ -29,10 +29,12 @@ Prerequisites:
 - Java 21
 - Maven
 - NodeJS
-- Docker and docker-compose
+- Docker / Podman
 
 ---
 Run `mvn clean install` in `/server` directory. This will also install node and npm dependencies in `/client` directory.
+
+# Start the app
 
 Users to login with after the application is running:
 - **User 1:**
@@ -42,13 +44,21 @@ Users to login with after the application is running:
   - Username: `user2`
   - Password: `password`
 
-# Start the app
-The app can be started in three ways:
+## The app can be started in three ways:
 
-### 1. Recommended way
+### 1. Recommended way (Testcontainers)
 
 ---
-This is the normal way with local Spring Boot, Angular and containerized database.
+This is the easiest setup, requiring only Docker-daemon to be running. It will start Spring Boot & PostgreSQL in a container.
+
+- Run `mvn spring-boot:test-run` in `/server` directory
+- Run `npm start` in `/client` directory.
+- Navigate to http://localhost:8080
+
+### 2. Normal way with containerized PostgreSQL
+
+---
+Normal way with local Spring Boot, Angular and containerized database.
 
 - Run `docker-compose up -d` in project root.
 - Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
@@ -59,21 +69,10 @@ docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
 - Run `npm start` in `/client` directory.
 - Navigate to http://localhost:8080
 
-### 2. Testcontainers way
-
----
-
-This is the easiest setup, requiring only Docker to run both Spring Boot and PostgreSQL in one container. Note: the database resets on restart. 
-
-- Run `mvn spring-boot:test-run` in `server` directory
-- Run `npm start` in `/client` directory.
-- Navigate to http://localhost:8080
-
 ### 3. Local database way
 
 ---
-
-This is same as 'Recommended way' but with local database
+This is same as 'Normal way' but with local installation of PostgreSQL
 
 - Create database with the name `weshare`
 - Change `spring.datasource.url` in `application-dev.properties` to the port your database instance is running on.
@@ -87,7 +86,24 @@ psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
 
 # Resetting database
 
-- **Using Local Database**:
+## Using Testcontainers:
+  1. Set `reuse-database=false` in `application-local.properties`
+  2. Restart
+  3. Set `reuse-database=true` in `application-local.properties`
+  4. Restart
+
+## Using Container Database:
+```sh
+docker-compose down -v && docker-compose up -d 
+```
+```sh
+cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+```sh
+docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
+```
+
+## Using Local Database:
 ```sh
 cd client && npm run resetLocalDB
 ```
@@ -98,17 +114,6 @@ cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
 ```
 ---
-- **Using Container Database**:
-```sh
-docker-compose down -v && docker-compose up -d 
-```
-```sh
-cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-```sh
-docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
-```
-# Features
 
 # Features
 
