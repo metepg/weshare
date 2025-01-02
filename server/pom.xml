@@ -87,6 +87,7 @@
 
     </dependencies>
 
+<!--    TODO: set this to run only when packaging or installing -->
     <build>
         <finalName>server</finalName>
         <plugins>
