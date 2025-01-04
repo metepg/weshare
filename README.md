@@ -27,12 +27,12 @@ Prerequisites:
 
 - PostgreSQL (can be run in a Docker container or optionally with local database installation)
 - Java 21
-- Maven
+- Maven (optional since project has maven wrapper)
 - NodeJS
 - Docker / Podman
 
 ---
-Run `mvn clean install` in `/server` directory. This will also install node and npm dependencies in `/client` directory.
+Run `./mvnw clean install` in `/server` directory. This will also install node and npm dependencies in `/client` directory.
 
 # Start the app
 
@@ -51,7 +51,7 @@ Users to login with after the application is running:
 ---
 This is the easiest setup, requiring only Docker-daemon to be running. It will start Spring Boot & PostgreSQL in a container.
 
-- Run `mvn spring-boot:test-run` in `/server` directory
+- Run `./mvnw spring-boot:test-run` in `/server` directory
 - Run `npm start` in `/client` directory.
 - Navigate to http://localhost:8080
 
@@ -61,7 +61,7 @@ This is the easiest setup, requiring only Docker-daemon to be running. It will s
 Normal way with local Spring Boot, Angular and containerized database.
 
 - Run `docker-compose up -d` in project root.
-- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+- Run `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
 ```sh
 # Insert test data
 docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
@@ -76,7 +76,7 @@ This is same as 'Normal way' but with local installation of PostgreSQL
 
 - Create database with the name `weshare`
 - Change `spring.datasource.url` in `application-dev.properties` to the port your database instance is running on.
-- Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+- Run `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
 ```sh
 # Insert test data
 psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
@@ -87,17 +87,15 @@ psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
 # Resetting database
 
 ## Using Testcontainers:
-  1. Set `reuse-database=false` in `application-local.properties`
-  2. Restart
-  3. Set `reuse-database=true` in `application-local.properties`
-  4. Restart
+  1. Delete the container with normal Docker commands
+  2. Restart app
 
 ## Using Container Database:
 ```sh
 docker-compose down -v && docker-compose up -d 
 ```
 ```sh
-cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+cd server && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 ```sh
 docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
@@ -108,7 +106,7 @@ docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
 cd client && npm run resetLocalDB
 ```
 ```sh
-cd server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+cd server && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 ```sh
 psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
@@ -142,7 +140,7 @@ Six features have been implemented, with their implementation and preview status
 
 # Extra
 
-For production optimized .jar run `mvn clean package` in `/server` directory.
+For production optimized .jar run `./mvnw clean package` in `/server` directory.
 
 # TODO:
 - Add GIFs for all implemented features
