@@ -37,7 +37,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Build project with Maven
-        run: mvn clean package -DskipTests -f server/pom.xml
+        run: ./server/mvnw clean package -DskipTests -f server/pom.xml
 
       - name: Deploy to Server
         run: |
