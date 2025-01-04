@@ -55,7 +55,7 @@ WHERE NOT EXISTS (
 INSERT INTO weshare.bills (owner, amount, description, category, date, own_amount, paid)
 SELECT
     (1 + floor(random() * 2)::int),
-    (2000 + floor(random() * 8000))::numeric,
+    amount,
     CASE mod(generate_series, 6)
         WHEN 0 THEN 'Food'
         WHEN 1 THEN 'Gasoline'
@@ -65,10 +65,15 @@ SELECT
         WHEN 5 THEN 'Walmart'
         END,
     mod(generate_series, 6),
-    NOW() - (generate_series * INTERVAL '1 day'),
-    (2000 + floor(random() * 8000)) * (mod(generate_series, 11) * 10) / 100,
-    generate_series < 980
-FROM generate_series(1, 1000) generate_series
+    NOW() - (1000 - generate_series) * INTERVAL '1 day',
+    amount * (random()),
+    generate_series <= 980
+FROM (
+    SELECT
+        generate_series,
+        (2000 + floor(random() * 8000))::numeric AS amount
+    FROM generate_series(1, 1000)
+) subquery
 WHERE NOT EXISTS (
     SELECT 1
     FROM weshare.bills);
