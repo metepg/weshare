@@ -15,6 +15,7 @@
 	<description>Weshare for me</description>
 	<properties>
 		<java.version>21</java.version>
+        <clientDir>${project.basedir}/../client</clientDir>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -87,14 +88,9 @@
 
     </dependencies>
 
-<!--    TODO: set this to run only when packaging or installing -->
     <build>
         <finalName>server</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -102,47 +98,74 @@
                 <executions>
                     <execution>
                         <id>install node and npm</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
                             <nodeVersion>v20.11.1</nodeVersion>
-                            <workingDirectory>${project.basedir}/../client</workingDirectory>
+                            <workingDirectory>${clientDir}</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
                         <id>npm install</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
-                            <workingDirectory>${project.basedir}/../client</workingDirectory>
+                            <arguments>ci</arguments>
+                            <workingDirectory>${clientDir}</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
                         <id>npm rebuild</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>rebuild node-sass</arguments>
-                            <workingDirectory>${project.basedir}/../client
-                            </workingDirectory>
+                            <workingDirectory>${clientDir}</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
                         <id>npm run build</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>run bprod</arguments>
-                            <workingDirectory>${project.basedir}/../client
-                            </workingDirectory>
+                            <workingDirectory>${clientDir}</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-frontend</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${clientDir}/dist</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
