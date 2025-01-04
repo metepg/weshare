@@ -136,7 +136,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run bprod</arguments>
+                            <arguments>run build</arguments>
                             <workingDirectory>${clientDir}</workingDirectory>
                         </configuration>
                     </execution>
