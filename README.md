@@ -11,7 +11,7 @@
 - [Installation](#installation)
 - [Start the app](#start-the-app)
   - [1. Recommended way (Testcontainers)](#1-recommended-way-testcontainers)
-  - [2. Normal way with containerized PostgreSQL](#2-normal-way-with-containerized-postgresql)
+  - [2. Containerized database way](#2-containerized-database-way)
   - [3. Local database way](#3-local-database-way)
 - [Resetting database](#resetting-database)
 - [Features](#features)
@@ -25,14 +25,20 @@
 
 Prerequisites:
 
-- PostgreSQL (can be run in a Docker container or optionally with local database installation)
-- Java 21
-- Maven (optional since project has maven wrapper)
-- NodeJS
-- Docker / Podman
+| Requirement     | Details                                                                                           |
+|-----------------|---------------------------------------------------------------------------------------------------|
+| Java 21         | ✅ **Required**                                                                                    |
+| Maven           | 🛠️ Not needed if using the **Maven Wrapper** provided in the project                             |
+| Node.js         | 🛠️ Not needed if using the local Node.js installation in the project                             |
+| PostgreSQL      | 🛠️ Not needed if using the containerized setup                                                   |
+| Docker / Podman | 🔄 Optional but **recommended** for running containers                                            |
 
----
-Run `./mvnw clean install` in `/server` directory. This will also install node and npm dependencies in `/client` directory.
+
+```sh
+# Running this will install maven dependencies
+# Maven build process also installs node locally to this project and npm dependencies in `/client` directory
+cd server && ./mvnw spring-boot:test-run
+```
 
 # Start the app
 
@@ -44,44 +50,56 @@ Users to login with after the application is running:
   - Username: `user2`
   - Password: `password`
 
-## The app can be started in three ways:
+The app can be started in three ways:
 
 ### 1. Recommended way (Testcontainers)
 
 ---
 This is the easiest setup, requiring only Docker-daemon to be running. It will start Spring Boot & PostgreSQL in a container.
 
-- Run `./mvnw spring-boot:test-run` in `/server` directory
-- Run `npm start` in `/client` directory.
+```sh
+cd server && ./mvnw spring-boot:test-run
+```
+```sh
+cd client && npm start
+```
 - Navigate to http://localhost:8080
 
-### 2. Normal way with containerized PostgreSQL
+### 2. Containerized database way
 
 ---
-Normal way with local Spring Boot, Angular and containerized database.
+Spring Boot, Angular and containerized database.
 
 - Run `docker-compose up -d` in project root.
-- Run `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+```sh
+cd server && ./mvnw spring-boot:test-run
+```
+```sh
+cd client && npm start
+```
 ```sh
 # Insert test data
 docker exec -i weshare_db psql -U postgres -d weshare -f /create-test-data.sql
 ```
-- Run `npm start` in `/client` directory.
 - Navigate to http://localhost:8080
 
 ### 3. Local database way
 
 ---
-This is same as 'Normal way' but with local installation of PostgreSQL
+This is same as 'Containerized database way' but with local installation of PostgreSQL
 
 - Create database with the name `weshare`
 - Change `spring.datasource.url` in `application-dev.properties` to the port your database instance is running on.
-- Run `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` in `/server` directory.
+```sh
+cd server && ./mvnw spring-boot:test-run
+```
+```sh
+cd client && npm start
+```
 ```sh
 # Insert test data
 psql -U postgres -d weshare -f server/src/main/resources/db/create-test-data.sql
 ```
-- Run `npm start` in `/client` directory. This will start Angular.
 - Navigate to http://localhost:8080
 
 # Resetting database
