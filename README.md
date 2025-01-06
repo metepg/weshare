@@ -46,6 +46,10 @@ cd server && ./mvnw spring-boot:test-run
 ```
 ```sh
 cd client && npm start
+
+# IMPORTANT FOR WINDOWS USERS
+# Before starting client you need to change paths in package.json
+# from ./node/node to .\\node\\node etc..
 ```
 Navigate to http://localhost:8080
 
