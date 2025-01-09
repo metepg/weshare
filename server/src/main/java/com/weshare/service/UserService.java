@@ -3,8 +3,7 @@ package com.weshare.service;
 import com.weshare.dto.UserDTO;
 import com.weshare.model.User;
 import com.weshare.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.weshare.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,26 +12,17 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BillService billService;
 
-    public UserService(UserRepository userRepository, BillService billService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.billService = billService;
     }
 
     public UserDTO findCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth != null ? auth.getName() : "";
-        Optional<User> user = userRepository.findUserByName(name);
-        return user.map(this::convertToDTO).orElse(null);
+        return SecurityUtil.getCurrentUser();
     }
 
-    public List<User> findUsers() {
-        return userRepository.findAll();
-    }
-
-    public double findUserDebtByUserId(Integer id) {
-        return billService.findUserDebtByUserId(id);
+    public List<UserDTO> findUsers() {
+        return userRepository.findAll().stream().map(this::convertToDTO).toList();
     }
 
     private UserDTO convertToDTO(User user) {
@@ -41,6 +31,14 @@ public class UserService {
                 user.getName(),
                 user.getGroup().getId(),
                 user.getRole());
+    }
+
+    public List<User> findUsersByNameIn(List<String> usernames) {
+        return userRepository.findUsersByNameIn(usernames);
+    }
+
+    public Optional<User> findUserById(Integer id) {
+        return userRepository.findUserById(id);
     }
 
 }

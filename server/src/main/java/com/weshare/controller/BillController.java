@@ -37,8 +37,8 @@ public class BillController {
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping()
-    public List<BillDTO> findBillsFromLastSixMonths() {
-        return billService.findAllFromLastSixMonths();
+    public List<BillDTO> findRecentBills() {
+        return billService.findRecentBills();
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
@@ -63,9 +63,7 @@ public class BillController {
     @PostMapping("/pay")
     @ResponseStatus(HttpStatus.OK)
     public List<BillDTO> payDebt(@RequestBody BillDTO bill) {
-        // Bill created here is used in UI to indicate all bills are paid
-        createBill(bill);
-        return billService.payDebt();
+        return billService.payDebt(bill);
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")

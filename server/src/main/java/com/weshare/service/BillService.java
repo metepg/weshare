@@ -1,34 +1,37 @@
 package com.weshare.service;
 
 import com.weshare.dto.BillDTO;
+import com.weshare.dto.UserDTO;
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
 import com.weshare.model.User;
 import com.weshare.repository.BillRepository;
-import com.weshare.repository.UserRepository;
 import com.weshare.util.BillConverter;
+import com.weshare.util.SecurityUtil;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @Transactional
 public class BillService {
     private final BillRepository billRepository;
-    private final UserRepository userRepository;
     private final BillConverter billConverter;
-    private final static Sort SORT_BY_ID = Sort.by(Sort.Direction.ASC, "id");
     private final static Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
+    private final UserService userService;
 
-    BillService(BillRepository billRepository, UserRepository userRepository, BillConverter billConverter){
+    BillService(BillRepository billRepository, BillConverter billConverter, UserService userService) {
         this.billRepository = billRepository;
-        this.userRepository = userRepository;
         this.billConverter = billConverter;
+        this.userService = userService;
     }
 
     public BillDTO save(BillDTO dto) {
@@ -36,10 +39,15 @@ public class BillService {
         return billConverter.billToDTO(bill);
     }
 
-    public List<BillDTO> findAllFromLastSixMonths() {
-        LocalDate today = LocalDate.now();
-        LocalDate sixMonthsAgo = today.minusMonths(6);
-        return billRepository.findAllByDateBetween(sixMonthsAgo, today, SORT_BY_ID).stream()
+    public List<BillDTO> findRecentBills() {
+        UserDTO currentUser = SecurityUtil.getCurrentUser();
+        if (currentUser == null) return List.of();
+
+        Pageable pageable = PageRequest.of(0, 100);
+        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), pageable);
+        Collections.reverse(recentBills);
+
+        return recentBills.stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
@@ -51,23 +59,22 @@ public class BillService {
 
         String description = filter.description();
         List<Integer> categories = filter.categories();
-
-        List<User> users = userRepository.findUsersByNameIn(filter.users());
+        List<User> users = userService.findUsersByNameIn(filter.users());
 
         return billRepository.findByFilter(description, categories, users, SORT_BY_DATE).stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
 
-    public List<BillDTO> payDebt() {
+    public List<BillDTO> payDebt(BillDTO bill) {
+        // Bill created here is used in UI to indicate all bills are paid
+        this.save(bill);
         billRepository.payDebt();
-        return findAllFromLastSixMonths();
+        return findRecentBills();
     }
 
     public List<BillDTO> findAllByYear(Integer year) {
-        LocalDate startDate = LocalDate.of(year, 1, 1);
-        LocalDate endDate = LocalDate.of(year, 12, 31);
-        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID)
+        return billRepository.findAllByYear(year)
                 .stream()
                 .map(billConverter::billToDTO)
                 .toList();
@@ -81,7 +88,7 @@ public class BillService {
         // TODO: Range filter
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = LocalDate.now().minusYears(10);
-        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_ID).stream()
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_DATE).stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
@@ -97,7 +104,7 @@ public class BillService {
     }
 
     public List<BillDTO> findBillsByUserId(Integer id) {
-        User user = userRepository.findUserById(id)
+        User user = userService.findUserById(id)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return billRepository.findBillsByOwner(user).stream()

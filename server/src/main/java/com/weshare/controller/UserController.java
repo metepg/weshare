@@ -1,7 +1,7 @@
 package com.weshare.controller;
 
 import com.weshare.dto.UserDTO;
-import com.weshare.model.User;
+import com.weshare.service.BillService;
 import com.weshare.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +16,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final BillService billService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BillService billService) {
         this.userService = userService;
+        this.billService = billService;
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
@@ -29,14 +31,14 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("")
-    public List<User> findUsers() {
+    public List<UserDTO> findUsers() {
         return userService.findUsers();
     }
 
     @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/{userId}/debt")
     public double findUserDebtByUserId(@PathVariable Integer userId) {
-        return userService.findUserDebtByUserId(userId);
+        return billService.findUserDebtByUserId(userId);
     }
 
 }

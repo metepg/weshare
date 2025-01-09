@@ -2,6 +2,7 @@ package com.weshare.repository;
 
 import com.weshare.model.Bill;
 import com.weshare.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,13 +13,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Integer> {
 
     List<Bill> findAllByDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
+    @Query("SELECT b FROM Bill b " +
+            "JOIN b.owner u " +
+            "JOIN u.group g " +
+            "WHERE g.id = :groupId " +
+            "ORDER BY b.date DESC")
+    List<Bill> findRecentBills(@Param("groupId") UUID groupId, Pageable pageable);
+
     List<Bill> findBillsByOwner(User user);
+
+    @Query("SELECT bill FROM Bill bill WHERE YEAR(bill.date) = :year")
+    List<Bill> findAllByYear(@Param("year") Integer year);
 
     @Modifying
     @Transactional
@@ -43,6 +55,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             @Param("categories") List<Integer> categories,
             @Param("users") List<User> users,
             Sort sort);
+
     /**
      * Calculates the total debt of a user within their group.
      * The calculation involves summing up the differences between the amount and ownAmount
