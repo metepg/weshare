@@ -1,3 +1,19 @@
+properties([
+        parameters([
+                [$class: 'GitParameterDefinition',
+                 name: 'BRANCH_OR_TAG',
+                 type: 'PT_BRANCH_TAG',
+                 defaultValue: 'jenkins-test',
+                 description: 'Select branch or tag',
+                 sortMode: 'DESCENDING_SMART',
+                 selectedValue: 'DEFAULT',
+                 useRepository: '',
+                 quickFilterEnabled: true,
+                 listSize: '20'
+                ]
+        ])
+])
+
 pipeline {
     agent any
 
