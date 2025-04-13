@@ -3,13 +3,13 @@
   vars_files:
     - vault.yml
   tasks:
-#    - name: Ensure app folder exists
-#      file:
-#        path: {{ app_folder }}
-#        state: directory
-#        mode: '0755'
-#        owner: appuser
-#        group: appuser
+    - name: Ensure app folder exists
+      file:
+        path: "{{ app_folder }}"
+        state: directory
+        mode: '0755'
+        owner: appuser
+        group: appuser
 
     - name: Copy JAR to server
       copy:
@@ -19,23 +19,12 @@
         owner: appuser
         group: appuser
 
-#    - name: Update symlink
-#      file:
-#        src: "{{ app_folder }}/{{ jar_file }}"
-#        dest: "{{ app_folder }}/{{ app_name }}"
-#        state: link
-#        force: true
-    - name: Debug systemctl location
-      command: which systemctl
-      register: result
-
-    - debug:
-        var: result.stdout
+    - name: Update symlink
+      file:
+        src: "{{ app_folder }}/{{ jar_file }}"
+        dest: "{{ app_folder }}/{{ app_name }}"
+        state: link
+        force: true
 
     - name: Restart service
-      become: true
-      become_method: sudo
-      become_user: root
-      systemd:
-        name: "{{ service_name }}"
-        state: restarted
+      command: "sudo /usr/sbin/service {{ service_name }} restart"
