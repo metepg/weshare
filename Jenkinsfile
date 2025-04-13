@@ -3,7 +3,7 @@ properties([
                 [$class            : 'GitParameterDefinition',
                  name              : 'BRANCH_OR_TAG',
                  type              : 'PT_BRANCH_TAG',
-                 defaultValue      : 'jenkins-test',
+                 defaultValue      : 'origin/dev',
                  description       : 'Select branch or tag',
                  sortMode          : 'DESCENDING_SMART',
                  selectedValue     : 'DEFAULT',
