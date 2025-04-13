@@ -89,7 +89,7 @@
     </dependencies>
 
     <build>
-        <finalName>weshare-app</finalName>
+        <finalName>weshare-app-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
