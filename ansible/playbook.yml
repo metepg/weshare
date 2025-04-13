@@ -25,6 +25,12 @@
 #        dest: "{{ app_folder }}/{{ app_name }}"
 #        state: link
 #        force: true
+    - name: Debug systemctl location
+      command: which systemctl
+      register: result
+
+    - debug:
+        var: result.stdout
 
     - name: Restart service
       become: true
