@@ -38,11 +38,10 @@ pipeline {
             steps {
                 dir('server') {
                     script {
-                        def version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
-                        def finalName = sh(script: "mvn help:evaluate -Dexpression=project.name -q -DforceStdout", returnStdout: true).trim()
-                        JAR_FILE = "${finalName}-${version}.jar"
-                        currentBuild.displayName = JAR_FILE
                         sh 'mvn clean package'
+                        def finalName = sh(script: "mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout", returnStdout: true).trim()
+                        JAR_FILE = "${finalName}.jar"
+                        currentBuild.displayName = JAR_FILE
                     }
                 }
             }
