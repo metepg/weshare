@@ -22,7 +22,6 @@ pipeline {
     }
     environment {
         NVD_API_KEY = credentials('nvd-api-key')
-        ANSIBLE_VAULT_ID = credentials('weshare-ansible-vault-password')
     }
 
     stages {
@@ -59,15 +58,18 @@ pipeline {
 
        stage('Deploy with Ansible') {
             steps {
+                script {
+                    env.JAR_FILE = "${JAR_FILE}"
+                    env.JAR_PATH = "../server/target/${JAR_FILE}"
+                }
                 ansiblePlaybook(
                         playbook: 'ansible/playbook.yml',
                         inventory: 'ansible/inventory.yml',
                         credentialsId: 'appuser',
-                        vaultCredentialsId: '$ANSIBLE_VAULT_ID',
-//                        become: true,
+                        vaultCredentialsId: 'weshare-ansible-vault-password',
                         extraVars: [
                                 jar_file     : [value: '$JAR_FILE', hidden: false],
-                                jar_file_path: [value: "server/target/$JAR_FILE", hidden: false]
+                                jar_file_path: [value: '$JAR_PATH', hidden: false]
                         ]
                 )
             }
