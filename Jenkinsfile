@@ -8,7 +8,7 @@ properties([
                  sortMode          : 'DESCENDING_SMART',
                  selectedValue     : 'DEFAULT',
                  quickFilterEnabled: true,
-                 listSize          : '20'
+                 listSize          : '10'
                 ]
         ])
 ])
@@ -47,6 +47,7 @@ pipeline {
                 }
             }
         }
+
         stage('OWASP Dependency Check') {
             steps {
                 dir('server') {
