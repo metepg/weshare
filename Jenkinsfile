@@ -55,5 +55,26 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+
+       stage('Deploy with Ansible') {
+            steps {
+                script {
+                    env.JAR_FILE = "${JAR_FILE}"
+                    env.JAR_PATH = "../server/target/${JAR_FILE}"
+                }
+                ansiblePlaybook(
+                        playbook: 'ansible/playbook.yml',
+                        inventory: 'ansible/inventory.yml',
+                        credentialsId: 'appuser',
+                        vaultCredentialsId: 'weshare-ansible-vault-password',
+                        extraVars: [
+                                jar_file     : [value: '$JAR_FILE', hidden: false],
+                                jar_file_path: [value: '$JAR_PATH', hidden: false]
+                        ]
+                )
+            }
+        }
+
     }
+
 }

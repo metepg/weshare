@@ -1,0 +1,30 @@
+- name: Deploy app
+  hosts: all
+  vars_files:
+    - vault.yml
+  tasks:
+    - name: Ensure app folder exists
+      file:
+        path: "{{ app_folder }}"
+        state: directory
+        mode: '0755'
+        owner: appuser
+        group: appuser
+
+    - name: Copy JAR to server
+      copy:
+        src: "{{ jar_file_path }}"
+        dest: "{{ app_folder }}/{{ jar_file }}"
+        mode: '0644'
+        owner: appuser
+        group: appuser
+
+    - name: Update symlink
+      file:
+        src: "{{ app_folder }}/{{ jar_file }}"
+        dest: "{{ app_folder }}/{{ app_name }}"
+        state: link
+        force: true
+
+    - name: Restart service
+      command: "sudo /usr/sbin/service {{ service_name }} restart"
