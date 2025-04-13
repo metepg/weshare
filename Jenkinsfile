@@ -37,12 +37,15 @@ pipeline {
         stage('Build') {
             steps {
                 dir('server') {
-                    sh 'mvn clean package -DskipTests -DnvdApiKey=${NVD_API_KEY}'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
         stage('OWASP Dependency Check') {
             steps {
+                dir('server') {
+                    sh 'mvn dependency-check:check -DnvdApiKey=${NVD_API_KEY}'
+                }
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
