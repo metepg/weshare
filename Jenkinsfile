@@ -13,6 +13,7 @@ properties([
         ])
 ])
 
+String JAR_FILE
 pipeline {
     agent any
 
@@ -36,7 +37,13 @@ pipeline {
         stage('Build') {
             steps {
                 dir('server') {
-                    sh 'mvn clean package'
+                    script {
+                        def version = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                        def finalName = sh(script: "mvn help:evaluate -Dexpression=project.name -q -DforceStdout", returnStdout: true).trim()
+                        JAR_FILE = "${finalName}-${version}.jar"
+                        currentBuild.displayName = JAR_FILE
+                        sh 'mvn clean package'
+                    }
                 }
             }
         }
