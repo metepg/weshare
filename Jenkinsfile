@@ -7,7 +7,6 @@ properties([
                  description       : 'Select branch or tag',
                  sortMode          : 'DESCENDING_SMART',
                  selectedValue     : 'DEFAULT',
-                 useRepository     : '',
                  quickFilterEnabled: true,
                  listSize          : '20'
                 ]
