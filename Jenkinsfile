@@ -22,6 +22,7 @@ pipeline {
     }
     environment {
         NVD_API_KEY = credentials('nvd-api-key')
+        ANSIBLE_VAULT_ID = credentials('weshare-ansible-vault-password')
     }
 
     stages {
@@ -55,5 +56,23 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+
+       stage('Deploy with Ansible') {
+            steps {
+                ansiblePlaybook(
+                        playbook: 'ansible/playbook.yml',
+                        inventory: 'ansible/inventory.yml',
+                        credentialsId: 'appuser',
+                        vaultCredentialsId: '$ANSIBLE_VAULT_ID',
+//                        become: true,
+                        extraVars: [
+                                jar_file     : [value: '$JAR_FILE', hidden: false],
+                                jar_file_path: [value: "server/target/$JAR_FILE", hidden: false]
+                        ]
+                )
+            }
+        }
+    
     }
+
 }
