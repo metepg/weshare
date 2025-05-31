@@ -41,6 +41,7 @@
           </execution>
           <execution>
             <id>npm build</id>
+            <phase>package</phase>
             <goals>
               <goal>npm</goal>
             </goals>
