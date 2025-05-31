@@ -10,6 +10,8 @@ import com.weshare.repository.BillRepository;
 import com.weshare.util.BillConverter;
 import com.weshare.util.SecurityUtil;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,7 +27,7 @@ import java.util.List;
 public class BillService {
     private final BillRepository billRepository;
     private final BillConverter billConverter;
-    private final static Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
+    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
     private final UserService userService;
 
     BillService(BillRepository billRepository, BillConverter billConverter, UserService userService) {
@@ -34,11 +36,16 @@ public class BillService {
         this.userService = userService;
     }
 
+    @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public BillDTO save(BillDTO dto) {
         Bill bill = billRepository.save(billConverter.dtoToBill(dto));
         return billConverter.billToDTO(bill);
     }
 
+//    TODO: Use these if cache per user is needed
+//    @Cacheable(value = "recentBills", key = "'findRecentBills_'+T(com.weshare.util.SecurityUtil).getCurrentUser().groupId()")
+//    @CacheEvict(value = "recentBills", key = "'findRecentBills_'+T(com.weshare.util.SecurityUtil).getCurrentUser().groupId()")
+    @Cacheable("recentBills")
     public List<BillDTO> findRecentBills() {
         UserDTO currentUser = SecurityUtil.getCurrentUser();
         if (currentUser == null) return List.of();
@@ -66,13 +73,25 @@ public class BillService {
                 .toList();
     }
 
+    @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public List<BillDTO> payDebt(BillDTO bill) {
         // Bill created here is used in UI to indicate all bills are paid
         this.save(bill);
         billRepository.payDebt();
-        return findRecentBills();
+
+        UserDTO currentUser = SecurityUtil.getCurrentUser();
+        if (currentUser == null) return List.of();
+
+        Pageable pageable = PageRequest.of(0, 100);
+        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), pageable);
+        Collections.reverse(recentBills);
+
+        return recentBills.stream()
+                .map(billConverter::billToDTO)
+                .toList();
     }
 
+    @Cacheable(value = "billsByYear", key = "#year")
     public List<BillDTO> findAllByYear(Integer year) {
         return billRepository.findAllByYear(year)
                 .stream()
@@ -93,6 +112,7 @@ public class BillService {
                 .toList();
     }
 
+    @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public boolean deleteBillById(Integer id) {
         try {
             billRepository.deleteById(id);

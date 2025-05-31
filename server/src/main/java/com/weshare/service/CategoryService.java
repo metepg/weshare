@@ -4,6 +4,7 @@ import com.weshare.model.Category;
 import com.weshare.model.Group;
 import com.weshare.repository.CategoryRepository;
 import com.weshare.repository.GroupRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
@@ -23,6 +24,7 @@ public class CategoryService {
         this.groupRepository = groupRepository;
     }
 
+    @Cacheable(value = "categoriesByGroup", key = "#id")
     public List<Category> findByGroupId(UUID id) {
         Optional<Group> group = groupRepository.findById(id);
         if (group.isPresent()) {
