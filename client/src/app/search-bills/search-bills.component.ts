@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import {
   FormBuilder,
@@ -12,11 +11,10 @@ import {
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService} from 'primeng/api';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
@@ -27,15 +25,16 @@ import { DialogModule } from 'primeng/dialog';
 import { SearchFilter } from '../../model/SearchFilter';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { User } from '../../model/User';
+import { PrimeNG } from 'primeng/config';
+import { Button } from 'primeng/button';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
   selector: 'app-search-bills',
-  standalone: true,
   imports: [
     InputIconModule,
     IconFieldModule,
     InputTextModule,
-    DropdownModule,
     CalendarModule,
     FormsModule,
     MultiSelectModule,
@@ -43,11 +42,12 @@ import { User } from '../../model/User';
     TableModule,
     DecimalPipe,
     DatePipe,
-    SidebarModule,
     ProgressSpinnerModule,
     TranslateModule,
     BillFormComponent,
-    DialogModule
+    DialogModule,
+    Button,
+    Drawer
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
@@ -68,7 +68,7 @@ export class SearchBillsComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
-              private primengConfig: PrimeNGConfig,
+              private primengConfig: PrimeNG,
               private sidebarService: SidebarService,
               private translationService: TranslationService,
               private userService: UserService,

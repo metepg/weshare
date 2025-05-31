@@ -36,13 +36,11 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('server') {
-                    script {
-                        sh 'mvn clean package'
-                        def finalName = sh(script: "mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout", returnStdout: true).trim()
-                        JAR_FILE = "${finalName}.jar"
-                        currentBuild.displayName = JAR_FILE
-                    }
+                script {
+                    sh 'mvn clean package'
+                    def finalName = sh(script: "mvn -f server/pom.xml help:evaluate -Dexpression=project.build.finalName -q -DforceStdout", returnStdout: true).trim()
+                    JAR_FILE = "${finalName}.jar"
+                    currentBuild.displayName = JAR_FILE
                 }
             }
         }

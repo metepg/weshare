@@ -1,4 +1,4 @@
-<p-sidebar
+<p-drawer
   [(visible)]="sidebarVisible"
   (onHide)="handleSidebarHide()"
   position="right">
@@ -10,8 +10,8 @@
       style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 300px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
     >
       <!--Search word-->
-      <p-iconField iconPosition="right">
-        <p-inputIcon styleClass="pi pi-tag"></p-inputIcon>
+      <p-iconfield iconPosition="right">
+        <p-inputicon styleClass="pi pi-tag"></p-inputicon>
         <input
           type="text"
           pInputText
@@ -19,7 +19,7 @@
           formControlName="description"
           style="width: 100%; margin-bottom: 10px;"
         >
-      </p-iconField>
+      </p-iconfield>
 
       <!--Category-->
       <p-multiSelect
@@ -52,7 +52,7 @@
       </p-button>
     </form>
   </div>
-</p-sidebar>
+</p-drawer>
 
 @if (isLoading) {
   <div style="display: flex; margin-top: 50px; justify-content: center">
@@ -65,8 +65,9 @@
         <p-table
           [value]="bills" 
           [scrollable]="true" 
+          size="small"
           scrollHeight="600px" 
-          styleClass="p-datatable-gridlines p-datatable-sm">
+          styleClass="p-datatable-gridlines">
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="owner">{{ 'who' | translate}} <br>
@@ -86,7 +87,9 @@
           <ng-template pTemplate="body" let-bill>
             <tr (click)="showEditView(bill)">
               <td>{{ bill.ownerName}}</td>
-              <td>{{ bill.description }}</td>
+              <td style="white-space: normal; word-wrap: break-word; max-width: 100px;">
+                {{ bill.description }}
+              </td>
               <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
               <td>{{ bill.date | date: 'd.M.YY' }}</td>
             </tr>

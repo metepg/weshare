@@ -1,11 +1,11 @@
 <form style="display: flex; flex-direction: column; text-align: center;" [formGroup]="filterForm" (ngSubmit)="handleOnChange()">
-  <p-dropdown 
+  <p-select 
     formControlName="user" 
     [options]="users" 
     [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}" 
     (onChange)="handleOnChange()" 
     [placeholder]="'user' | translate">
-  </p-dropdown>
+  </p-select>
 </form>
 
 <p-chart

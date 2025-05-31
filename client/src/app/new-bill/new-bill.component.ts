@@ -15,7 +15,6 @@ import { UserService } from '../../services/user/user.service';
   selector: 'app-new-bill-form',
   templateUrl: './new-bill.component.html',
   styleUrls: ['./new-bill.component.css'],
-  standalone: true, 
   imports: [CardModule, BillFormComponent, TranslateModule]
 })
 export class NewBillComponent {

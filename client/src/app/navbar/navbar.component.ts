@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  standalone: true,
   imports: [ToastModule, ToolbarModule, Button, DecimalPipe, TranslateModule]
 })
 export class NavbarComponent {

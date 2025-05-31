@@ -4,7 +4,6 @@ import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { Bill } from '../../model/Bill';
 import { CalculationResult } from '../../model/Stats';
@@ -14,16 +13,16 @@ import { BillCategoryCode } from '../../constants/Categories';
 import { ChartData, ChartOptions } from 'chart.js';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { User } from '../../model/User';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-user-stats',
-  standalone: true,
   imports: [
     ChartModule,
     DecimalPipe,
-    DropdownModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule,
+    Select
   ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss'

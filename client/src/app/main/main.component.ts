@@ -5,52 +5,40 @@ import { Bill } from '../../model/Bill';
 import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { UserService } from '../../services/user/user.service';
 import Messages from '../../constants/Messages';
-import { View } from '../../constants/View';
 import { HttpResponse } from '@angular/common/http';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ButtonDirective } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ShowChartComponent } from '../show-chart/show-chart.component';
-import { ShowBillsComponent } from '../show-bills/show-bills.component';
-import { NewBillComponent } from '../new-bill/new-bill.component';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { SearchBillsComponent } from '../search-bills/search-bills.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-import { UserStatsComponent } from '../user-stats/user-stats.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgStyle } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { DebtService } from '../../services/debt/debt.service';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.css'],
     providers: [MessageService, UserService],
-    standalone: true,
   imports: [
     NavbarComponent,
-    NewBillComponent,
-    ShowBillsComponent,
-    ShowChartComponent,
     ConfirmDialogModule,
     PrimeTemplate,
-    ButtonDirective,
     ProgressSpinnerModule,
-    SearchBillsComponent,
     SplitButtonModule,
     SelectButtonModule,
     FormsModule,
-    UserStatsComponent,
     TranslateModule,
-    NgStyle
-  ],
+    NgStyle,
+    Button,
+    RouterOutlet
+  ]
 })
 export class MainComponent implements OnInit, DoCheck {
-  protected readonly View = View;
   bills$: Observable<Bill[]>;
   isLoading = false;
   debt = this.debtService.debt;

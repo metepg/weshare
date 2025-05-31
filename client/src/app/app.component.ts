@@ -8,9 +8,7 @@ import { MainComponent } from './main/main.component';
     providers: [BillService],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    standalone: true,
     imports: [MainComponent, RouterOutlet]
 })
 export class AppComponent {
-  title = 'weshare-ui';
 }

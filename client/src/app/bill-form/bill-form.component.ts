@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { DecimalPipe } from '@angular/common';
-import { DropdownModule } from 'primeng/dropdown';
 import { Button } from 'primeng/button';
 import { Bill } from '../../model/Bill';
 import { BillCategoryCode } from '../../constants/Categories';
@@ -14,18 +13,22 @@ import { Subscription } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
 import { User } from '../../model/User';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-bill-form',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,
     InputTextModule,
     SliderModule,
     DecimalPipe,
-    DropdownModule,
-    Button
+    Button,
+    IconField,
+    InputIcon,
+    Select
   ],
   templateUrl: './bill-form.component.html',
   styleUrl: './bill-form.component.scss'
