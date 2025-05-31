@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
+import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-stats',

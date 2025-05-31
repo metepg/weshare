@@ -11,7 +11,6 @@ import { SliderModule } from 'primeng/slider';
 import { SkeletonModule } from 'primeng/skeleton';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -57,7 +56,6 @@ bootstrapApplication(AppComponent, {
           ButtonModule,
           CardModule,
           ConfirmDialogModule,
-          DropdownModule,
           FormsModule, 
           InputTextModule, 
           ReactiveFormsModule, 

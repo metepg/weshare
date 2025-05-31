@@ -41,3 +41,6 @@ body {
 .p-tabview-panels {
   display: none;
 }
+body > app-root > app-main > app-stats > p-tabview > div.p-tablist > div > div {
+  justify-content: center;
+}

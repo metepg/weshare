@@ -13,24 +13,24 @@ import { ChartData } from 'chart.js';
 import { Bill } from '../../model/Bill';
 import { BAR_CHART_OPTIONS, } from '../../constants/constants';
 import { BillCategoryCode } from '../../constants/Categories';
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { AsyncPipe } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
 import { TranslateModule } from '@ngx-translate/core';
+import { Select, SelectChangeEvent } from 'primeng/select';
 
 @Component({
   selector: 'app-show-chart',
   templateUrl: './show-chart.component.html',
   imports: [
-    DropdownModule,
     FormsModule,
     ChartModule,
     AsyncPipe,
     ProgressSpinnerModule,
-    TranslateModule
+    TranslateModule,
+    Select
   ],
   styleUrls: ['./show-chart.component.css']
 })
@@ -48,7 +48,7 @@ export class ShowChartComponent implements OnInit {
   constructor(private billService: BillService) {
   }
 
-  onChange(event: DropdownChangeEvent): void {
+  onChange(event: SelectChangeEvent): void {
     this.getStatistics(event.value);
   }
 

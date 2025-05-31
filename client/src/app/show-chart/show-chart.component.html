@@ -1,13 +1,13 @@
 <main style="display: grid; justify-content: center">
 <div style="margin-top: 10px; height: 100%; width: 100%; display: grid; place-self: center">
-  <p-dropdown
+  <p-select
     (onChange)="onChange($event)"
     [ngModel]="selectedYear()"
     [options]="yearOptions()"
     [style.margin]="'auto'"
     optionLabel="name"
     optionValue="code">
-  </p-dropdown>
+  </p-select>
   @if (bills$ | async; as bills) {
     @if (bills.length > 0) {
       <p-chart

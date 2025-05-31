@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import {
   FormBuilder,
@@ -16,7 +15,6 @@ import { MessageService} from 'primeng/api';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { SidebarModule } from 'primeng/sidebar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
@@ -29,6 +27,7 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
 import { User } from '../../model/User';
 import { PrimeNG } from 'primeng/config';
 import { Button } from 'primeng/button';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
   selector: 'app-search-bills',
@@ -36,7 +35,6 @@ import { Button } from 'primeng/button';
     InputIconModule,
     IconFieldModule,
     InputTextModule,
-    DropdownModule,
     CalendarModule,
     FormsModule,
     MultiSelectModule,
@@ -44,12 +42,12 @@ import { Button } from 'primeng/button';
     TableModule,
     DecimalPipe,
     DatePipe,
-    SidebarModule,
     ProgressSpinnerModule,
     TranslateModule,
     BillFormComponent,
     DialogModule,
-    Button
+    Button,
+    Drawer
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'

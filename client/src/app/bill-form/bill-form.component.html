@@ -49,13 +49,13 @@
   <br>
   <br>
 
-  <p-dropdown
+  <p-select
     [options]="categories"
     formControlName="category"
     name="category"
     [placeholder]="'category' | translate"
     styleClass="customStyle">
-  </p-dropdown>
+  </p-select>
 
   @if (isControlInvalid('category')) {
     <div class="alert alert-danger">

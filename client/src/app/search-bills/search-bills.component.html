@@ -1,6 +1,5 @@
-<p-sidebar
+<p-drawer
   [(visible)]="sidebarVisible"
-  [dismissible]="false"
   (onHide)="handleSidebarHide()"
   position="right">
   <div
@@ -53,7 +52,7 @@
       </p-button>
     </form>
   </div>
-</p-sidebar>
+</p-drawer>
 
 @if (isLoading) {
   <div style="display: flex; margin-top: 50px; justify-content: center">
