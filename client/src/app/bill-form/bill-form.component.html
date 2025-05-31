@@ -1,41 +1,45 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="billFormBuilder">
-    <span class="p-float-label p-input-icon-left">
-      <i class="pi pi-euro"></i>
-      <input class="customStyle" formControlName="amount" id="amount" pInputText required type="number">
-      <label for="amount">{{ 'amount' | translate }}</label>
-    </span>
+  <p-iconfield>
+    <p-inputicon styleClass="pi pi-euro"/>
+    <input
+      class="customStyle"
+      placeholder="{{ 'amount' | translate }}"
+      formControlName="amount"
+      id="amount"
+      pInputText required type="number">
+  </p-iconfield>
 
   @if (isControlInvalid('amount')) {
     <div class="alert alert-danger">
       @if (billFormBuilder.get('amount')?.hasError('required')) {
-        <small class="error">{{ 'required' | translate}}</small>
-      }
-      @else if (billFormBuilder.get('amount')?.hasError('min')) {
-        <small class="error">{{ 'amountMustBeGreaterThanZero' | translate}}</small>
+        <small class="error">{{ 'required' | translate }}</small>
+      } @else if (billFormBuilder.get('amount')?.hasError('min')) {
+        <small class="error">{{ 'amountMustBeGreaterThanZero' | translate }}</small>
       }
     </div>
   }
 
-  <div disabled="true">
-    <p>{{ 'ownAmount' | translate }}: {{ownShareOfBill | number: '1.2-2' }} {{ 'currency' | translate}}</p>
-    <p-slider (onChange)="handleSliderChange($event)" [step]=10
-              formControlName="sliderPercent"></p-slider>
-    <p style="text-align: center; font-size: 12px"><i>({{sliderPercent}}%)</i></p>
-  </div>
+  <p>{{ 'ownAmount' | translate }}: {{ ownShareOfBill | number: '1.2-2' }} {{ 'currency' | translate }}</p>
+  <p-slider (onChange)="handleSliderChange($event)" [step]=10
+            formControlName="sliderPercent"></p-slider>
+  <p style="text-align: center; font-size: 12px"><i>({{ sliderPercent }}%)</i></p>
 
-  <span class="p-float-label p-input-icon-left">
-      <i class="pi pi-tag"></i>
-      <input class="customStyle" formControlName="description" id="description" name="description" pInputText required>
-      <label for="description">{{ 'description' | translate }}</label>
-    </span>
+  <p-iconfield>
+    <p-inputicon styleClass="pi pi-euro"/>
+    <input
+      class="customStyle"
+      placeholder="{{ 'description' | translate }}"
+      formControlName="description"
+      id="description"
+      name="description" pInputText required>
+  </p-iconfield>
 
   @if (isControlInvalid('description')) {
     <div class="alert alert-danger">
       @if (billFormBuilder.get('description')?.hasError('required')) {
-        <small class="error">{{ 'required' | translate}}</small>
-      }
-      @else if (billFormBuilder.get('description')?.hasError('invalidDescription')) {
-        <small class="error">{{ 'minCharacters' | translate}}</small>
+        <small class="error">{{ 'required' | translate }}</small>
+      } @else if (billFormBuilder.get('description')?.hasError('invalidDescription')) {
+        <small class="error">{{ 'minCharacters' | translate }}</small>
       }
     </div>
   }
@@ -56,9 +60,8 @@
   @if (isControlInvalid('category')) {
     <div class="alert alert-danger">
       @if (billFormBuilder.get('category')?.hasError('required')) {
-        <small class="error">{{ 'required' | translate}}</small>
-      }
-      @else if (billFormBuilder.get('category')?.hasError('invalidCategory')) {
+        <small class="error">{{ 'required' | translate }}</small>
+      } @else if (billFormBuilder.get('category')?.hasError('invalidCategory')) {
         <small class="error">{{ 'somethingWentWrong' | translate }}</small>
       }
     </div>
@@ -72,12 +75,12 @@
     <p-button
       [disabled]="!billFormBuilder.valid"
       styleClass="p-button-primary"
-      type="submit">{{ 'save' | translate}}
+      type="submit">{{ 'save' | translate }}
     </p-button>
     @if (showDeleteBillButton) {
       <p-button
         styleClass="p-button-danger"
-        (onClick)="deleteBill()">{{ 'delete' | translate}}
+        (onClick)="deleteBill()">{{ 'delete' | translate }}
       </p-button>
     }
   </div>

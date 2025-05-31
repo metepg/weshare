@@ -30,6 +30,8 @@ import {
   TranslateModuleConfig
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 if (environment.production) {
   enableProdMode();
@@ -46,6 +48,17 @@ const translateModuleConfig: TranslateModuleConfig = {defaultLanguage: 'fi',
     deps: [HttpClient]
   }
 };
+
+// export const appConfig: ApplicationConfig = {
+//     providers: [
+//         provideAnimationsAsync(),
+//         providePrimeNG({
+//             theme: {
+//                 preset: Aura
+//             }
+//         })
+//     ]
+// };
 
 bootstrapApplication(AppComponent, {
     providers: [
@@ -68,7 +81,8 @@ bootstrapApplication(AppComponent, {
           ChartModule),
       importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ), 
       ConfirmationService, provideHttpClient(withInterceptorsFromDi()), 
-      provideAnimations()
+      provideAnimations(),
+      providePrimeNG({ theme: { preset: Aura } }),
     ]
 })
   .catch(err => console.error(err));

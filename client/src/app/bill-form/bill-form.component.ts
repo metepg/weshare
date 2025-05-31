@@ -14,6 +14,8 @@ import { Subscription } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
 import { User } from '../../model/User';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-bill-form',
@@ -24,7 +26,9 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
     SliderModule,
     DecimalPipe,
     DropdownModule,
-    Button
+    Button,
+    IconField,
+    InputIcon
   ],
   templateUrl: './bill-form.component.html',
   styleUrl: './bill-form.component.scss'
