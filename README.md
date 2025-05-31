@@ -34,7 +34,7 @@ Prerequisites:
 ```sh
 # Running this will install maven dependencies.
 # Maven build process also installs node locally to this project and npm dependencies in client directory.
-cd server && ./mvnw install
+./mvnw compile
 ```
 
 # Development
@@ -42,7 +42,7 @@ cd server && ./mvnw install
 Requires Docker / Podman daemon to be running. Run these to start the app for development.
 
 ```sh
-cd server && ./mvnw spring-boot:test-run
+./mvnw -f server/pom.xml spring-boot:test-run
 ```
 ```sh
 cd client && npm start
@@ -93,7 +93,7 @@ These features have been implemented so far:
 
 # Extra
 
-For production optimized .jar run `./mvnw clean package` in `server` directory.
+For production optimized .jar run `./mvnw clean package` in project root
 
 # TODO:
 - Add GIFs for all implemented features
