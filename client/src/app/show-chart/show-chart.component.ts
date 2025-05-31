@@ -24,7 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-show-chart',
   templateUrl: './show-chart.component.html',
-  standalone: true,
   imports: [
     DropdownModule,
     FormsModule,

@@ -5,7 +5,6 @@ import { SidebarService } from '../../services/sidebar/sidebar.service';
 
 @Component({
   selector: 'app-stats',
-  standalone: true,
   imports: [
     TabViewModule,
     RouterOutlet

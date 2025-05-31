@@ -3,7 +3,6 @@ import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { ChartModule } from 'primeng/chart';
-import { SpinnerModule } from 'primeng/spinner';
 import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -66,7 +65,6 @@ bootstrapApplication(AppComponent, {
           ToolbarModule, 
           ProgressSpinnerModule, 
           BlockUIModule, 
-          SpinnerModule, 
           ChartModule),
       importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ), 
       ConfirmationService, provideHttpClient(withInterceptorsFromDi()), 

@@ -8,7 +8,6 @@ import { User } from '../../model/User';
   selector: 'app-bill',
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.css'],
-  standalone: true,
   imports: [
     DatePipe,
     DecimalPipe,

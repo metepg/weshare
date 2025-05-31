@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService} from 'primeng/api';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -27,10 +27,11 @@ import { DialogModule } from 'primeng/dialog';
 import { SearchFilter } from '../../model/SearchFilter';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { User } from '../../model/User';
+import { PrimeNG } from 'primeng/config';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-search-bills',
-  standalone: true,
   imports: [
     InputIconModule,
     IconFieldModule,
@@ -47,7 +48,8 @@ import { User } from '../../model/User';
     ProgressSpinnerModule,
     TranslateModule,
     BillFormComponent,
-    DialogModule
+    DialogModule,
+    Button
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
@@ -68,7 +70,7 @@ export class SearchBillsComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private billService: BillService,
-              private primengConfig: PrimeNGConfig,
+              private primengConfig: PrimeNG,
               private sidebarService: SidebarService,
               private translationService: TranslationService,
               private userService: UserService,

@@ -17,7 +17,6 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
 
 @Component({
   selector: 'app-bill-form',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,

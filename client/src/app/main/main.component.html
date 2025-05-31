@@ -12,9 +12,9 @@
 <!--Confirmation popup-->
 <p-confirmDialog #cd header="Confirmation" icon="pi pi-exclamation-triangle">
   <ng-template pTemplate="footer">
-    <p-button label="Peruuta" (onClick)="cd.reject()" severity="danger"
+    <p-button label="Peruuta" (onClick)="cd.onReject()" severity="danger"
               icon="pi pi-times"></p-button>
-    <p-button label="Hyväksy" (onClick)="cd.accept()" severity="success"
+    <p-button label="Hyväksy" (onClick)="cd.onAccept()" severity="success"
               icon="pi pi-check"></p-button>
   </ng-template>
 </p-confirmDialog>

@@ -17,7 +17,6 @@ import { User } from '../../model/User';
 
 @Component({
   selector: 'app-user-stats',
-  standalone: true,
   imports: [
     ChartModule,
     DecimalPipe,
