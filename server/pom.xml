@@ -11,7 +11,7 @@
 	<groupId>com.weshare</groupId>
 	<artifactId>server</artifactId>
 	<version>2.1.0</version>
-	<name>weshare</name>
+	<name>server</name>
 	<description>Weshare for me</description>
 	<properties>
 		<java.version>21</java.version>
@@ -91,57 +91,6 @@
     <build>
         <finalName>weshare-app-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.0</version>
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v20.11.1</nodeVersion>
-                            <workingDirectory>${clientDir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>ci</arguments>
-                            <workingDirectory>${clientDir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm rebuild</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>rebuild node-sass</arguments>
-                            <workingDirectory>${clientDir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                            <workingDirectory>${clientDir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
