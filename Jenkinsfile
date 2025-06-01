@@ -13,18 +13,23 @@ properties([
         ])
 ])
 
-String JAR_FILE
+@Library('custom')
+String PACKAGE_NAME
 pipeline {
     agent any
 
     tools {
         maven '3.9.9'
     }
-    environment {
-        NVD_API_KEY = credentials('nvd-api-key')
-    }
 
     stages {
+
+        stage('Initialize workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Clone') {
             steps {
                 checkout([$class           : 'GitSCM',
@@ -38,20 +43,16 @@ pipeline {
             steps {
                 script {
                     sh 'mvn clean package'
-                    def finalName = sh(script: "mvn -f server/pom.xml help:evaluate -Dexpression=project.build.finalName -q -DforceStdout", returnStdout: true).trim()
-                    JAR_FILE = "${finalName}.jar"
-                    currentBuild.displayName = JAR_FILE
+                    PACKAGE_NAME = getPackageName()
+                    currentBuild.displayName = PACKAGE_NAME
                 }
-                archiveArtifacts artifacts: "server/target/*.jar", fingerprint: true
+                archiveArtifacts artifacts: "server/target/${PACKAGE_NAME}", fingerprint: true
             }
         }
 
         stage('OWASP Dependency Check') {
             steps {
-                dir('server') {
-                    sh 'mvn dependency-check:check -DnvdApiKey=${NVD_API_KEY}'
-                }
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                runDependencyCheck('server')
             }
         }
 
@@ -59,7 +60,7 @@ pipeline {
             steps {
                 build job: 'deploy',
                         parameters: [
-                                string(name: 'PACKAGE_NAME', value: "${JAR_FILE}")
+                                string(name: 'PACKAGE_NAME', value: "${PACKAGE_NAME}")
                         ],
                         wait: false
             }
