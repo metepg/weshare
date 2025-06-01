@@ -42,6 +42,7 @@ pipeline {
                     JAR_FILE = "${finalName}.jar"
                     currentBuild.displayName = JAR_FILE
                 }
+                archiveArtifacts artifacts: "server/target/*.jar", fingerprint: true
             }
         }
 
@@ -54,22 +55,13 @@ pipeline {
             }
         }
 
-       stage('Deploy with Ansible') {
+        stage('Trigger Deploy Job') {
             steps {
-                script {
-                    env.JAR_FILE = "${JAR_FILE}"
-                    env.JAR_PATH = "../server/target/${JAR_FILE}"
-                }
-                ansiblePlaybook(
-                        playbook: 'ansible/playbook.yml',
-                        inventory: 'ansible/inventory.yml',
-                        credentialsId: 'appuser',
-                        vaultCredentialsId: 'weshare-ansible-vault-password',
-                        extraVars: [
-                                jar_file     : [value: '$JAR_FILE', hidden: false],
-                                jar_file_path: [value: '$JAR_PATH', hidden: false]
-                        ]
-                )
+                build job: 'deploy',
+                        parameters: [
+                                string(name: 'PACKAGE_NAME', value: "${JAR_FILE}")
+                        ],
+                        wait: false
             }
         }
 
