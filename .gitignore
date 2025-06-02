@@ -31,3 +31,5 @@ server/.sts4-cache
 server/src/main/resources/static
 server/src/main/resources/application-dev.properties
 server/src/main/resources/application.properties
+
+logs

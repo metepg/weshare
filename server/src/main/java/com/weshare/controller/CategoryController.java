@@ -2,6 +2,7 @@ package com.weshare.controller;
 
 import com.weshare.model.Category;
 import com.weshare.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,16 +14,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    CategoryController(final CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/{groupId}")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<Category> findByGroupId(@PathVariable UUID groupId) {
         return categoryService.findByGroupId(groupId);
     }

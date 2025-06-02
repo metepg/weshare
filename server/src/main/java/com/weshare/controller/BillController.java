@@ -4,6 +4,10 @@ import com.weshare.dto.BillDTO;
 import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
 import com.weshare.service.BillService;
+import com.weshare.util.SecurityUtil;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,65 +24,66 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bills")
+@RequiredArgsConstructor
 public class BillController {
 
+    private static final Logger logger = LoggerFactory.getLogger(BillController.class);
     private final BillService billService;
 
-    BillController(BillService billService) {
-       this.billService = billService;
-    }
-
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PostMapping()
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @ResponseStatus(HttpStatus.CREATED)
     public BillDTO createBill(@RequestBody BillDTO bill) {
+        logger.info("User '{}' is saving bill: {}", SecurityUtil.getCurrentUser().name(), bill);
         return billService.save(bill);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping()
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<BillDTO> findRecentBills() {
         return billService.findRecentBills();
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<BillDTO> findBillsByUserId(@PathVariable Integer id) {
         return billService.findBillsByUserId(id);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PostMapping("/search")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<BillDTO> findBillsByFilter(@RequestBody SearchFilter filter) {
         return billService.findBillsByFilter(filter);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/statistics/{year}")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<BillDTO> findBills(@PathVariable Integer year) {
         return billService.findAllByYear(year);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PostMapping("/pay")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @ResponseStatus(HttpStatus.OK)
     public List<BillDTO> payDebt(@RequestBody BillDTO bill) {
         return billService.payDebt(bill);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @GetMapping("/stats")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public List<BillDTO> getStats(@RequestBody StatsFilter filter) {
         return billService.getStats(filter);
     }
 
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @PutMapping()
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     public BillDTO editBill(@RequestBody BillDTO bill) {
+        logger.info("User '{}' is editing bill: {}", SecurityUtil.getCurrentUser().name(), bill);
         return billService.save(bill);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Boolean deleteBill(@PathVariable Integer id) {
         return billService.deleteBillById(id);

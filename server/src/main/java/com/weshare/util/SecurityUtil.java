@@ -18,13 +18,13 @@ public class SecurityUtil {
 
     public static UserDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return null;
+        if (authentication == null || !authentication.isAuthenticated() ||
+                "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new IllegalStateException("User not authenticated");
         }
-
         String username = authentication.getName();
-        return userRepository.findUserByName(username).map(SecurityUtil::convertToDTO)
+        return userRepository.findUserByName(username)
+                .map(SecurityUtil::convertToDTO)
                 .orElseThrow(() -> new IllegalStateException("User not found in the database"));
     }
 

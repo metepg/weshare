@@ -10,6 +10,9 @@ import com.weshare.repository.BillRepository;
 import com.weshare.util.BillConverter;
 import com.weshare.util.SecurityUtil;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -24,36 +27,27 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class BillService {
+    private static final Logger logger = LoggerFactory.getLogger(BillService.class);
     private final BillRepository billRepository;
     private final BillConverter billConverter;
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
     private final UserService userService;
 
-    BillService(BillRepository billRepository, BillConverter billConverter, UserService userService) {
-        this.billRepository = billRepository;
-        this.billConverter = billConverter;
-        this.userService = userService;
-    }
-
     @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public BillDTO save(BillDTO dto) {
         Bill bill = billRepository.save(billConverter.dtoToBill(dto));
+        logger.debug("User '{}' saved bill: {}", SecurityUtil.getCurrentUser().name(), bill);
         return billConverter.billToDTO(bill);
     }
 
-//    TODO: Use these if cache per user is needed
-//    @Cacheable(value = "recentBills", key = "'findRecentBills_'+T(com.weshare.util.SecurityUtil).getCurrentUser().groupId()")
-//    @CacheEvict(value = "recentBills", key = "'findRecentBills_'+T(com.weshare.util.SecurityUtil).getCurrentUser().groupId()")
     @Cacheable("recentBills")
     public List<BillDTO> findRecentBills() {
-        UserDTO currentUser = SecurityUtil.getCurrentUser();
-        if (currentUser == null) return List.of();
-
+        logger.debug("Fetching recent bills for user '{}'", SecurityUtil.getCurrentUser().name());
         Pageable pageable = PageRequest.of(0, 100);
-        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), pageable);
+        List<Bill> recentBills = billRepository.findRecentBills(SecurityUtil.getCurrentUser().groupId(), pageable);
         Collections.reverse(recentBills);
-
         return recentBills.stream()
                 .map(billConverter::billToDTO)
                 .toList();
@@ -63,29 +57,22 @@ public class BillService {
         if (filter == null) {
             return List.of();
         }
-
-        String description = filter.description();
-        List<Integer> categories = filter.categories();
+        logger.debug("User '{}' finding bills with filter: {}", SecurityUtil.getCurrentUser().name(), filter);
         List<User> users = userService.findUsersByNameIn(filter.users());
-
-        return billRepository.findByFilter(description, categories, users, SORT_BY_DATE).stream()
+        return billRepository.findByFilter(filter.description(), filter.categories(), users, SORT_BY_DATE)
+                .stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
 
     @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public List<BillDTO> payDebt(BillDTO bill) {
-        // Bill created here is used in UI to indicate all bills are paid
-        this.save(bill);
-        billRepository.payDebt();
-
         UserDTO currentUser = SecurityUtil.getCurrentUser();
-        if (currentUser == null) return List.of();
-
-        Pageable pageable = PageRequest.of(0, 100);
-        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), pageable);
+        save(bill);
+        billRepository.payDebt();
+        logger.info("User '{}' paid debt", currentUser.name());
+        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), PageRequest.of(0, 100));
         Collections.reverse(recentBills);
-
         return recentBills.stream()
                 .map(billConverter::billToDTO)
                 .toList();
@@ -93,6 +80,7 @@ public class BillService {
 
     @Cacheable(value = "billsByYear", key = "#year")
     public List<BillDTO> findAllByYear(Integer year) {
+        logger.debug("Fetching all bills for year {}", year);
         return billRepository.findAllByYear(year)
                 .stream()
                 .map(billConverter::billToDTO)
@@ -100,40 +88,43 @@ public class BillService {
     }
 
     public List<BillDTO> getStats(StatsFilter filter) {
-        if (filter == null) return List.of();
-        if (filter.range().isEmpty()) return List.of();
-        if (filter.username().isBlank()) return List.of();
-
-        // TODO: Range filter
+        if (filter == null || filter.range().isEmpty() || filter.username().isBlank()) {
+            return List.of();
+        }
+        logger.debug("User '{}' searching stats with filter: {}", SecurityUtil.getCurrentUser().name(), filter);
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = LocalDate.now().minusYears(10);
-        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_DATE).stream()
+        return billRepository.findAllByDateBetween(startDate, endDate, SORT_BY_DATE)
+                .stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
 
     @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public boolean deleteBillById(Integer id) {
+        logger.info("User '{}' deleting bill with ID: {}", SecurityUtil.getCurrentUser().name(), id);
         try {
             billRepository.deleteById(id);
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            logger.error("User '{}' failed to delete bill with ID: {}", SecurityUtil.getCurrentUser().name(), id, e);
             return false;
         }
     }
 
     public List<BillDTO> findBillsByUserId(Integer id) {
+        logger.debug("User '{}' fetching bills for user ID: {}", SecurityUtil.getCurrentUser().name(), id);
         User user = userService.findUserById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return billRepository.findBillsByOwner(user).stream()
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return billRepository.findBillsByOwner(user)
+                .stream()
                 .map(billConverter::billToDTO)
                 .toList();
     }
 
     public double findUserDebtByUserId(Integer userId) {
+        String username = SecurityUtil.getCurrentUser().name();
+        logger.debug("User '{}' retrieving debt for user ID: {}", username, userId);
         return billRepository.findUserDebtByUserId(userId);
     }
-
 }
