@@ -43,8 +43,9 @@ pipeline {
             steps {
                 script {
                     sh 'mvn clean package'
-                    PACKAGE_NAME = getPackageName()
-                    currentBuild.displayName = PACKAGE_NAME
+                    def finalName = getFinalName() + ".jar"
+                    currentBuild.displayName = finalName
+                    PACKAGE_NAME = finalName
                 }
                 archiveArtifacts artifacts: "server/target/${PACKAGE_NAME}", fingerprint: true
             }
