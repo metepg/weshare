@@ -46,11 +46,15 @@ Requires Docker / Podman daemon to be running. Run these to start the app for de
 ```
 ```sh
 cd client && npm start
-
 # IMPORTANT FOR WINDOWS USERS
 # Before starting client you need to change paths in package.json
 # from ./node/node to .\\node\\node etc..
 ```
+
+Insert test data by finding testcontainer database with `docker ps -a`
+
+Then run from project root `docker exec -i {container_name} psql -U test -d weshare < server/src/main/resources/db/create-test-data.sql`
+
 Navigate to http://localhost:8080
 
 Test users:
@@ -65,6 +69,7 @@ Test users:
 
 - Delete the container with normal Docker commands
 - Restart app
+- Add test data
 
 # Features
 
