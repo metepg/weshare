@@ -1,5 +1,6 @@
 package com.weshare.controller;
 
+import com.weshare.security.NoAuthorization;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
+    @NoAuthorization
     public String handleError() {
-        //do something like logging
-        return "logout?error";
+        return "redirect: logout?error";
     }
 
 }
