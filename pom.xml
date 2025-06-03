@@ -27,5 +27,31 @@
 
     <build>
         <finalName>weshare-app-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>12.1.1</version>
+                <configuration>
+                    <format>XML</format>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <scanSet>
+                        <fileSet>
+                            <directory>${project.basedir}/server</directory>
+                            <includes>
+                                <include>pom.xml</include>
+                                <include>target/${project.build.finalName}.jar</include>
+                            </includes>
+                        </fileSet>
+                        <fileSet>
+                            <directory>${project.basedir}/client</directory>
+                            <includes>
+                                <include>package-lock.json</include>
+                            </includes>
+                        </fileSet>
+                    </scanSet>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

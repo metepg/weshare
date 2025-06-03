@@ -53,7 +53,7 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-                runDependencyCheck('server')
+                runDependencyCheck()
             }
         }
 
