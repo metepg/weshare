@@ -30,6 +30,7 @@ public class SecurityConfig {
     @Profile("production")
     public SecurityFilterChain prodFilterChain(HttpSecurity http) throws Exception {
         return http
+            .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
             .formLogin(form -> form
                 .defaultSuccessUrl(defaultSuccessUrl, true)
@@ -43,7 +44,6 @@ public class SecurityConfig {
     @Profile("!production")
     public SecurityFilterChain devFilterChain(HttpSecurity http) throws Exception {
         return http
-            // CSRF is disabled here for local/test environments
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
             .formLogin(form -> form
