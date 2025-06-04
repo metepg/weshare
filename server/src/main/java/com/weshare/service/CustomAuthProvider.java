@@ -21,9 +21,9 @@ import java.util.Optional;
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CustomAuthProvider.class);
     private final UserRepository repository;
     private final PasswordEncoder encoder;
-    Logger logger = LoggerFactory.getLogger(CustomAuthProvider.class);
 
     public CustomAuthProvider(UserRepository repository, PasswordEncoder encoder) {
         this.encoder = encoder;
@@ -50,9 +50,8 @@ public class CustomAuthProvider implements AuthenticationProvider {
         User loggedUser = user.get();
 
         if (encoder.matches(password, loggedUser.getPassword())) {
-            logger.info("Successfully Authenticated the user");
+            LOG.info("Successfully Authenticated the user");
             String role = loggedUser.getRole();
-
             return new UsernamePasswordAuthenticationToken(name, password, getUserRoles(role));
         }
         else {
@@ -68,7 +67,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
      */
     private List<GrantedAuthority> getUserRoles(String userRole) {
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        logger.info("Role: {}", userRole);
+        LOG.info("Role: {}", userRole);
         String fullRole = "ROLE_" + userRole;
         grantedAuthorityList.add(new SimpleGrantedAuthority(fullRole));
 

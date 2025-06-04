@@ -21,19 +21,19 @@ public class UserController {
     private final BillService billService;
 
     @GetMapping("/current")
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PreAuthorize("hasAnyRole(@ERole.role1, @ERole.role2)")
     public UserDTO findCurrentUser() {
         return userService.findCurrentUser();
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PreAuthorize("hasAnyRole(@ERole.role1, @ERole.role2)")
     public List<UserDTO> findUsers() {
         return userService.findUsers();
     }
 
     @GetMapping("/{userId}/debt")
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PreAuthorize("hasAnyRole(@ERole.role1, @ERole.role2)")
     public double findUserDebtByUserId(@PathVariable Integer userId) {
         return billService.findUserDebtByUserId(userId);
     }

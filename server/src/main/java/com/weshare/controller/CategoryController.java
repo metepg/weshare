@@ -20,7 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/{groupId}")
-    @PreAuthorize("hasAnyRole(@ERole.ROLE1, @ERole.ROLE2)")
+    @PreAuthorize("hasAnyRole(@ERole.role1, @ERole.role2)")
     public List<Category> findByGroupId(@PathVariable UUID groupId) {
         return categoryService.findByGroupId(groupId);
     }

@@ -3,7 +3,6 @@ package com.weshare.service;
 import com.weshare.dto.UserDTO;
 import com.weshare.model.User;
 import com.weshare.repository.UserRepository;
-import com.weshare.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +13,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final SecurityService securityService;
 
     public UserDTO findCurrentUser() {
-        return SecurityUtil.getCurrentUser();
+        return securityService.getCurrentUser();
     }
 
     public List<UserDTO> findUsers() {
