@@ -43,9 +43,8 @@ pipeline {
             steps {
                 script {
                     sh 'mvn clean package'
-                    def finalName = getFinalName() + ".jar"
-                    currentBuild.displayName = finalName
-                    PACKAGE_NAME = finalName
+                    PACKAGE_NAME = getPackageName()
+                    currentBuild.displayName = PACKAGE_NAME
                 }
                 archiveArtifacts artifacts: "server/target/${PACKAGE_NAME}", fingerprint: true
             }
@@ -54,6 +53,12 @@ pipeline {
         stage('OWASP Dependency Check') {
             steps {
                 runDependencyCheck()
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                runSonarQube('weshare')
             }
         }
 
