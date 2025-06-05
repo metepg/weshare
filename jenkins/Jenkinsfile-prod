@@ -1,0 +1,65 @@
+properties([
+        parameters([
+                [$class            : 'GitParameterDefinition',
+                 name              : 'TAG',
+                 type              : 'PT_TAG',
+                 defaultValue      : 'origin/main',
+                 description       : 'Select tag',
+                 sortMode          : 'DESCENDING_SMART',
+                 selectedValue     : 'DEFAULT',
+                 quickFilterEnabled: true,
+                 listSize          : '10'
+                ]
+        ])
+])
+
+@Library('custom')
+String PACKAGE_NAME
+pipeline {
+    agent any
+
+    tools {
+        maven '3.9.9'
+    }
+
+    stages {
+
+        stage('Initialize workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Clone') {
+            steps {
+                checkout([$class           : 'GitSCM',
+                          branches         : [[name: "${TAG}"]],
+                          userRemoteConfigs: [[url: 'https://github.com/metepg/weshare.git']]
+                ])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh 'mvn clean package'
+                    PACKAGE_NAME = getPackageName()
+                    currentBuild.displayName = PACKAGE_NAME
+                }
+                archiveArtifacts artifacts: "server/target/${PACKAGE_NAME}", fingerprint: true
+            }
+        }
+
+        stage('Trigger Deploy Job') {
+            steps {
+                build job: 'deploy-PROD',
+                        parameters: [
+                                string(name: 'PACKAGE_NAME', value: "${PACKAGE_NAME}")
+                        ],
+                        wait: false
+            }
+        }
+
+    }
+
+}

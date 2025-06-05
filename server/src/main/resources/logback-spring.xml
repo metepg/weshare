@@ -4,7 +4,7 @@
 
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <springProfile name="production">
+    <springProfile name="production,qa">
         <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
         <root level="INFO">
@@ -12,7 +12,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="!production">
+    <springProfile name="!production,!qa">
         <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
         <root level="INFO">
