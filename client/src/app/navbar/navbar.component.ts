@@ -27,7 +27,8 @@ export class NavbarComponent {
 
   showTab(view: View) {
     const route = this.routeMap[view] || '';
-    this.router.navigate([route]);}
+    this.router.navigate([route]);
+  }
 
   payDebt() {
     this.debtEmitter.emit();

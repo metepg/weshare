@@ -36,7 +36,7 @@ import { Select } from 'primeng/select';
 
 export class BillFormComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
-  categories: { label: string, value: BillCategoryCode }[] = [];
+  categories: { label: string; value: BillCategoryCode }[] = [];
   submitButtonIsDisabled: boolean;
   user: User | null;
   @Input() disabledFields: string[] = [];
@@ -55,30 +55,31 @@ export class BillFormComponent implements OnInit, OnDestroy {
     category: FormControl<number | null>;
     description: FormControl<string | null>;
     sliderPercent: FormControl<number | null>;
-  }>      
+  }>
 
   constructor(
     private formBuilder: FormBuilder,
     private translationService: TranslationService,
     private confirmationService: ConfirmationService,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService
+  ) {
     this.submitButtonIsDisabled = true;
   }
 
   ngOnInit(): void {
     this.billFormBuilder = this.formBuilder.group({
-      amount: [{value: this.amount, disabled: this.disabledFields.includes('amount')},[Validators.required, Validators.min(1)]],
+      amount: [{value: this.amount, disabled: this.disabledFields.includes('amount')}, [Validators.required, Validators.min(1)]],
       category: [{value: this.category, disabled: this.disabledFields.includes('category')}, [Validators.required, isValidCategory]],
       description: [{value: this.description, disabled: this.disabledFields.includes('description')}, [Validators.required, isValidDescription]],
       sliderPercent: {value: this.sliderPercent, disabled: this.disabledFields.includes('sliderPercent')}
     })
-    
-    this.billFormBuilder.valueChanges.subscribe(value => {
+
+    this.billFormBuilder.valueChanges.subscribe((value) => {
       if (!value.amount) return
       this.ownShareOfBill = Math.round((value.amount * (this.sliderPercent / 100)) * 100) / 100;
     })
 
-    this.subscription = this.translationService.getTranslatedCategories().subscribe(translatedCategories => {
+    this.subscription = this.translationService.getTranslatedCategories().subscribe((translatedCategories) => {
       this.categories = translatedCategories;
     });
   }
@@ -92,11 +93,11 @@ export class BillFormComponent implements OnInit, OnDestroy {
     this.submitButtonIsDisabled = true;
     const {amount, category, description} = this.billFormBuilder.value;
     this.user = this.localStorageService.getUser();
-    
+
     if (!this.billFormBuilder.valid || !this.user) {
       return;
     }
-    
+
     this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user.id, this.user.name, this.paid));
     this.submitButtonIsDisabled = false;
   }
@@ -108,16 +109,17 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   deleteBill() {
     if (!this.id) return;
-    
-    this.confirmationService.confirm({header: 'Varmistus', message: `Haluatko varmasti poistaa laskun?`,
+
+    this.confirmationService.confirm({
+      header: 'Varmistus', message: `Haluatko varmasti poistaa laskun?`,
       accept: (): void => {
         this.deleteBillEmitter.emit(this.id);
       },
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+
       reject: () => {},
     });
   }
-  
+
   ngOnDestroy() {
     this.billFormBuilder.reset();
     if (this.subscription) {

@@ -18,7 +18,7 @@ import { BillCategoryCode } from '../constants/Categories';
  * ]
  * ```
  */
-export function generateYearOptions(yearsToGoBack: number): { name: string, code: number }[] {
+export function generateYearOptions(yearsToGoBack: number): { name: string; code: number }[] {
   const currentYear = new Date().getFullYear();
   return Array.from({length: yearsToGoBack}, (_, idx) => {
     const year = currentYear - idx;
@@ -47,12 +47,12 @@ export function generateChartData(data: Map<string, number[]>, includeSettlement
   };
 
   const categories = Object.keys(BillCategoryCode)
-    .filter(value => isNaN(Number(value)) && value !== 'Category7') as (keyof typeof BillCategoryCode)[];
+    .filter((value) => isNaN(Number(value)) && value !== 'Category7') as (keyof typeof BillCategoryCode)[];
 
   if (includeSettlementCategory) {
     categories.push('Category7' as keyof typeof BillCategoryCode);
   }
-    
+
   return {
     labels: MONTHS,
     datasets: categories.map((category, index) => ({

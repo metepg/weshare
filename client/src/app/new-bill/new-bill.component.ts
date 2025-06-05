@@ -26,8 +26,8 @@ export class NewBillComponent {
     private debtService: DebtService,
     private localStorageService: LocalStorageService,
     private userService: UserService,
-    ) {}
-  
+  ) {}
+
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
@@ -35,13 +35,13 @@ export class NewBillComponent {
 
         const currentUser = this.localStorageService.getUser();
         if (!currentUser) return;
-        
-        this.userService.getTotalDebtAmount(currentUser.id).subscribe(amount => {
+
+        this.userService.getTotalDebtAmount(currentUser.id).subscribe((amount) => {
           this.debtService.setDebt(amount)
         })
         this.router.navigate(['bills'])
       }
     });
   }
-  
+
 }

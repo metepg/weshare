@@ -11,12 +11,14 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 const routes: Routes = [
   { path: 'create', component: NewBillComponent },
   { path: 'bills', component: ShowBillsComponent },
-  { path: 'stats', component: StatsComponent, children: [
+  {
+    path: 'stats', component: StatsComponent, children: [
       { path: 'chart', component: ShowChartComponent },
       { path: 'search', component: SearchBillsComponent },
       { path: 'user', component: UserStatsComponent }
     ]
-  },{ path: '', redirectTo: 'bills', pathMatch: 'full' },
+  },
+  { path: '', redirectTo: 'bills', pathMatch: 'full' },
   { path: '**', redirectTo: 'bills' }
 ];
 

@@ -19,7 +19,7 @@ export class LocalStorageService {
       return JSON.parse(userFromStorage);
     }
   }
-  
+
   setCategories(categories: Category[]) {
     localStorage.setItem('categories', JSON.stringify(categories))
   }
@@ -32,5 +32,5 @@ export class LocalStorageService {
       return JSON.parse(categoriesFromStorage);
     }
   }
-  
+
 }

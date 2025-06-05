@@ -32,7 +32,7 @@ export class BillComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.assignBillProperties();
   }
-  
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bill']) {
       this.assignBillProperties();

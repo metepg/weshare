@@ -16,7 +16,7 @@ export const MONTHS = [
 ];
 
 export const CATEGORY_COLORS = [
-  "lightgreen", "pink", "gold", "red", "skyblue", "grey", "orange", "black", 
+  "lightgreen", "pink", "gold", "red", "skyblue", "grey", "orange", "black",
 ];
 
 export const CATEGORY_COLOR_MAP: { [key in BillCategoryCode]: string } = {
@@ -30,7 +30,7 @@ export const CATEGORY_COLOR_MAP: { [key in BillCategoryCode]: string } = {
   [BillCategoryCode.Category7]: CATEGORY_COLORS[7]
 };
 
-export const BAR_CHART_OPTIONS  = {
+export const BAR_CHART_OPTIONS = {
   maintainAspectRatio: false,
   plugins: {
     legend: {

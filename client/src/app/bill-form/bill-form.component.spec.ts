@@ -10,7 +10,7 @@ describe('BillFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [BillFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(BillFormComponent);
     component = fixture.componentInstance;

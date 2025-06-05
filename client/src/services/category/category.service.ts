@@ -11,9 +11,9 @@ export class CategoryService {
   private apiUrl = environment.apiUrl + '/categories';
 
   constructor(private http: HttpClient) {}
-  
+
   findCategoriesByGroupId(id: string): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/${id}`);
   }
-  
+
 }

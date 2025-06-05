@@ -12,7 +12,7 @@ describe('BillService', () => {
   let bills: Bill[] | undefined;
   const url = '/api/bills';
   const MOCK_BILLS: Bill[] = [MOCK_BILL];
-  
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [

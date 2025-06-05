@@ -19,13 +19,13 @@ export class Bill {
     this.ownerId = ownerId;
     this.ownerName = ownerName;
   }
-  
+
   setId(id: number) {
     this.id = id;
   }
-  
+
   setDate(date: Date) {
     this.date = date;
   }
-  
+
 }

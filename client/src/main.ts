@@ -40,7 +40,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-const translateModuleConfig: TranslateModuleConfig = {defaultLanguage: 'fi',
+const translateModuleConfig: TranslateModuleConfig = {
+  defaultLanguage: 'fi',
   loader: {
     provide: TranslateLoader,
     useFactory: HttpLoaderFactory,
@@ -49,33 +50,36 @@ const translateModuleConfig: TranslateModuleConfig = {defaultLanguage: 'fi',
 };
 
 bootstrapApplication(AppComponent, {
-    providers: [
-        importProvidersFrom(
-          AppRoutingModule,
-          BrowserModule,
-          ButtonModule,
-          CardModule,
-          ConfirmDialogModule,
-          FormsModule, 
-          InputTextModule, 
-          ReactiveFormsModule, 
-          SkeletonModule, 
-          SliderModule, 
-          ToastModule, 
-          ToolbarModule, 
-          ProgressSpinnerModule, 
-          BlockUIModule, 
-          ChartModule),
-      importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ), 
-      ConfirmationService, provideHttpClient(withInterceptorsFromDi()), 
-      provideAnimations(),
-      providePrimeNG({
-        theme: {
-          preset: Lara,
-          options: {
-            darkModeSelector: false
-          }},
-      }),
-    ]
+  providers: [
+    importProvidersFrom(
+      AppRoutingModule,
+      BrowserModule,
+      ButtonModule,
+      CardModule,
+      ConfirmDialogModule,
+      FormsModule,
+      InputTextModule,
+      ReactiveFormsModule,
+      SkeletonModule,
+      SliderModule,
+      ToastModule,
+      ToolbarModule,
+      ProgressSpinnerModule,
+      BlockUIModule,
+      ChartModule
+    ),
+    importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ),
+    ConfirmationService,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+    providePrimeNG({
+      theme: {
+        preset: Lara,
+        options: {
+          darkModeSelector: false
+        }
+      },
+    }),
+  ]
 })
-  .catch(err => console.error(err));
+  .catch((err) => { console.error(err); });

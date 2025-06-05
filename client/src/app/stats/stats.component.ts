@@ -15,7 +15,7 @@ import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 export class StatsComponent implements OnInit {
 
   constructor(private router: Router, private sidebarService: SidebarService) {}
-  
+
   ngOnInit() {
     this.router.navigate(['stats/chart']);
   }

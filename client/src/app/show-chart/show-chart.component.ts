@@ -36,7 +36,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 })
 export class ShowChartComponent implements OnInit {
   protected readonly STACKED_OPTIONS = BAR_CHART_OPTIONS;
-  yearOptions = signal<{ name: string, code: number }[]>([]);
+  yearOptions = signal<{ name: string; code: number }[]>([]);
   selectedYear = signal<number>(new Date().getFullYear());
   data = signal<ChartData | null>(null);
   monthlyValuesByCategory = signal<Map<string, number[]>>(new Map());
@@ -101,7 +101,7 @@ export class ShowChartComponent implements OnInit {
  */
   private aggregateMonthlyValues(bills: Bill[]): Map<string, number[]> {
     const monthlyValuesByCategory = new Map<string, number[]>();
-    const removedCategory = bills.filter(b => b.categoryId !== 7);
+    const removedCategory = bills.filter((b) => b.categoryId !== 7);
 
     for (const bill of removedCategory) {
       const month = new Date(bill.date).getMonth();
@@ -112,7 +112,7 @@ export class ShowChartComponent implements OnInit {
         this.updateMonthlyValues(monthlyValuesByCategory, month, category, amount);
       }
     }
-    
+
     return monthlyValuesByCategory;
   }
 

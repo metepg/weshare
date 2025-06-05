@@ -7,7 +7,8 @@
     "watch": "./node/node ./node_modules/@angular/cli/bin/ng --watch --configuration development",
     "test": "./node/node ./node_modules/@angular/cli/bin/ng test",
     "bprod": "./node/node ./node_modules/@angular/cli/bin/ng build --configuration production",
-    "lint": "./node/node ./node_modules/@angular/cli/bin/ng lint"
+    "lint": "./node/node ./node_modules/@angular/cli/bin/ng lint",
+    "lint-fix": "./node/node ./node_modules/@angular/cli/bin/ng lint --fix"
   },
   "private": true,
   "dependencies": {
