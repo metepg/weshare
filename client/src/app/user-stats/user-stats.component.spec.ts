@@ -10,7 +10,7 @@ describe('HallOfFameComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UserStatsComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(UserStatsComponent);
     component = fixture.componentInstance;

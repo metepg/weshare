@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Signal, signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DebtService {
-  private debtSignal = signal<number>(0);
+  private readonly debtSignal = signal<number>(0);
 
   get debt(): Signal<number> {
     return this.debtSignal;

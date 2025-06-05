@@ -8,9 +8,9 @@ describe('ShowStatisticsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [ShowChartComponent]
-})
-    .compileComponents();
+      imports: [ShowChartComponent]
+    })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ShowChartComponent);
     component = fixture.componentInstance;

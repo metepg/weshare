@@ -35,10 +35,10 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     private messageService: MessageService,
     private localStorageService: LocalStorageService,
     private categoryService: CategoryService,
-    ) {}
+  ) {}
 
   ngOnInit() {
-    this.billService.getBills().subscribe(bills => {
+    this.billService.getBills().subscribe((bills) => {
       this.bills = bills;
       this.setUserAndCategories();
     });
@@ -50,7 +50,7 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
 
     this.user = currentUser;
 
-    this.categoryService.findCategoriesByGroupId(this.user.groupId).subscribe(categories => {
+    this.categoryService.findCategoriesByGroupId(this.user.groupId).subscribe((categories) => {
       this.localStorageService.setCategories(categories);
     })
   }
@@ -74,25 +74,27 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     bill.id = this.bill.id;
     bill.date = this.bill.date;
     this.billService.updateBill(bill).pipe(
-      switchMap(updatedBill => {
-        this.bills = this.bills.map(bill => bill.id === updatedBill.id ? updatedBill : bill);
+      switchMap((updatedBill) => {
+        this.bills = this.bills.map((bill) => bill.id === updatedBill.id ? updatedBill : bill);
         this.showEditBillDialog = false;
         return this.userService.getTotalDebtAmount(this.user.id);
-      })).subscribe(amount => {
-        this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
-        this.debtService.setDebt(amount)
+      })
+    ).subscribe((amount) => {
+      this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
+      this.debtService.setDebt(amount)
     });
   }
 
   handleDeleteBill(id: number) {
     this.billService.deleteBillById(id).pipe(
       switchMap(() => {
-        this.bills = this.bills.filter(bill => bill.id !== id);
+        this.bills = this.bills.filter((bill) => bill.id !== id);
         this.showEditBillDialog = false;
         return this.userService.getTotalDebtAmount(this.user.id);
-      })).subscribe(amount => {
-        this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
-        this.debtService.setDebt(amount)
+      })
+    ).subscribe((amount) => {
+      this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
+      this.debtService.setDebt(amount)
     });
   }
 }

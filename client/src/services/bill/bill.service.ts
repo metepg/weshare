@@ -28,15 +28,14 @@ export class BillService {
 
   payDebt(bill: Bill): Observable<HttpResponse<Bill[]>> {
     return this.http.post<Bill[]>(
-      `${this.apiUrl}/pay`, bill,
-      {observe: 'response'}
+      `${this.apiUrl}/pay`, bill, {observe: 'response'}
     );
   }
 
   getBillsByUserId(id: number): Observable<Bill[]> {
     return this.http.get<Bill[]>(`${this.apiUrl}/${id}`);
   }
-  
+
   getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {
     return this.http.post<Bill[]>(`${this.apiUrl}/search`, searchFilter, {
       observe: 'response',
@@ -52,5 +51,5 @@ export class BillService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.delete<boolean>(url);
   }
-  
+
 }

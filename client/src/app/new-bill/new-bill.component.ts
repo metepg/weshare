@@ -20,14 +20,14 @@ import { UserService } from '../../services/user/user.service';
 export class NewBillComponent {
 
   constructor(
-    private billService: BillService,
-    private router: Router,
-    private messageService: MessageService,
-    private debtService: DebtService,
-    private localStorageService: LocalStorageService,
-    private userService: UserService,
-    ) {}
-  
+    private readonly billService: BillService,
+    private readonly router: Router,
+    private readonly messageService: MessageService,
+    private readonly debtService: DebtService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly userService: UserService,
+  ) {}
+
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {
       if (response.status === HttpStatusCode.Created) {
@@ -35,13 +35,13 @@ export class NewBillComponent {
 
         const currentUser = this.localStorageService.getUser();
         if (!currentUser) return;
-        
-        this.userService.getTotalDebtAmount(currentUser.id).subscribe(amount => {
+
+        this.userService.getTotalDebtAmount(currentUser.id).subscribe((amount) => {
           this.debtService.setDebt(amount)
         })
-        this.router.navigate(['bills'])
+        void this.router.navigate(['bills'])
       }
     });
   }
-  
+
 }

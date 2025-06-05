@@ -12,14 +12,13 @@ export class TranslationService {
 
   constructor(private translate: TranslateService) {}
 
-  getTranslatedCategories(): Observable<{ label: string, value: BillCategoryCode }[]> {
+  getTranslatedCategories(): Observable<{ label: string; value: BillCategoryCode }[]> {
     const translations$ = Object.values(BillCategoryCode)
-    .filter(value => typeof value === 'number')
-    .map(value =>
-      getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
-        map(label => ({ label, value: value as BillCategoryCode }))
-      )
-    );
+      .filter((value) => typeof value === 'number')
+      .map((value) =>
+        getTranslatedEnum(this.translate, value as BillCategoryCode).pipe(
+          map((label) => ({ label, value: value as BillCategoryCode }))
+        ));
 
     return forkJoin(translations$);
   }

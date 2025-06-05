@@ -20,10 +20,10 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
 import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'app-main',
-    templateUrl: './main.component.html',
-    styleUrls: ['./main.component.css'],
-    providers: [MessageService, UserService],
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css'],
+  providers: [MessageService, UserService],
   imports: [
     NavbarComponent,
     ConfirmDialogModule,
@@ -43,27 +43,27 @@ export class MainComponent implements OnInit, DoCheck {
   isLoading = false;
   debt = this.debtService.debt;
   sidebarVisible = true;
-  options: {icon: string, value: string}[] = [
+  options: { icon: string; value: string }[] = [
     { icon: 'pi pi-chart-bar', value: 'chart' },
     { icon: 'pi pi-search', value: 'search' },
     { icon: 'pi pi-user', value: 'hof' },
   ];
-  option: {icon: string, value: string} | null;
-  
+  option: { icon: string; value: string } | null;
+
   constructor(
-    private billService: BillService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private router: Router,
-    private debtService: DebtService,
-    private localStorageService: LocalStorageService,
-    private userService: UserService,
+    private readonly billService: BillService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly router: Router,
+    private readonly debtService: DebtService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly userService: UserService,
   ) {
   }
-  
+
   ngOnInit(): void {
     this.option = this.options[0];
-    this.userService.getCurrentUser().subscribe(user => {
+    this.userService.getCurrentUser().subscribe((user) => {
       this.localStorageService.setUser(user);
       this.userService.getTotalDebtAmount(user.id).subscribe((amount: number): void => {
         this.debtService.setDebt(amount);
@@ -79,18 +79,18 @@ export class MainComponent implements OnInit, DoCheck {
 
   /**
    * Shows a confirmation dialog, creates a reset bill, and updates the state.
-   */ 
+   */
   payDebt(): void {
     this.confirmationService.confirm({
       header: 'Varmistus',
       message: `Haluatko maksaa velkasi?`,
       accept: (): void => {
         const user = this.localStorageService.getUser();
-        
+
         if (user == null) {
-          return; 
+          return;
         }
-        
+
         this.isLoading = true;
         const resetBill = new Bill(0, 7, '', this.debt(), user.id, user.name);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
@@ -100,8 +100,8 @@ export class MainComponent implements OnInit, DoCheck {
             this.debtService.setDebt(0);
             this.bills$ = of(body);
             this.messageService.add({severity: 'success', summary: `Velat nollattu.`,});
-            this.router.navigate(['bills'])
-        } else {
+            void this.router.navigate(['bills'])
+          } else {
             this.messageService.add(Messages.ERROR.unknownError);
           }
         });
@@ -111,5 +111,5 @@ export class MainComponent implements OnInit, DoCheck {
       },
     });
   }
-  
+
 }

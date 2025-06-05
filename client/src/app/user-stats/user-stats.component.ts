@@ -30,7 +30,7 @@ import { Select } from 'primeng/select';
 
 export class UserStatsComponent implements OnInit {
   filterForm: FormGroup;
-  users: {label: string, value: number}[] = [];
+  users: { label: string; value: number }[] = [];
   totalAmount = signal(0);
   chartData: ChartData;
   chartOptions: ChartOptions;
@@ -39,20 +39,21 @@ export class UserStatsComponent implements OnInit {
   chartLabels: string [] = [];
   calculationResult: CalculationResult;
   categoryVisibilityState: boolean[] = [];
-  
+
   constructor(
-    private billService: BillService,
-    private fb: FormBuilder,
-    private translationService: TranslationService,
-    private userService: UserService,
-    private localStorageService: LocalStorageService) {
+    private readonly billService: BillService,
+    private readonly fb: FormBuilder,
+    private readonly translationService: TranslationService,
+    private readonly userService: UserService,
+    private readonly localStorageService: LocalStorageService
+  ) {
   }
 
   ngOnInit() {
     this.currentUser = this.localStorageService.getUser();
 
-    this.userService.getUsers().subscribe(users => {
-      this.users = users.map(user => ({ label: user.name, value: user.id }));
+    this.userService.getUsers().subscribe((users) => {
+      this.users = users.map((user) => ({ label: user.name, value: user.id }));
       this.initializeChart();
     });
 
@@ -61,10 +62,10 @@ export class UserStatsComponent implements OnInit {
       user: [this.currentUser?.id]
     });
   }
-  
+
   initializeChart() {
-    this.translationService.getTranslatedCategories().subscribe(categories => {
-      this.chartLabels = categories.map(c => c.label);
+    this.translationService.getTranslatedCategories().subscribe((categories) => {
+      this.chartLabels = categories.map((c) => c.label);
       if (this.currentUser) {
         this.getTotalAmountByUserId(this.currentUser.id);
       }
@@ -88,7 +89,7 @@ export class UserStatsComponent implements OnInit {
   }
 
   getTotalAmountByUserId(id: number) {
-    this.billService.getBillsByUserId(id).subscribe(bills => {
+    this.billService.getBillsByUserId(id).subscribe((bills) => {
       this.calculationResult = this.calculateTotals(bills);
       this.totalAmount.set(this.calculationResult.totalOwnAmount);
       this.updateChart(this.calculationResult);
@@ -97,7 +98,7 @@ export class UserStatsComponent implements OnInit {
 
   updateChart(result: CalculationResult) {
     if (this.chartLabels.length === 0) return;
-    
+
     this.chartData = {
       labels: this.chartLabels,
       datasets: [
@@ -113,9 +114,9 @@ export class UserStatsComponent implements OnInit {
   updateTotalAmount(category: number) {
     const categoryAmount = this.calculationResult.categorizedTotals[category];
     if (this.categoryVisibilityState[category]) {
-      this.totalAmount.update(value => value + categoryAmount);
+      this.totalAmount.update((value) => value + categoryAmount);
     } else {
-      this.totalAmount.update(value => value - categoryAmount);
+      this.totalAmount.update((value) => value - categoryAmount);
     }
     this.categoryVisibilityState[category] = !this.categoryVisibilityState[category];
   }
@@ -137,9 +138,14 @@ export class UserStatsComponent implements OnInit {
   }
 
   handleOnChange() {
-    const user = this.filterForm.get('user')?.value;
-    this.categoryVisibilityState = Array(this.categoryVisibilityState.length).fill(false);
-    this.getTotalAmountByUserId(user);
+    const rawUser: unknown = this.filterForm.get('user')?.value;
+    const user: number | null = typeof rawUser === 'number' ? rawUser : null;
+
+    this.categoryVisibilityState = Array.from({ length: this.categories.length }, () => false);
+
+    if (user !== null) {
+      this.getTotalAmountByUserId(user);
+    }
   }
 
 }
