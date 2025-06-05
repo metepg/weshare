@@ -40,6 +40,16 @@
             </configuration>
           </execution>
           <execution>
+            <id>npm lint</id>
+            <phase>package</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run lint</arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>npm build</id>
             <phase>package</phase>
             <goals>
