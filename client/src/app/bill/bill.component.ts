@@ -34,7 +34,7 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['bill']) {
+    if (changes['bill'].currentValue != null) {
       this.assignBillProperties();
     }
   }

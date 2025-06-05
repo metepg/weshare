@@ -66,14 +66,14 @@ export class SearchBillsComponent implements OnInit {
   @Input() sidebarVisible = true;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
-  constructor(private formBuilder: FormBuilder,
-    private billService: BillService,
-    private primengConfig: PrimeNG,
-    private sidebarService: SidebarService,
-    private translationService: TranslationService,
-    private userService: UserService,
-    private messageService: MessageService,
-    private localStorageService: LocalStorageService,) {}
+  constructor(private readonly formBuilder: FormBuilder,
+    private readonly billService: BillService,
+    private readonly primengConfig: PrimeNG,
+    private readonly sidebarService: SidebarService,
+    private readonly translationService: TranslationService,
+    private readonly userService: UserService,
+    private readonly messageService: MessageService,
+    private readonly localStorageService: LocalStorageService,) {}
 
   ngOnInit() {
     this.currentUser = this.localStorageService.getUser();
@@ -117,26 +117,36 @@ export class SearchBillsComponent implements OnInit {
   }
 
   getSelectedItemsLabel() {
-    const selectedCategories = this.searchForm.get('categories')?.value;
-    if (!selectedCategories) return;
+    const selectedCategories = this.searchForm.get('categories')?.value as unknown;
 
-    if (selectedCategories.length === this.categories?.length) {
+    if (!Array.isArray(selectedCategories)) return;
+
+    if (selectedCategories.length === this.categories.length) {
       return 'Kaikki kategoriat';
     }
     return `${selectedCategories.length} valittuna`;
   }
 
   onSubmit() {
-    const description = this.searchForm.get('description')?.value ?? '';
-    const categories = this.searchForm?.get('categories')?.value?.map((category: { label: string; value: number }) => category.value) || [];
-    const range = (this.searchForm?.get('range')?.value || []).filter((date: Date | null) => date !== null);
-    const users = this.searchForm?.get('users')?.value?.map((user: { label: string; value: string }) => user.value) || [];
-    this.searchFilter = {
-      description,
-      categories,
-      range,
-      users
-    };
+    const rawDescription: unknown = this.searchForm.get('description')?.value;
+    const description: string = typeof rawDescription === 'string' ? rawDescription : '';
+
+    const rawCategories: unknown = this.searchForm.get('categories')?.value;
+    const categories: number[] = Array.isArray(rawCategories)
+      ? (rawCategories as { label: string; value: number }[]).map((categories) => categories.value)
+      : [];
+
+    const rawRange: unknown = this.searchForm.get('range')?.value;
+    const range: Date[] = Array.isArray(rawRange)
+      ? (rawRange as (Date | null)[]).filter((date): date is Date => date !== null)
+      : [];
+
+    const rawUsers: unknown = this.searchForm.get('users')?.value;
+    const users: string[] = Array.isArray(rawUsers)
+      ? (rawUsers as { label: string; value: string }[]).map((users) => users.value)
+      : [];
+
+    this.searchFilter = { description, categories, range, users };
 
     this.sidebarVisible = false;
     this.isLoading = true;
@@ -163,23 +173,18 @@ export class SearchBillsComponent implements OnInit {
   }
 
   handleEditBill(bill: Bill): void {
-    if (!bill) return;
-
     const {amount, description, id, date, ownAmount, ownerId, ownerName, paid} = this.selectedBill;
     const editedBill = new Bill(amount, bill.categoryId, description, ownAmount, ownerId, ownerName, paid);
     editedBill.setId(id);
     editedBill.setDate(date);
     this.billService.updateBill(editedBill).subscribe((editedBill) => {
-      if (!editedBill) {
-        this.messageService.add({severity: 'error', summary: `Kategorian päivitys epäonnistui.`,});
-      } else {
-        this.messageService.add({severity: 'success', summary: `Kategorian päivitys onnistui`,});
-        const categoryIds = new Set(this.searchFilter.categories);
-        this.bills = this.bills
-          .map((b) => b.id === editedBill.id ? editedBill : b)
-          .filter((b) => categoryIds.has(b.categoryId));
-        this.showEditBillDialog = false;
-      }
+      this.messageService.add({severity: 'error', summary: `Kategorian päivitys epäonnistui.`,});
+      this.messageService.add({severity: 'success', summary: `Kategorian päivitys onnistui`,});
+      const categoryIds = new Set(this.searchFilter.categories);
+      this.bills = this.bills
+        .map((b) => b.id === editedBill.id ? editedBill : b)
+        .filter((b) => categoryIds.has(b.categoryId));
+      this.showEditBillDialog = false;
     })
   }
 

@@ -51,13 +51,13 @@ export class MainComponent implements OnInit, DoCheck {
   option: { icon: string; value: string } | null;
 
   constructor(
-    private billService: BillService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private router: Router,
-    private debtService: DebtService,
-    private localStorageService: LocalStorageService,
-    private userService: UserService,
+    private readonly billService: BillService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly router: Router,
+    private readonly debtService: DebtService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly userService: UserService,
   ) {
   }
 
@@ -100,7 +100,7 @@ export class MainComponent implements OnInit, DoCheck {
             this.debtService.setDebt(0);
             this.bills$ = of(body);
             this.messageService.add({severity: 'success', summary: `Velat nollattu.`,});
-            this.router.navigate(['bills'])
+            void this.router.navigate(['bills'])
           } else {
             this.messageService.add(Messages.ERROR.unknownError);
           }

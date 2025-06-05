@@ -58,10 +58,10 @@ export class BillFormComponent implements OnInit, OnDestroy {
   }>
 
   constructor(
-    private formBuilder: FormBuilder,
-    private translationService: TranslationService,
-    private confirmationService: ConfirmationService,
-    private localStorageService: LocalStorageService
+    private readonly formBuilder: FormBuilder,
+    private readonly translationService: TranslationService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly localStorageService: LocalStorageService
   ) {
     this.submitButtonIsDisabled = true;
   }
@@ -122,9 +122,7 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.billFormBuilder.reset();
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 
 }

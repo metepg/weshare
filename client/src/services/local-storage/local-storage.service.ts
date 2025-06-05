@@ -13,24 +13,11 @@ export class LocalStorageService {
 
   getUser(): User | null {
     const userFromStorage = localStorage.getItem('user');
-    if (!userFromStorage) {
-      return null;
-    } else {
-      return JSON.parse(userFromStorage);
-    }
+    return userFromStorage ? (JSON.parse(userFromStorage) as unknown as User) : null;
   }
 
   setCategories(categories: Category[]) {
     localStorage.setItem('categories', JSON.stringify(categories))
-  }
-
-  getCategories(): Category[] | null {
-    const categoriesFromStorage = localStorage.getItem('categories');
-    if (!categoriesFromStorage) {
-      return null;
-    } else {
-      return JSON.parse(categoriesFromStorage);
-    }
   }
 
 }

@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
   protected readonly View = View;
-  private routeMap = {
+  private readonly routeMap = {
     [View.NEW_BILL]: 'create',
     [View.SHOW_BILLS]: 'bills',
     [View.SHOW_STATISTICS]: 'stats'
@@ -23,11 +23,11 @@ export class NavbarComponent {
   @Input() debtAmount: number;
   @Output() debtEmitter = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   showTab(view: View) {
     const route = this.routeMap[view] || '';
-    this.router.navigate([route]);
+    void this.router.navigate([route]);
   }
 
   payDebt() {

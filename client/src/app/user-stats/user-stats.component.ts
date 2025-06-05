@@ -41,11 +41,11 @@ export class UserStatsComponent implements OnInit {
   categoryVisibilityState: boolean[] = [];
 
   constructor(
-    private billService: BillService,
-    private fb: FormBuilder,
-    private translationService: TranslationService,
-    private userService: UserService,
-    private localStorageService: LocalStorageService
+    private readonly billService: BillService,
+    private readonly fb: FormBuilder,
+    private readonly translationService: TranslationService,
+    private readonly userService: UserService,
+    private readonly localStorageService: LocalStorageService
   ) {
   }
 
@@ -138,9 +138,14 @@ export class UserStatsComponent implements OnInit {
   }
 
   handleOnChange() {
-    const user = this.filterForm.get('user')?.value;
-    this.categoryVisibilityState = Array(this.categoryVisibilityState.length).fill(false);
-    this.getTotalAmountByUserId(user);
+    const rawUser: unknown = this.filterForm.get('user')?.value;
+    const user: number | null = typeof rawUser === 'number' ? rawUser : null;
+
+    this.categoryVisibilityState = Array.from({ length: this.categories.length }, () => false);
+
+    if (user !== null) {
+      this.getTotalAmountByUserId(user);
+    }
   }
 
 }

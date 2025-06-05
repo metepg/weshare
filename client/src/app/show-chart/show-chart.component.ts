@@ -45,11 +45,14 @@ export class ShowChartComponent implements OnInit {
   @Output() showSideBarChange = new EventEmitter<boolean>();
 
 
-  constructor(private billService: BillService) {
+  constructor(private readonly billService: BillService) {
   }
 
   onChange(event: SelectChangeEvent): void {
-    this.getStatistics(event.value);
+    const value: unknown = event.value;
+    if (typeof value === 'number') {
+      this.getStatistics(value);
+    }
   }
 
   ngOnInit(): void {
@@ -125,7 +128,10 @@ export class ShowChartComponent implements OnInit {
    * @param amount - The amount to add to the specified month and category.
    */
   private updateMonthlyValues(valuesByCategory: Map<string, number[]>, month: number, category: string, amount: number): void {
-    const arr = valuesByCategory.get(category) ?? new Array(12).fill(0);
+    let arr = valuesByCategory.get(category);
+    if (!Array.isArray(arr)) {
+      arr = new Array(12).fill(0);
+    }
     arr[month] += amount;
     valuesByCategory.set(category, arr);
   }

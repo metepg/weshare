@@ -113,6 +113,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ["**/*.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-unsafe-call": "off"
+    },
+  },
+  {
     //Config for .html files
     ignores: ["node_modules", "dist", ".vscode"],
     files: ["**/*.html"],
