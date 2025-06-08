@@ -14,7 +14,7 @@ properties([
 ])
 
 @Library('custom')
-String PACKAGE_NAME
+String PROJECT_VERSION
 pipeline {
     agent any
 
@@ -43,11 +43,9 @@ pipeline {
             steps {
                 script {
                     sh 'mvn clean package'
-                    PACKAGE_NAME = getPackageName()
-                    def commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    currentBuild.displayName = commitId
+                    PROJECT_VERSION = getProjectVersion()
+                    currentBuild.displayName = PROJECT_VERSION
                 }
-                archiveArtifacts artifacts: "server/target/${PACKAGE_NAME}", fingerprint: true
             }
         }
 
@@ -63,16 +61,32 @@ pipeline {
             }
         }
 
+        stage('Build image') {
+            steps {
+                withCredentials([string(credentialsId: 'gh-registry-token', variable: 'GH_REGISTRY_TOKEN')]) {
+                    sh """
+                docker build -t ghcr.io/metepg/weshare:${PROJECT_VERSION} .
+                echo \$GH_REGISTRY_TOKEN | docker login ghcr.io -u metepg --password-stdin
+                docker push ghcr.io/metepg/weshare:${PROJECT_VERSION}
+            """
+                }
+            }
+        }
+
         stage('Trigger Deploy Job') {
             steps {
                 build job: 'deploy-QA',
                         parameters: [
-                                string(name: 'PACKAGE_NAME', value: "${PACKAGE_NAME}")
+                                string(name: 'IMAGE_TAG', value: PROJECT_VERSION)
                         ],
                         wait: false
             }
         }
-
     }
 
+    post {
+        always {
+            sh 'rm -f $HOME/.docker/config.json'
+        }
+    }
 }
