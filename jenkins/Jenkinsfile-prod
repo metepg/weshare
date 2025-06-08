@@ -18,11 +18,19 @@ pipeline {
 
     stages {
 
+        stage('Set build name') {
+            steps {
+                script {
+                    currentBuild.displayName = env.TAG
+                }
+            }
+        }
+
         stage('Trigger Deploy Job') {
             steps {
                 build job: 'deploy-PROD',
                         parameters: [
-                                string(name: 'IMAGE_TAG', value: TAG)
+                                string(name: 'IMAGE_TAG', value: TAG.replaceFirst(/^v(?=\d)/, ''))
                         ],
                         wait: false
             }
