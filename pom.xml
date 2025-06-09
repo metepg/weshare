@@ -12,7 +12,7 @@
 
     <groupId>com.weshare</groupId>
     <artifactId>weshare-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>weshare</name>
 
@@ -36,13 +36,6 @@
                     <format>XML</format>
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <scanSet>
-                        <fileSet>
-                            <directory>${project.basedir}/server</directory>
-                            <includes>
-                                <include>pom.xml</include>
-                                <include>target/${project.build.finalName}.jar</include>
-                            </includes>
-                        </fileSet>
                         <fileSet>
                             <directory>${project.basedir}/client</directory>
                             <includes>

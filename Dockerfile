@@ -1,17 +1,18 @@
 FROM eclipse-temurin:21-jre
 
-# Create non-root user and logs directory
-RUN adduser --system appuser && \
-    mkdir -p /app/logs && \
-    chown appuser /app/logs
+# Create non-root user
+RUN adduser --system appuser
 
 WORKDIR /app
 
 # Copy the Spring Boot JAR
 COPY server/target/*.jar app.jar
 
+# Create logs directory and set ownership
+RUN mkdir -p logs && chown -R appuser /app
+
 # Switch to non-root user
 USER appuser
 
-# Start the app with external config support
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.location=file:/config/"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["--spring.config.location=file:/config/"]

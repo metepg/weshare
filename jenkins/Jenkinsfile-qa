@@ -8,7 +8,7 @@ properties([
                  sortMode          : 'DESCENDING_SMART',
                  selectedValue     : 'DEFAULT',
                  quickFilterEnabled: true,
-                 listSize          : '10'
+                 listSize          : '5'
                 ]
         ])
 ])
@@ -34,8 +34,7 @@ pipeline {
             steps {
                 checkout([$class           : 'GitSCM',
                           branches         : [[name: "${BRANCH}"]],
-                          userRemoteConfigs: [[url: 'https://github.com/metepg/weshare.git']]
-                ])
+                          userRemoteConfigs: [[url: 'https://github.com/metepg/weshare.git']]])
             }
         }
 
@@ -46,6 +45,22 @@ pipeline {
                     PROJECT_VERSION = getProjectVersion()
                     currentBuild.displayName = PROJECT_VERSION
                 }
+            }
+        }
+
+        stage('Publish image') {
+            steps {
+                script {
+                    publishDockerImage("weshare:${PROJECT_VERSION}")
+                }
+            }
+        }
+
+        stage('Trigger Deploy Job') {
+            steps {
+                build job: 'deploy-QA',
+                        parameters: [string(name: 'IMAGE_TAG', value: PROJECT_VERSION)],
+                        wait: false
             }
         }
 
@@ -61,32 +76,6 @@ pipeline {
             }
         }
 
-        stage('Build image') {
-            steps {
-                withCredentials([string(credentialsId: 'gh-registry-token', variable: 'GH_REGISTRY_TOKEN')]) {
-                    sh """
-                docker build -t ghcr.io/metepg/weshare:${PROJECT_VERSION} .
-                echo \$GH_REGISTRY_TOKEN | docker login ghcr.io -u metepg --password-stdin
-                docker push ghcr.io/metepg/weshare:${PROJECT_VERSION}
-            """
-                }
-            }
-        }
-
-        stage('Trigger Deploy Job') {
-            steps {
-                build job: 'deploy-QA',
-                        parameters: [
-                                string(name: 'IMAGE_TAG', value: PROJECT_VERSION)
-                        ],
-                        wait: false
-            }
-        }
     }
 
-    post {
-        always {
-            sh 'rm -f $HOME/.docker/config.json'
-        }
-    }
 }

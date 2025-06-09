@@ -8,7 +8,7 @@ properties([
                  sortMode          : 'DESCENDING_SMART',
                  selectedValue     : 'DEFAULT',
                  quickFilterEnabled: true,
-                 listSize          : '10'
+                 listSize          : '5'
                 ]
         ])
 ])
@@ -30,6 +30,8 @@ pipeline {
             steps {
                 build job: 'deploy-PROD',
                         parameters: [
+                                // Removes leading 'v' from tag if it's followed by a digit, e.g. 'v1.0.0' → '1.0.0'
+                                // Needed because image versions don't use 'v' prefix
                                 string(name: 'IMAGE_TAG', value: TAG.replaceFirst(/^v(?=\d)/, ''))
                         ],
                         wait: false
