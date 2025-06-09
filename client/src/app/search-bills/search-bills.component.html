@@ -70,28 +70,28 @@
           styleClass="p-datatable-gridlines">
           <ng-template pTemplate="header">
             <tr>
-              <th pSortableColumn="owner">{{ 'who' | translate}} <br>
+              <th id="sort-owner" pSortableColumn="owner">{{ 'who' | translate}} <br>
                 <p-sortIcon field="owner"/>
               </th>
-              <th pSortableColumn="description">{{ 'description' | translate}} <br>
+              <th id="sort-description" pSortableColumn="description">{{ 'description' | translate}} <br>
                 <p-sortIcon field="description"/>
               </th>
-              <th pSortableColumn="amount">{{ 'amount' | translate}} <br>
+              <th id="sort-amount" pSortableColumn="amount">{{ 'amount' | translate}} <br>
                 <p-sortIcon field="amount"/>
               </th>
-              <th pSortableColumn="date">{{ 'dateShort' | translate}} <br>
+              <th id="sort-date" pSortableColumn="date">{{ 'dateShort' | translate}} <br>
                 <p-sortIcon field="date"/>
               </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-bill>
-            <tr (click)="showEditView(bill)">
+            <tr (click)="showEditView(bill)" (keydown.enter)="showEditView(bill)">
               <td>{{ bill.ownerName}}</td>
               <td style="white-space: normal; word-wrap: break-word; max-width: 100px;">
                 {{ bill.description }}
               </td>
               <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
-              <td>{{ bill.date | date: 'd.M.YY' }}</td>
+              <td>{{ bill.date | date: 'd.M.YYYY' }}</td>
             </tr>
           </ng-template>
         </p-table>

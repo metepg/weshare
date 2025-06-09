@@ -3,11 +3,10 @@ import { BillCategoryCode } from '../constants/Categories';
 
 export function isValidCategory(control: AbstractControl): ValidationErrors | null {
   const value: unknown = control.value;
-  if (typeof value !== 'string') {
+  if (!Number.isInteger(value)) {
     return { invalidCategory: true };
   }
-  const validValues = Object.values(BillCategoryCode) as string[];
-  return validValues.includes(value) ? null : { invalidCategory: true };
+  return Object.values(BillCategoryCode).includes(`Category${value}`) ? null : { invalidCategory: true };
 }
 
 export function isValidDescription(control: AbstractControl): ValidationErrors | null {

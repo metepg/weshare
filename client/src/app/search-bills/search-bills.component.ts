@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
-import { MessageService} from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -94,9 +94,9 @@ export class SearchBillsComponent implements OnInit {
           return {
             label: user.name,
             value: user.name,
-          }
-        })
-      })
+          };
+        });
+      });
     });
 
     this.sidebarService.sidebarVisibility$.subscribe((visible) => {
@@ -158,9 +158,9 @@ export class SearchBillsComponent implements OnInit {
         this.sidebarVisibleChange.emit(this.sidebarVisible);
       } else {
         // TODO: Better error handling
-        alert("Jotain meni pieleen.");
+        alert('Jotain meni pieleen.');
       }
-    })
+    });
   }
 
   handleSidebarHide() {
@@ -173,19 +173,23 @@ export class SearchBillsComponent implements OnInit {
   }
 
   handleEditBill(bill: Bill): void {
-    const {amount, description, id, date, ownAmount, ownerId, ownerName, paid} = this.selectedBill;
+    const { amount, description, id, date, ownAmount, ownerId, ownerName, paid } = this.selectedBill;
     const editedBill = new Bill(amount, bill.categoryId, description, ownAmount, ownerId, ownerName, paid);
     editedBill.setId(id);
     editedBill.setDate(date);
-    this.billService.updateBill(editedBill).subscribe((editedBill) => {
-      this.messageService.add({severity: 'error', summary: `Kategorian päivitys epäonnistui.`,});
-      this.messageService.add({severity: 'success', summary: `Kategorian päivitys onnistui`,});
-      const categoryIds = new Set(this.searchFilter.categories);
-      this.bills = this.bills
-        .map((b) => b.id === editedBill.id ? editedBill : b)
-        .filter((b) => categoryIds.has(b.categoryId));
-      this.showEditBillDialog = false;
-    })
+    this.billService.updateBill(editedBill).subscribe({
+      next: (editedBill) => {
+        this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
+        const categoryIds = new Set(this.searchFilter.categories);
+        this.bills = this.bills
+          .map((b) => b.id === editedBill.id ? editedBill : b)
+          .filter((b) => categoryIds.has(b.categoryId));
+        this.showEditBillDialog = false;
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
+      }
+    });
   }
 
 }
