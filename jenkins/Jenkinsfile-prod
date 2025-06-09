@@ -21,6 +21,9 @@ pipeline {
         stage('Set build name') {
             steps {
                 script {
+                    // Removes leading 'v' from tag if it's followed by a digit, e.g. 'v1.0.0' → '1.0.0'
+                    // Needed because image versions don't use 'v' prefix
+                    env.TAG = env.TAG.replaceFirst(/^v(?=\d)/, '')
                     currentBuild.displayName = env.TAG
                 }
             }
@@ -30,9 +33,7 @@ pipeline {
             steps {
                 build job: 'deploy-PROD',
                         parameters: [
-                                // Removes leading 'v' from tag if it's followed by a digit, e.g. 'v1.0.0' → '1.0.0'
-                                // Needed because image versions don't use 'v' prefix
-                                string(name: 'IMAGE_TAG', value: TAG.replaceFirst(/^v(?=\d)/, ''))
+                                string(name: 'IMAGE_TAG', value: env.TAG)
                         ],
                         wait: false
             }
