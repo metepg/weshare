@@ -66,6 +66,7 @@ export class UserStatsComponent implements OnInit {
   initializeChart() {
     this.translationService.getTranslatedCategories().subscribe((categories) => {
       this.chartLabels = categories.map((c) => c.label);
+      this.categories = categories;
       if (this.currentUser) {
         this.getTotalAmountByUserId(this.currentUser.id);
       }
@@ -140,6 +141,7 @@ export class UserStatsComponent implements OnInit {
   handleOnChange() {
     const rawUser: unknown = this.filterForm.get('user')?.value;
     const user: number | null = typeof rawUser === 'number' ? rawUser : null;
+    console.log(user)
 
     this.categoryVisibilityState = Array.from({ length: this.categories.length }, () => false);
 
