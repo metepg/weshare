@@ -143,6 +143,48 @@ class BillIntegrationTest extends TestcontainersConfig {
         assertThat(billRepository.findById(savedBill.id())).isEmpty();
     }
 
+    @Test
+    @DisplayName("Should return all recent bills for authorized user")
+    void findRecentBills_shouldReturnAllBills() {
+        List<BillDTO> returnedBills = given(requestSpecification)
+                .when()
+                .get(BASE_URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .response()
+                .jsonPath()
+                .getList(".", BillDTO.class);
+
+        assertThat(returnedBills).hasSize(NUMBER_OF_BILLS);
+    }
+
+    @Test
+    @DisplayName("Should return bills by user ID for authorized user")
+    void findBillsByUserId_shouldReturnSpecificUserBills() {
+        List<BillDTO> returnedBills = given(requestSpecification)
+                .when()
+                .get(BASE_URL + "/user/{userId}", user.getId())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .response()
+                .jsonPath()
+                .getList(".", BillDTO.class);
+
+        assertThat(returnedBills).hasSize(NUMBER_OF_BILLS);
+    }
+
+    @Test
+    @DisplayName("Should return not found when given invalid userId")
+    void none() {
+        given(requestSpecification)
+            .when()
+            .get(BASE_URL + "/user/{userId}", 0)
+            .then()
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
     private void generateBillsForTests() {
         List<Bill> bills = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BILLS; i++) {

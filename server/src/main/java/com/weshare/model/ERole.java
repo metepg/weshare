@@ -3,7 +3,7 @@ package com.weshare.model;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("eRole")
 public final class ERole {
 
     // Add Role1 and Role2 as env_variables to application-dev.properties and application.properties

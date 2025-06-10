@@ -20,7 +20,7 @@ import { AppRoutingModule } from './app/app-routing.module';
 import {
   HttpClient,
   provideHttpClient,
-  withInterceptorsFromDi
+  withXsrfConfiguration
 } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import {
@@ -70,7 +70,7 @@ bootstrapApplication(AppComponent, {
     ),
     importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ),
     ConfirmationService,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXsrfConfiguration({})),
     provideAnimations(),
     providePrimeNG({
       theme: {

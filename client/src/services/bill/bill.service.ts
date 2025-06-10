@@ -7,9 +7,9 @@ import { SearchFilter } from '../../model/SearchFilter';
 
 @Injectable({providedIn: 'root'})
 export class BillService {
-  private apiUrl = environment.apiUrl + '/bills';
+  private readonly apiUrl = environment.apiUrl + '/bills';
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
   createBill(bill: Bill): Observable<HttpResponse<Bill>> {
@@ -32,8 +32,8 @@ export class BillService {
     );
   }
 
-  getBillsByUserId(id: number): Observable<Bill[]> {
-    return this.http.get<Bill[]>(`${this.apiUrl}/${id}`);
+  getBillsByUserId(userId: number): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.apiUrl}/user/${userId}`);
   }
 
   getBillsByFilter(searchFilter: SearchFilter): Observable<HttpResponse<Bill[]>> {
