@@ -5,8 +5,8 @@ import com.weshare.model.Group;
 import com.weshare.model.User;
 import com.weshare.repository.GroupRepository;
 import com.weshare.repository.UserRepository;
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
+
+import static io.restassured.RestAssured.given;
 
 /**
  * Abstract base class for integration tests using Testcontainers and Spring Boot.
@@ -49,20 +51,34 @@ public abstract class TestcontainersConfig {
         this.group = groupRepository.save(MockDataProvider.createMockGroup());
         this.user = userRepository.save(MockDataProvider.createMockUser(group));
 
-        // Login and get session cookie
-        String sessionCookie = RestAssured.given()
-                .port(port)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .formParam("username", MockDataProvider.USER_NAME)
-                .formParam("password", MockDataProvider.USER_PASSWORD)
-                .post("/login")
-                .getCookie("JSESSIONID");
+        Response initialResponse = given()
+            .port(port)
+            .get("/");
+
+        String sessionCookie = initialResponse.getCookie("JSESSIONID");
+        String xsrfToken = initialResponse.getCookie("XSRF-TOKEN");
+
+        // Login with credentials and XSRF token
+        Response loginResponse = given()
+            .port(port)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .cookie("JSESSIONID", sessionCookie)
+            .cookie("XSRF-TOKEN", xsrfToken)
+            .header("X-XSRF-TOKEN", xsrfToken)
+            .formParam("username", MockDataProvider.USER_NAME)
+            .formParam("password", MockDataProvider.USER_PASSWORD)
+            .post("/login");
+
+        String jsessionid = loginResponse.getCookie("JSESSIONID");
+        String loggedInXsrfToken = loginResponse.getCookie("XSRF-TOKEN");
 
         requestSpecification = new RequestSpecBuilder()
-                .setPort(port)
-                .addCookie("JSESSIONID", sessionCookie) // Add session cookie for authenticated requests
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+            .setPort(port)
+            .addCookie("JSESSIONID", jsessionid)
+            .addCookie("XSRF-TOKEN", loggedInXsrfToken)
+            .addHeader("X-XSRF-TOKEN", loggedInXsrfToken)
+            .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     }
 
     @AfterEach
@@ -71,4 +87,5 @@ public abstract class TestcontainersConfig {
         groupRepository.deleteAll();
     }
 }
+
 
