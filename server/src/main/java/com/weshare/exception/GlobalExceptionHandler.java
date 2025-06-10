@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("AccessDeniedException: ",  ex);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, "Forbidden");
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundExceptionException(UsernameNotFoundException ex) {
+        LOG.warn("UsernameNotFoundException: ",  ex);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, "User not found");
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

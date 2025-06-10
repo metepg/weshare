@@ -115,7 +115,7 @@ public class BillService {
     public List<BillDTO> findBillsByUserId(Integer id) {
         LOG.debug("User '{}' fetching bills for user ID: {}", securityService.getCurrentUser().name(), id);
         User user = userService.findUserById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found when fetching bills for user ID: " + id));
         return billRepository.findBillsByOwner(user)
                 .stream()
                 .map(billConverter::billToDTO)

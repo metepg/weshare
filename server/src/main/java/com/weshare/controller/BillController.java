@@ -45,10 +45,10 @@ public class BillController {
         return billService.findRecentBills();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
-    public List<BillDTO> findBillsByUserId(@PathVariable Integer id) {
-        return billService.findBillsByUserId(id);
+    public List<BillDTO> findBillsByUserId(@PathVariable Integer userId) {
+        return billService.findBillsByUserId(userId);
     }
 
     @PostMapping("/search")
