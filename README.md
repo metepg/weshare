@@ -12,9 +12,6 @@
 - [Development](#development)
 - [Resetting database](#resetting-database)
 - [Features](#features)
-  - [Create bills](#create-bills)
-  - [Show added bills](#show-added-bills)
-  - [Pay debt](#pay-debt)
 - [Extra](#extra)
 - [TODO](#todo)
 
@@ -73,37 +70,16 @@ Test users:
 
 # Features
 
-These features have been implemented so far:
-
-| Feature          | Implemented | Preview Recorded |
-|------------------|-------------|------------------|
-| Create bills     | ✅           | ✅                |
-| Show added bills | ✅           | ✅                |
-| Pay debt         | ✅           | ✅                |
-| Edit bills       | ✅           | ❌                |
-| Delete bills     | ✅           | ❌                |
-| Show statistics  | ✅           | ❌                |
-
-## Create bills
-
-![Create bill](resources/videos/CreateBill.gif)
-
-## Show added bills
-
-![Show bills](resources/videos/Bills.gif)
-
-## Pay debt
-
-![Pay debt](resources/videos/PayDebt.gif)
+Check [Weshare -> Wiki -> Features](https://github.com/metepg/weshare/wiki/Features) for all implemented features.
 
 # Extra
 
-For production optimized .jar run `./mvnw clean package` in project root
+- For production optimized .jar run `./mvnw clean package` in project root
+- This project also has a Dockerfile, so it can be deployed as a container
 
 # TODO:
 - Add GIFs for all implemented features
-- Support for more than 2 users
-- Implement more tests
+- Support for more than two users
 - Internationalization and localization
 
 ---
