@@ -16,6 +16,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.util.StringUtils;
 
 import java.util.function.Supplier;
@@ -28,22 +29,34 @@ public class SecurityConfig {
     @Value("${spring.security.default-success-url:/}")
     private String defaultSuccessUrl;
 
+    private static final String CSP_POLICY_DIRECTIVES =
+        "default-src 'self'; "
+            + "script-src 'self' 'unsafe-inline'; "
+            + "style-src 'self' 'unsafe-inline'; "
+            + "img-src 'self' data:; "
+            + "object-src 'none';";
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @SuppressWarnings("java:S3330") // HttpOnlyFalse() is ok since JSESSION and XSRF cookie are both in use
+    @SuppressWarnings("java:S3330") // withHttpOnlyFalse() is ok since JSESSIONID and XSRF cookie are both in use
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-            .formLogin(form -> form
-                .defaultSuccessUrl(defaultSuccessUrl, true)
-                .failureUrl("/login?error"))
+            .headers(headers -> headers
+                .referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN))
+                .contentSecurityPolicy(csp -> csp.policyDirectives(CSP_POLICY_DIRECTIVES)))
+            .authorizeHttpRequests(auth ->
+                auth.requestMatchers("/favicon.ico", "/css/**").permitAll() // Allow these requests without authentication
+                    .anyRequest().authenticated()).formLogin(form ->
+                form
+                    .defaultSuccessUrl(defaultSuccessUrl, true)
+                    .failureUrl("/login?error"))
             .build();
     }
 
