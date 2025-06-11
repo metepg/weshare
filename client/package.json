@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "scripts": {
     "start": "./node/node ./node_modules/@angular/cli/bin/ng serve --watch --proxy-config proxy.conf.json --configuration development",
     "build": "./node/node ./node_modules/@angular/cli/bin/ng build --configuration production",
