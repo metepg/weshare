@@ -29,28 +29,32 @@ Prerequisites:
 
 
 ```sh
-# Running this will install maven dependencies.
+# Running this from project root will install maven dependencies.
 # Maven build process also installs node locally to this project and npm dependencies in client directory.
 ./mvnw compile
 ```
 
 # Development
 
-Requires Docker / Podman daemon to be running. Run these to start the app for development.
+Requires Docker / Podman daemon to be running.
 
+Run these to start the app for development.
+
+`project root`:
 ```sh
-./mvnw -f server/pom.xml spring-boot:test-run
+./mvnw -f server/pom.xml spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+
+`client` directory
 ```sh
-cd client && npm start
+npm start
+
 # IMPORTANT FOR WINDOWS USERS
 # Before starting client you need to change paths in package.json
 # from ./node/node to .\\node\\node etc..
 ```
 
-Insert test data by finding testcontainer database with `docker ps -a`
-
-Then run from project root `docker exec -i {container_name} psql -U test -d weshare < server/src/main/resources/db/create-test-data.sql`
+Insert users and test data by running this from project root `docker exec -i weshare_db psql -U postgres -d weshare < server/src/main/resources/db/create-test-data.sql`
 
 Navigate to http://localhost:8080
 

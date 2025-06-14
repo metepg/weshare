@@ -30,11 +30,11 @@ public class SecurityConfig {
     private String defaultSuccessUrl;
 
     private static final String CSP_POLICY_DIRECTIVES =
-        "default-src 'self'; "
-            + "script-src 'self' 'unsafe-inline'; "
-            + "style-src 'self' 'unsafe-inline'; "
-            + "img-src 'self' data:; "
-            + "object-src 'none';";
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data:; " +
+        "object-src 'none';";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
