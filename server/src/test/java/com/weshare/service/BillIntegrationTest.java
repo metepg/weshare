@@ -6,6 +6,7 @@ import com.weshare.mocks.MockDataProvider;
 import com.weshare.model.Bill;
 import com.weshare.model.Category;
 import com.weshare.model.SearchFilter;
+import com.weshare.model.StatsFilter;
 import com.weshare.repository.BillRepository;
 import com.weshare.repository.CategoryRepository;
 import io.restassured.response.Response;
@@ -49,7 +50,6 @@ class BillIntegrationTest extends TestcontainersConfig {
                 .map(categoryRepository::save)
                 .toList();
 
-        generateBillsForTests();
     }
 
     @AfterEach
@@ -61,6 +61,7 @@ class BillIntegrationTest extends TestcontainersConfig {
     @Test
     @DisplayName("Save bill")
     void saveBill() {
+        generateBillsForTests();
         Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
         BillDTO originalBill = MockDataProvider.createMockBillDTO(user, category);
         BillDTO savedBill = saveBill(originalBill);
@@ -107,6 +108,7 @@ class BillIntegrationTest extends TestcontainersConfig {
     @Test
     @DisplayName("Should return bills based on search params")
     void filterBillsByCriteria() {
+        generateBillsForTests();
         Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
         Bill uniqueBill = MockDataProvider.createMockBill(user, category);
         uniqueBill.setDescription("SearchingBillByParams");
@@ -146,6 +148,7 @@ class BillIntegrationTest extends TestcontainersConfig {
     @Test
     @DisplayName("Should return all recent bills for authorized user")
     void findRecentBills_shouldReturnAllBills() {
+        generateBillsForTests();
         List<BillDTO> returnedBills = given(requestSpecification)
                 .when()
                 .get(BASE_URL)
@@ -162,6 +165,7 @@ class BillIntegrationTest extends TestcontainersConfig {
     @Test
     @DisplayName("Should return bills by user ID for authorized user")
     void findBillsByUserId_shouldReturnSpecificUserBills() {
+        generateBillsForTests();
         List<BillDTO> returnedBills = given(requestSpecification)
                 .when()
                 .get(BASE_URL + "/user/{userId}", user.getId())
@@ -185,11 +189,81 @@ class BillIntegrationTest extends TestcontainersConfig {
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
+    @Test
+    @DisplayName("Returns bills for given year")
+    void returnsBillsForGivenYear() {
+        generateBillsForTests();
+        int year = LocalDate.now().getYear();
+
+        List<BillDTO> result = given(requestSpecification)
+            .when()
+            .get(BASE_URL + "/statistics/{year}", year)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getList(".", BillDTO.class);
+
+        assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Pays debt and returns updated bills")
+    void paysDebtAndReturnsUpdatedBills() {
+        BillDTO savedBill = createAndSaveBill();
+
+        BillDTO modified = new BillDTO(
+            savedBill.id(),
+            savedBill.amount(),
+            savedBill.ownAmount(),
+            savedBill.description(),
+            savedBill.date(),
+            true,
+            savedBill.categoryId(),
+            savedBill.ownerId(),
+            savedBill.ownerName()
+        );
+
+        List<BillDTO> result = given(requestSpecification)
+            .body(modified)
+            .post(BASE_URL + "/pay")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getList(".", BillDTO.class);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().paid()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Returns stats for given user and range")
+    void returnsStatsForUserAndRange() {
+        generateBillsForTests();
+        StatsFilter filter = new StatsFilter(
+            List.of("2024", "2025"),
+            user.getName()
+        );
+
+        List<BillDTO> result = given(requestSpecification)
+            .body(filter)
+            .get(BASE_URL + "/stats")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getList(".", BillDTO.class);
+
+        assertThat(result).isNotEmpty();
+    }
+
     private void generateBillsForTests() {
         List<Bill> bills = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BILLS; i++) {
             Category category = categories.get(ThreadLocalRandom.current().nextInt(NUMBER_OF_CATEGORIES));
             Bill bill = MockDataProvider.createMockBill(user, category);
+            bill.setDate(LocalDate.now().minusDays(ThreadLocalRandom.current().nextInt(30)));
             bills.add(bill);
         }
         billRepository.saveAll(bills);

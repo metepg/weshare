@@ -28,7 +28,10 @@ import static io.restassured.RestAssured.given;
  *   <li>Pre-configured RestAssured {@link RequestSpecification}</li>
  * </ul>
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    useMainMethod = SpringBootTest.UseMainMethod.ALWAYS
+)
 @ActiveProfiles("test")
 public abstract class TestcontainersConfig {
 

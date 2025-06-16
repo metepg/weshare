@@ -35,15 +35,16 @@ public class MockDataProvider {
     }
 
     public static Bill createMockBill(User user, Category category) {
-        Bill bill = new Bill();
-        bill.setOwner(user);
-        bill.setAmount(getRandomAmount());
-        bill.setOwnAmount(getRandomOwnAmount(bill.getAmount()));
-        bill.setCategory(category);
-        bill.setPaid(getRandomBoolean());
-        bill.setDate(getRandomDate());
-        bill.setDescription(getRandomString());
-        return bill;
+        double amount = getRandomAmount();
+        return Bill.builder()
+            .owner(user)
+            .amount(amount)
+            .ownAmount(getRandomOwnAmount(amount))
+            .category(category)
+            .paid(getRandomBoolean())
+            .date(getRandomDate())
+            .description(getRandomString())
+            .build();
     }
 
     public static BillDTO createMockBillDTO(User user, Category category) {
