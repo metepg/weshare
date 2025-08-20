@@ -1,18 +1,18 @@
-FROM eclipse-temurin:21-jre
-
-# Create non-root user
-RUN adduser --system appuser
-
+# ---------- build ----------
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Spring Boot JAR
-COPY server/target/*.jar app.jar
+COPY . .
+RUN --mount=type=cache,target=/root/.m2 mvn package -DskipTests
 
-# Create logs directory and set ownership
-RUN mkdir -p logs && chown -R appuser /app
+# ---------- runtime ----------
+FROM eclipse-temurin:21-jre
+WORKDIR /app
 
-# Switch to non-root user
+RUN adduser --system appuser
 USER appuser
 
+COPY --from=build /app/server/target/*.jar app.jar
+
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
-CMD ["--spring.config.location=file:/config/"]
