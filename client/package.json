@@ -3,11 +3,11 @@
   "version": "2.8.1",
   "scripts": {
     "start": "./node/node ./node_modules/@angular/cli/bin/ng serve --watch --proxy-config proxy.conf.json --configuration development",
-    "build": "./node/node ./node_modules/@angular/cli/bin/ng build --configuration production",
+    "build": "ng build --configuration production",
     "watch": "./node/node ./node_modules/@angular/cli/bin/ng --watch --configuration development",
     "test": "./node/node ./node_modules/@angular/cli/bin/ng test",
     "bprod": "./node/node ./node_modules/@angular/cli/bin/ng build --configuration production",
-    "lint": "./node/node ./node_modules/@angular/cli/bin/ng lint",
+    "lint": "ng lint",
     "lint-fix": "./node/node ./node_modules/@angular/cli/bin/ng lint --fix"
   },
   "private": true,
