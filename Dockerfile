@@ -1,5 +1,5 @@
 # ---------- frontend ----------
-FROM node:20-alpine AS client
+FROM node:lts-alpine AS client
 WORKDIR /client
 
 COPY client/package*.json ./
