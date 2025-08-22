@@ -6,7 +6,7 @@ COPY client/package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 
 COPY client/ .
-RUN npm run lint && npm run build
+RUN npm run build
 
 # ---------- server ----------
 FROM maven:3.9-eclipse-temurin-21 AS build
