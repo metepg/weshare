@@ -1,7 +1,7 @@
 <!--// Category 7 is debtPaid box-->
 @if (category === 7) {
   <hr>
-  <p style="text-align: center;"><i>{{ date | date: 'd.M.YYYY' }}</i></p>
+  <p style="text-align: center;"><i>{{ date | date: 'd.M.yyyy' }}</i></p>
   <p style="text-align: center"><i>
     {{ userIsOwnerOfBill ? 'Maksoit velat' : ownerName + ' maksoi velat' }}
     {{ ownAmount | number: '1.2-2' }} {{ 'currency' | translate }}</i></p>
@@ -10,7 +10,7 @@
   <div [ngClass]="paid ? 'isPaid' : ''">
     <i style="margin: 0 6px ;color: grey">{{ ownerName }}</i>
     <br>
-    <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.YYYY' }}</i>
+    <i style="margin: 0 6px; color: grey">{{ date | date: 'd.M.yyyy' }}</i>
      
     <div (click)="editBill()" [ngClass]="[userIsOwnerOfBill ? 'own' : 'other']" style="width: 185px;">
       <p id="amount">{{ +amount | number : '1.2-2' }} €</p>
