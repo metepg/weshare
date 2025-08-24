@@ -2,7 +2,6 @@ import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
-import { SidebarModule } from 'primeng/sidebar';
 import { BillService } from '../../services/bill/bill.service';
 import { UserService } from '../../services/user/user.service';
 import { BillFormComponent } from '../bill-form/bill-form.component';
@@ -19,7 +18,7 @@ import { CategoryService } from '../../services/category/category.service';
   selector: 'app-show-bills',
   templateUrl: './show-bills.component.html',
   styleUrls: ['./show-bills.component.css'],
-  imports: [BillComponent, ProgressSpinnerModule, SidebarModule, BillFormComponent, DialogModule, TranslateModule]
+  imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslateModule]
 })
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
   protected readonly Math = Math;

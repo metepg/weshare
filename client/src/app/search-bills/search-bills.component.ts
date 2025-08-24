@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
-import { CalendarModule } from 'primeng/calendar';
 import {
   FormBuilder,
   FormGroup,
@@ -35,7 +34,6 @@ import { Drawer } from 'primeng/drawer';
     InputIconModule,
     IconFieldModule,
     InputTextModule,
-    CalendarModule,
     FormsModule,
     MultiSelectModule,
     ReactiveFormsModule,

@@ -1,19 +1,11 @@
-<p-tabView (onChange)="onTabChange($event)" (click)="checkIfSearch($event)">
-  <p-tabPanel>
-    <ng-template pTemplate="header">
-      <i class="pi pi-chart-bar"></i>
-    </ng-template>
-  </p-tabPanel>
-  <p-tabPanel>
-    <ng-template pTemplate="header">
-      <i class="pi pi-search"></i>
-    </ng-template>
-  </p-tabPanel>
-  <p-tabPanel>
-    <ng-template pTemplate="header">
-      <i class="pi pi-user"></i>
-    </ng-template>
-  </p-tabPanel>
-</p-tabView>
+<nav style="display: flex; justify-content: center;">
+  <p-tabs [(value)]="activeTab" (valueChange)="onTabChange($event)">
+    <p-tablist>
+      <p-tab value="0"><i class="pi pi-chart-bar"></i></p-tab>
+      <p-tab value="1"><i class="pi pi-search"></i></p-tab>
+      <p-tab value="2"><i class="pi pi-user"></i></p-tab>
+    </p-tablist>
+  </p-tabs>
+</nav>
 
 <router-outlet></router-outlet>
