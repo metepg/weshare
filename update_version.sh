@@ -24,7 +24,7 @@ mvn versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false
 npm --prefix client version "$NEW_VERSION" --no-git-tag-version
 
 # Commit changes
-git add pom.xml server/pom.xml client/pom.xml
+git add pom.xml server/pom.xml
 git add client/package.json client/package-lock.json
 git commit -m "Version $NEW_VERSION"
 
