@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -15,44 +15,49 @@ import { User } from '../../model/User';
     NgClass
   ]
 })
-export class BillComponent implements OnInit, OnChanges {
-  @Input() bill: Bill;
-  @Input() user: User;
-  amount: number;
-  category: number;
-  date: Date;
-  description: string;
-  paid: boolean;
-  ownAmount: number;
-  ownerId: number;
-  ownerName: string;
-  userIsOwnerOfBill: boolean;
-  @Output() editBillEmitter = new EventEmitter<Bill>();
+export class BillComponent {
+  user = input<User>();
+  bill = input<Bill>();
+  editBillEmitter = output<Bill>();
 
-  ngOnInit(): void {
-    this.assignBillProperties();
+  get isDebtPaidBox() {
+    // Category 7 is the debtPaid box
+    return this.bill()?.categoryId === 7;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['bill'].currentValue != null) {
-      this.assignBillProperties();
-    }
+  get formattedDate() {
+    return this.bill()?.date;
   }
 
-  private assignBillProperties(): void {
-    this.amount = this.bill.amount;
-    this.category = this.bill.categoryId;
-    this.date = this.bill.date;
-    this.description = this.bill.description;
-    this.paid = this.bill.paid;
-    this.ownAmount = Math.abs(this.bill.ownAmount);
-    this.ownerId = this.bill.ownerId;
-    this.ownerName = this.bill.ownerName;
-    this.userIsOwnerOfBill = this.ownerId === this.user.id;
+  get ownerText() {
+    return this.isUserOwnerOfBill
+      ? 'Maksoit velat'
+      : `${this.bill()?.ownerName} maksoi velat`;
+  }
+
+  get ownShareText() {
+    return this.isUserOwnerOfBill
+      ? 'Oma'
+      : `${this.bill()?.ownerName}n`;
+  }
+
+  get ownAmount() {
+    return Math.abs(this.bill()?.ownAmount ?? 0);
+  }
+
+  get isBillPaid() {
+    return this.bill()?.paid;
+  }
+
+  get isUserOwnerOfBill() {
+    return this.bill()?.ownerId === this.user()?.id;
   }
 
   editBill() {
-    if (this.bill.paid) return;
-    this.editBillEmitter.emit(this.bill);
+    const bill = this.bill();
+    if (!bill || bill.paid) {
+      return;
+    }
+    this.editBillEmitter.emit(bill);
   }
 }
