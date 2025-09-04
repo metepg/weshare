@@ -24,7 +24,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "JOIN b.owner u " +
             "JOIN u.group g " +
             "WHERE g.id = :groupId " +
-            "ORDER BY b.date DESC")
+        "ORDER BY b.date DESC,b.id DESC")
     List<Bill> findRecentBills(@Param("groupId") UUID groupId, Pageable pageable);
 
     List<Bill> findBillsByOwner(User user);
