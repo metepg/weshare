@@ -36,8 +36,18 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            # latest for PR merges or manual runs
-            type=raw,value=latest,enable=${{ github.event_name != 'push' }}
+            # push test for dev merges
+            type=raw,value=test,enable=${{ github.event.pull_request.base.ref == 'dev' }}
+
+            # push test for manual runs
+            type=raw,value=test,enable=${{ github.event_name == 'workflow_dispatch' }}
+
+            # push latest for main merges
+            type=raw,value=latest,enable=${{ github.event.pull_request.base.ref == 'main' }}
+
+            # push latest for direct pushes to main
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' && github.event_name == 'push' }}
+
             # semver tags for git tag pushes
             type=semver,pattern={{version}},prefix=
             type=semver,pattern={{major}}.{{minor}},prefix=
