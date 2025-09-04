@@ -1,9 +1,7 @@
 name: Run tests and linter
 
 on:
-  pull_request:
-    branches: [ dev, main ]
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   frontend:
