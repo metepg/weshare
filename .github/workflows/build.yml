@@ -1,4 +1,4 @@
-name: Build & Push to Github Container Registry
+name: Build and Deploy
 
 on:
   workflow_dispatch:
@@ -27,7 +27,10 @@ jobs:
 
   build:
     needs: [ tests ]
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: ${{ always() && (
+      (github.event_name == 'workflow_dispatch' && !inputs.run_tests) ||
+      ((github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.pull_request.merged == true) && needs.tests.result == 'success')
+      ) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,3 +76,17 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Deploy to test environment
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          curl --request GET \
+            --url "${{ secrets.DEPLOY_WEBHOOK_DEV }}" \
+            --header "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN_DEV }}"
+
+      - name: Deploy to production environment
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl --request GET \
+            --url "${{ secrets.DEPLOY_WEBHOOK_MAIN }}" \
+            --header "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN_MAIN }}"
