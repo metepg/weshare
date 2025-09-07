@@ -90,7 +90,7 @@
               <td style="white-space: normal; word-wrap: break-word; max-width: 100px;">
                 {{ bill.description }}
               </td>
-              <td>{{ bill.ownAmount | number:'1.2-2' }}{{ 'currency' | translate}}</td>
+              <td>{{ bill.amount | number:'1.2-2' }}{{ 'currency' | translate }}</td>
               <td>{{ bill.date | date: 'd.M.yyyy' }}</td>
             </tr>
           </ng-template>
