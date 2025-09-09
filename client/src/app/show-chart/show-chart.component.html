@@ -1,29 +1,29 @@
 <main style="display: grid; justify-content: center">
 <div style="margin-top: 10px; height: 100%; width: 100%; display: grid; place-self: center">
   <p-select
-    (onChange)="onChange($event)"
+    (ngModelChange)="onYearChange($event)"
     [ngModel]="selectedYear()"
     [options]="yearOptions()"
     [style.margin]="'auto'"
     optionLabel="name"
     optionValue="code">
   </p-select>
-  @if (bills$ | async; as bills) {
-    @if (bills.length > 0) {
-      <p-chart
-        [data]="data()"
-        [options]="STACKED_OPTIONS"
-        height="500px"
-        type="bar"
-        width="350px">
-      </p-chart>
-    } @else {
-      <p style="text-align: center; font-size: 16px; margin-top: 30px">{{ 'noBillsFromSelectedYear' | translate }}</p>
-    }
-  } @else {
+  @if (billsByYear.isLoading()) {
     <div style="margin-top: 200px; display: grid; place-items: center">
       <p-progressSpinner></p-progressSpinner>
     </div>
+  } @else if (billsByYear.value()?.length) {
+    <p-chart
+      [data]="data()"
+      [options]="CHART_OPTIONS"
+      height="500px"
+      type="bar"
+      width="350px">
+    </p-chart>
+  } @else {
+    <p style="text-align: center; font-size: 16px; margin-top: 30px">
+      {{ 'noBillsFromSelectedYear' | translate }}
+    </p>
   }
 </div>
 </main>

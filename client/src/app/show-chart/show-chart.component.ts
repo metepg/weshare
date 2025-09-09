@@ -1,25 +1,15 @@
-import {
-  Component,
-  EventEmitter, inject,
-  Input,
-  OnInit,
-  Output,
-  signal
-} from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Component, computed, inject, model, signal } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { ChartData } from 'chart.js';
 import { Bill } from '../../model/Bill';
-import { BAR_CHART_OPTIONS, } from '../../constants/constants';
+import { BAR_CHART_OPTIONS } from '../../constants/constants';
 import { BillCategoryCode } from '../../constants/Categories';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
-import { AsyncPipe } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Select, SelectChangeEvent } from 'primeng/select';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-show-chart',
@@ -27,51 +17,38 @@ import { Select, SelectChangeEvent } from 'primeng/select';
   imports: [
     FormsModule,
     ChartModule,
-    AsyncPipe,
     ProgressSpinnerModule,
     TranslateModule,
     Select
   ],
   styleUrls: ['./show-chart.component.css']
 })
-export class ShowChartComponent implements OnInit {
+export class ShowChartComponent {
   private readonly billService = inject(BillService);
 
-  protected readonly STACKED_OPTIONS = BAR_CHART_OPTIONS;
-  yearOptions = signal<{ name: string; code: number }[]>([]);
+  yearOptions = signal(generateYearOptions(5));
   selectedYear = signal<number>(new Date().getFullYear());
-  data = signal<ChartData | null>(null);
-  monthlyValuesByCategory = signal<Map<string, number[]>>(new Map());
-  bills$!: Observable<Bill[]>;
-  @Input() showSideBar = signal<boolean>(false);
-  @Output() showSideBarChange = new EventEmitter<boolean>();
+  billsByYear = this.billService.getBillsByYear(this.selectedYear);
+  showSideBar = model<boolean>(false);
 
-  onChange(event: SelectChangeEvent): void {
-    const value: unknown = event.value;
-    if (typeof value === 'number') {
-      this.getStatistics(value);
-    }
-  }
+  protected readonly CHART_OPTIONS = BAR_CHART_OPTIONS;
 
-  ngOnInit(): void {
-    this.yearOptions.set(generateYearOptions(5));
-    this.getStatistics(this.selectedYear());
-  }
+  readonly monthlyValues = computed(() => {
+    const bills = this.billsByYear.value();
+    return bills
+      ? this.calculateMonthlyAmounts(bills)
+      : null;
+  });
 
-  /**
-   * Fetches bills for a given year, processes them to aggregate monthly values by category,
-   * and updates the component's state with the new data.
-   *
-   * @param year - The year for which to fetch and process bill data.
-   */
-  getStatistics(year: number): void {
-    this.bills$ = this.billService.getBillsByYear(year).pipe(
-      tap((bills: Bill[]) => {
-        const monthlyValuesByCategory = this.aggregateMonthlyValues(bills);
-        this.monthlyValuesByCategory.set(new Map(monthlyValuesByCategory));
-        this.data.set(generateChartData(monthlyValuesByCategory, false))
-      })
-    )
+  readonly data = computed<ChartData | null>(() => {
+    const monthlyValues = this.monthlyValues();
+    return monthlyValues
+      ? generateChartData(monthlyValues, false)
+      : null;
+  });
+
+  onYearChange(year: number) {
+    this.selectedYear.set(year);
   }
 
   /**
@@ -100,7 +77,7 @@ export class ShowChartComponent implements OnInit {
  * }
  * ```
  */
-  private aggregateMonthlyValues(bills: Bill[]): Map<string, number[]> {
+  private calculateMonthlyAmounts(bills: Bill[]): Map<string, number[]> {
     const monthlyValuesByCategory = new Map<string, number[]>();
     const removedCategory = bills.filter((b) => b.categoryId !== 7);
 

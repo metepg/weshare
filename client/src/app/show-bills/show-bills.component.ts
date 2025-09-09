@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, inject, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, effect, inject } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
@@ -20,7 +20,7 @@ import { CategoryService } from '../../services/category/category.service';
   styleUrls: ['./show-bills.component.css'],
   imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslateModule]
 })
-export class ShowBillsComponent implements OnInit, AfterViewChecked {
+export class ShowBillsComponent implements AfterViewChecked {
   private readonly billService = inject(BillService);
   private readonly userService = inject(UserService);
   private readonly debtService = inject(DebtService);
@@ -30,14 +30,16 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
 
   protected readonly Math = Math;
   showEditBillDialog = false;
-  bills: Bill[] = [];
+  bills = this.billService.getBills();
   bill: Bill;
   user: User;
 
-  ngOnInit() {
-    this.billService.getBills().subscribe((bills) => {
-      this.bills = bills;
-      this.setUserAndCategories();
+  constructor() {
+    effect(() => {
+      const bills = this.bills.value();
+      if (bills) {
+        this.setUserAndCategories();
+      }
     });
   }
 
@@ -72,26 +74,30 @@ export class ShowBillsComponent implements OnInit, AfterViewChecked {
     bill.date = this.bill.date;
     this.billService.updateBill(bill).pipe(
       switchMap((updatedBill) => {
-        this.bills = this.bills.map((bill) => bill.id === updatedBill.id ? updatedBill : bill);
+        const current = this.bills.value() ?? [];
+        this.bills.set(
+          current.map((b) => b.id === updatedBill.id ? updatedBill : b)
+        );
         this.showEditBillDialog = false;
         return this.userService.getTotalDebtAmount(this.user.id);
       })
     ).subscribe((amount) => {
-      this.messageService.add({severity: 'success', summary: `Muokkaus onnistui.`,});
-      this.debtService.setDebt(amount)
+      this.messageService.add({ severity: 'success', summary: 'Muokkaus onnistui.' });
+      this.debtService.setDebt(amount);
     });
   }
 
   handleDeleteBill(id: number) {
     this.billService.deleteBillById(id).pipe(
       switchMap(() => {
-        this.bills = this.bills.filter((bill) => bill.id !== id);
+        const current = this.bills.value() ?? [];
+        this.bills.set(current.filter((b) => b.id !== id));
         this.showEditBillDialog = false;
         return this.userService.getTotalDebtAmount(this.user.id);
       })
     ).subscribe((amount) => {
-      this.messageService.add({severity: 'success', summary: `Laskun poistaminen onnistui.`,});
-      this.debtService.setDebt(amount)
+      this.messageService.add({ severity: 'success', summary: 'Laskun poistaminen onnistui.' });
+      this.debtService.setDebt(amount);
     });
   }
 }

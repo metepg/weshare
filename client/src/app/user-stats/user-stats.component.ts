@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
@@ -35,88 +35,104 @@ export class UserStatsComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly localStorageService = inject(LocalStorageService);
 
-  filterForm: FormGroup;
+  currentUser = signal<User | null>(this.localStorageService.getUser());
+  currentUserId = computed(() => this.currentUser()?.id ?? 0);
+  categoryVisibilityState = signal<boolean[]>([]);
+  billsByUser = this.billService.getBillsByUserId(this.currentUserId);
+
   users: { label: string; value: number }[] = [];
-  totalAmount = signal(0);
-  chartData: ChartData;
-  chartOptions: ChartOptions;
-  currentUser: User | null;
-  categories: { label: string; value: BillCategoryCode }[];
-  chartLabels: string [] = [];
-  calculationResult: CalculationResult;
-  categoryVisibilityState: boolean[] = [];
+  categories: { label: string; value: BillCategoryCode }[] = [];
+  chartLabels: string[] = [];
+  filterForm!: FormGroup;
 
-  ngOnInit() {
-    this.currentUser = this.localStorageService.getUser();
-
-    this.userService.getUsers().subscribe((users) => {
-      this.users = users.map((user) => ({ label: user.name, value: user.id }));
-      this.initializeChart();
-    });
-
-    this.filterForm = this.fb.group({
-      range: [null],
-      user: [this.currentUser?.id]
-    });
-  }
-
-  initializeChart() {
-    this.translationService.getTranslatedCategories().subscribe((categories) => {
-      this.chartLabels = categories.map((c) => c.label);
-      this.categories = categories;
-      if (this.currentUser) {
-        this.getTotalAmountByUserId(this.currentUser.id);
-      }
-    })
-    this.chartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
-          },
-          onClick: (event, legendItem, legend) => {
-            if (legendItem.index != null) {
-              this.updateTotalAmount(legendItem.index)
-              legend.chart.toggleDataVisibility(legendItem.index);
-            }
+  chartOptions: ChartOptions = {
+    animation: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+        },
+        onClick: (_event, legendItem, legend) => {
+          if (legendItem.index != null) {
+            this.updateTotalAmount(legendItem.index);
+            legend.chart.toggleDataVisibility(legendItem.index);
             legend.chart.update();
-          },
+          }
         }
       }
-    };
-  }
+    }
+  };
 
-  getTotalAmountByUserId(id: number) {
-    this.billService.getBillsByUserId(id).subscribe((bills) => {
-      this.calculationResult = this.calculateTotals(bills);
-      this.totalAmount.set(this.calculationResult.totalOwnAmount);
-      this.updateChart(this.calculationResult);
-    });
-  }
+  calculationResult = computed(() => {
+    const bills = this.billsByUser.value();
+    return bills ? this.calculateTotals(bills) : null;
+  });
 
-  updateChart(result: CalculationResult) {
-    if (this.chartLabels.length === 0) return;
+  totalAmount = computed(() => {
+    const result = this.calculationResult();
+    const visibility = this.categoryVisibilityState();
 
-    this.chartData = {
+    if (!result) {
+      return 0;
+    }
+
+    const excludedCategoryTotalAmount = Object.entries(result.categorizedTotals)
+      .reduce((acc, [index, value]) => (visibility[+index] ? acc + value : acc), 0);
+
+    return result.totalOwnAmount - excludedCategoryTotalAmount;
+  });
+
+  chartData = computed<ChartData | null>(() => {
+    const result = this.calculationResult();
+
+    if (!result || this.chartLabels.length === 0) {
+      return null;
+    }
+
+    const values = this.chartLabels.map((_, i) => result.categorizedTotals[i] ?? 0);
+
+    return {
       labels: this.chartLabels,
       datasets: [
         {
-          data: Object.values(result.categorizedTotals),
+          data: values,
           backgroundColor: CATEGORY_COLORS,
-          hoverBackgroundColor: CATEGORY_COLORS
-        }
-      ]
+          hoverBackgroundColor: CATEGORY_COLORS,
+        },
+      ],
     };
+  });
+
+  ngOnInit() {
+    this.filterForm = this.fb.group({
+      range: [null],
+      user: [this.currentUserId()]
+    });
+
+    this.userService.getUsers().subscribe((users) => {
+      this.users = users.map((user) => ({ label: user.name, value: user.id }));
+    });
+
+    this.translationService.getTranslatedCategories().subscribe((categories) => {
+      this.categories = categories;
+      this.chartLabels = categories.map((c) => c.label);
+      this.categoryVisibilityState.set(new Array<boolean>(categories.length).fill(false));
+    });
+
+    this.filterForm.get('user')!.valueChanges.subscribe((id: number | null) => {
+      if (typeof id === 'number') {
+        this.currentUser.set({ ...this.currentUser()!, id });
+        this.categoryVisibilityState.set(new Array<boolean>(this.categories.length).fill(false));
+      }
+    });
   }
 
-  updateTotalAmount(category: number) {
-    const categoryAmount = this.calculationResult.categorizedTotals[category];
-    if (this.categoryVisibilityState[category]) {
-      this.totalAmount.update((value) => value + categoryAmount);
-    } else {
-      this.totalAmount.update((value) => value - categoryAmount);
-    }
-    this.categoryVisibilityState[category] = !this.categoryVisibilityState[category];
+  updateTotalAmount(categoryIndex: number) {
+    this.categoryVisibilityState.update((state) => {
+      const copy = state.slice();
+      copy[categoryIndex] = !copy[categoryIndex];
+      return copy;
+    });
   }
 
   calculateTotals(bills: Bill[]): CalculationResult {
@@ -128,23 +144,8 @@ export class UserStatsComponent implements OnInit {
     return bills.reduce((acc: CalculationResult, bill: Bill) => {
       bill.ownAmount = Math.abs(bill.ownAmount);
       acc.totalOwnAmount += bill.ownAmount;
-
       acc.categorizedTotals[bill.categoryId] += bill.ownAmount;
-
       return acc;
     }, {totalOwnAmount: 0, categorizedTotals: initialCategories});
   }
-
-  handleOnChange() {
-    const rawUser: unknown = this.filterForm.get('user')?.value;
-    const user: number | null = typeof rawUser === 'number' ? rawUser : null;
-    console.log(user)
-
-    this.categoryVisibilityState = Array.from({ length: this.categories.length }, () => false);
-
-    if (user !== null) {
-      this.getTotalAmountByUserId(user);
-    }
-  }
-
 }

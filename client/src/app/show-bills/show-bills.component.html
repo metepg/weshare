@@ -1,12 +1,10 @@
-@if (bills.length === 0) {
+@if (bills.isLoading()) {
   <div style="margin-top: 200px; display: grid; place-items: center">
     <p-progressSpinner></p-progressSpinner>
   </div>
-}
-
-@else {
+} @else if (bills.value()?.length) {
   <div style="display:grid; place-items: center;">
-    @for (bill of bills; track bill.id) {
+    @for (bill of bills.value(); track bill.id) {
       <app-bill
         [bill]="bill"
         [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.ownerId === user.id) ? 'end' : 'start'"
@@ -16,7 +14,7 @@
       </app-bill>
     }
   </div>
-  
+
   @if (showEditBillDialog) {
     <p-dialog
       [header]="'edit' | translate"
@@ -38,4 +36,8 @@
       </app-bill-form>
     </p-dialog>
   }
+} @else {
+  <p style="text-align: center; font-size: 16px; margin-top: 30px">
+    {{ 'noBillsFromSelectedYear' | translate }}
+  </p>
 }
