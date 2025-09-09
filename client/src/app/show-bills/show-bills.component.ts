@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, inject, OnInit } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
@@ -21,20 +21,18 @@ import { CategoryService } from '../../services/category/category.service';
   imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslateModule]
 })
 export class ShowBillsComponent implements OnInit, AfterViewChecked {
+  private readonly billService = inject(BillService);
+  private readonly userService = inject(UserService);
+  private readonly debtService = inject(DebtService);
+  private readonly messageService = inject(MessageService);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly categoryService = inject(CategoryService);
+
   protected readonly Math = Math;
   showEditBillDialog = false;
   bills: Bill[] = [];
   bill: Bill;
   user: User;
-
-  constructor(
-    private billService: BillService,
-    private userService: UserService,
-    private debtService: DebtService,
-    private messageService: MessageService,
-    private localStorageService: LocalStorageService,
-    private categoryService: CategoryService,
-  ) {}
 
   ngOnInit() {
     this.billService.getBills().subscribe((bills) => {

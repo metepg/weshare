@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
@@ -29,6 +29,12 @@ import { Select } from 'primeng/select';
 })
 
 export class UserStatsComponent implements OnInit {
+  private readonly billService = inject(BillService);
+  private readonly fb = inject(FormBuilder);
+  private readonly translationService = inject(TranslationService);
+  private readonly userService = inject(UserService);
+  private readonly localStorageService = inject(LocalStorageService);
+
   filterForm: FormGroup;
   users: { label: string; value: number }[] = [];
   totalAmount = signal(0);
@@ -39,15 +45,6 @@ export class UserStatsComponent implements OnInit {
   chartLabels: string [] = [];
   calculationResult: CalculationResult;
   categoryVisibilityState: boolean[] = [];
-
-  constructor(
-    private readonly billService: BillService,
-    private readonly fb: FormBuilder,
-    private readonly translationService: TranslationService,
-    private readonly userService: UserService,
-    private readonly localStorageService: LocalStorageService
-  ) {
-  }
 
   ngOnInit() {
     this.currentUser = this.localStorageService.getUser();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
@@ -10,9 +10,10 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
   styleUrl: './stats.component.scss'
 })
 export class StatsComponent implements OnInit {
-  activeTab = '0';
+  private readonly router = inject(Router);
+  private readonly sidebarService = inject(SidebarService);
 
-  constructor(private readonly router: Router, private readonly sidebarService: SidebarService) {}
+  activeTab = '0';
 
   ngOnInit() {
     void this.router.navigate(['stats/chart']);

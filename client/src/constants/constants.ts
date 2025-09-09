@@ -32,6 +32,7 @@ export const CATEGORY_COLOR_MAP: { [key in BillCategoryCode]: string } = {
 
 export const BAR_CHART_OPTIONS = {
   maintainAspectRatio: false,
+  animation: false,
   plugins: {
     legend: {
       labels: {

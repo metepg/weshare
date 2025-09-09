@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { View } from '../../constants/View';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
@@ -14,6 +14,8 @@ import { Router } from '@angular/router';
   imports: [ToastModule, ToolbarModule, Button, DecimalPipe, TranslateModule]
 })
 export class NavbarComponent {
+  private readonly router = inject(Router);
+
   protected readonly View = View;
   private readonly routeMap = {
     [View.NEW_BILL]: 'create',
@@ -22,8 +24,6 @@ export class NavbarComponent {
   };
   @Input() debtAmount: number;
   @Output() debtEmitter = new EventEmitter<void>();
-
-  constructor(private readonly router: Router) {}
 
   showTab(view: View) {
     const route = this.routeMap[view] || '';

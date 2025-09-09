@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Bill } from '../../model/Bill';
 import { HttpStatusCode } from '@angular/common/http';
@@ -18,15 +18,12 @@ import { UserService } from '../../services/user/user.service';
   imports: [CardModule, BillFormComponent, TranslateModule]
 })
 export class NewBillComponent {
-
-  constructor(
-    private readonly billService: BillService,
-    private readonly router: Router,
-    private readonly messageService: MessageService,
-    private readonly debtService: DebtService,
-    private readonly localStorageService: LocalStorageService,
-    private readonly userService: UserService,
-  ) {}
+  private readonly billService = inject(BillService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly debtService = inject(DebtService);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly userService = inject(UserService);
 
   handleSubmit(bill: Bill) {
     this.billService.createBill(bill).subscribe((response) => {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
@@ -35,9 +35,14 @@ import { Select } from 'primeng/select';
 })
 
 export class BillFormComponent implements OnInit, OnDestroy {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly translationService = inject(TranslationService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly localStorageService = inject(LocalStorageService);
+
   private subscription: Subscription;
   categories: { label: string; value: BillCategoryCode }[] = [];
-  submitButtonIsDisabled: boolean;
+  submitButtonIsDisabled = true;
   user: User | null;
   @Input() disabledFields: string[] = [];
   @Input() id: number | undefined;
@@ -56,15 +61,6 @@ export class BillFormComponent implements OnInit, OnDestroy {
     description: FormControl<string | null>;
     sliderPercent: FormControl<number | null>;
   }>
-
-  constructor(
-    private readonly formBuilder: FormBuilder,
-    private readonly translationService: TranslationService,
-    private readonly confirmationService: ConfirmationService,
-    private readonly localStorageService: LocalStorageService
-  ) {
-    this.submitButtonIsDisabled = true;
-  }
 
   ngOnInit(): void {
     this.billFormBuilder = this.formBuilder.group({

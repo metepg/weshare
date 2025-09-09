@@ -1,6 +1,6 @@
 import {
   Component,
-  EventEmitter,
+  EventEmitter, inject,
   Input,
   OnInit,
   Output,
@@ -35,6 +35,8 @@ import { Select, SelectChangeEvent } from 'primeng/select';
   styleUrls: ['./show-chart.component.css']
 })
 export class ShowChartComponent implements OnInit {
+  private readonly billService = inject(BillService);
+
   protected readonly STACKED_OPTIONS = BAR_CHART_OPTIONS;
   yearOptions = signal<{ name: string; code: number }[]>([]);
   selectedYear = signal<number>(new Date().getFullYear());
@@ -43,10 +45,6 @@ export class ShowChartComponent implements OnInit {
   bills$!: Observable<Bill[]>;
   @Input() showSideBar = signal<boolean>(false);
   @Output() showSideBarChange = new EventEmitter<boolean>();
-
-
-  constructor(private readonly billService: BillService) {
-  }
 
   onChange(event: SelectChangeEvent): void {
     const value: unknown = event.value;

@@ -1,4 +1,4 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, inject, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
@@ -39,6 +39,14 @@ import { Button } from 'primeng/button';
   ]
 })
 export class MainComponent implements OnInit, DoCheck {
+  private readonly billService = inject(BillService);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly router = inject(Router);
+  private readonly debtService = inject(DebtService);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly userService = inject(UserService);
+
   bills$: Observable<Bill[]>;
   isLoading = false;
   debt = this.debtService.debt;
@@ -49,17 +57,6 @@ export class MainComponent implements OnInit, DoCheck {
     { icon: 'pi pi-user', value: 'hof' },
   ];
   option: { icon: string; value: string } | null;
-
-  constructor(
-    private readonly billService: BillService,
-    private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService,
-    private readonly router: Router,
-    private readonly debtService: DebtService,
-    private readonly localStorageService: LocalStorageService,
-    private readonly userService: UserService,
-  ) {
-  }
 
   ngOnInit(): void {
     this.option = this.options[0];

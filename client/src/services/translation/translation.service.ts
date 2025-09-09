@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,8 +9,7 @@ import { getTranslatedEnum } from '../../utils/translate-enum';
   providedIn: 'root'
 })
 export class TranslationService {
-
-  constructor(private translate: TranslateService) {}
+  private readonly translate = inject(TranslateService);
 
   getTranslatedCategories(): Observable<{ label: string; value: BillCategoryCode }[]> {
     const translations$ = Object.values(BillCategoryCode)

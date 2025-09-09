@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -8,11 +8,9 @@ import { User } from '../../model/User';
   providedIn: 'root'
 })
 export class UserService {
+  private readonly http = inject(HttpClient);
 
-  private apiUrl = environment.apiUrl + '/users';
-
-  constructor(private http: HttpClient) {
-  }
+  private readonly apiUrl = environment.apiUrl + '/users';
 
   getCurrentUser(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/current`);

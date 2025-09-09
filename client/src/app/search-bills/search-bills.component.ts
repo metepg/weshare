@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
@@ -51,6 +51,15 @@ import { Drawer } from 'primeng/drawer';
   styleUrl: './search-bills.component.scss'
 })
 export class SearchBillsComponent implements OnInit {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly billService = inject(BillService);
+  private readonly primengConfig = inject(PrimeNG);
+  private readonly sidebarService = inject(SidebarService);
+  private readonly translationService = inject(TranslationService);
+  private readonly userService = inject(UserService);
+  private readonly messageService = inject(MessageService);
+  private readonly localStorageService = inject(LocalStorageService);
+
   protected readonly Math = Math;
   selectedBill: Bill;
   bills: Bill[];
@@ -63,15 +72,6 @@ export class SearchBillsComponent implements OnInit {
   searchFilter: SearchFilter;
   @Input() sidebarVisible = true;
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
-
-  constructor(private readonly formBuilder: FormBuilder,
-    private readonly billService: BillService,
-    private readonly primengConfig: PrimeNG,
-    private readonly sidebarService: SidebarService,
-    private readonly translationService: TranslationService,
-    private readonly userService: UserService,
-    private readonly messageService: MessageService,
-    private readonly localStorageService: LocalStorageService,) {}
 
   ngOnInit() {
     this.currentUser = this.localStorageService.getUser();

@@ -109,7 +109,8 @@ export default tseslint.config(
           "style": "kebab-case"
         }
       ],
-      "@angular-eslint/prefer-standalone": "off"
+      "@angular-eslint/prefer-standalone": "off",
+      "@angular-eslint/prefer-inject": "error"
     },
   },
   {
