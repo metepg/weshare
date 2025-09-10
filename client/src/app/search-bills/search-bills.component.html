@@ -11,7 +11,7 @@
     >
       <!--Search word-->
       <p-iconfield iconPosition="right">
-        <p-inputicon styleClass="pi pi-tag"></p-inputicon>
+        <p-inputicon class="pi pi-tag"></p-inputicon>
         <input
           type="text"
           pInputText
@@ -46,7 +46,7 @@
       </p-multiSelect>
 
       <p-button
-        styleClass="p-button-submit"
+        class="p-button-submit"
         [style]="{'width': '100%', 'margin-top': '10px', 'display': 'flex', 'justify-content': 'center'}"
         type="submit">{{ 'search' | translate}}
       </p-button>
@@ -66,8 +66,8 @@
           [value]="bills" 
           [scrollable]="true" 
           size="small"
-          scrollHeight="600px" 
-          styleClass="p-datatable-gridlines">
+          scrollHeight="600px"
+          class="p-datatable-gridlines">
           <ng-template pTemplate="header">
             <tr>
               <th id="sort-owner" pSortableColumn="owner">{{ 'who' | translate}} <br>

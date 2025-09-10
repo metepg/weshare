@@ -4,7 +4,6 @@ import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { Bill } from '../../model/Bill';
 import { CalculationResult } from '../../model/Stats';
 import { TranslationService } from '../../services/translation/translation.service';
@@ -15,6 +14,7 @@ import { User } from '../../model/User';
 import { Select } from 'primeng/select';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-user-stats',
@@ -22,8 +22,8 @@ import { map } from 'rxjs/operators';
     ChartModule,
     DecimalPipe,
     ReactiveFormsModule,
-    TranslateModule,
-    Select
+    Select,
+    TranslatePipe
   ],
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.scss'

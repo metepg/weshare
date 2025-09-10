@@ -4,14 +4,14 @@ import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
-import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  imports: [ToastModule, ToolbarModule, Button, DecimalPipe, TranslateModule]
+  imports: [ToastModule, ToolbarModule, Button, DecimalPipe, TranslatePipe]
 })
 export class NavbarComponent {
   private readonly router = inject(Router);

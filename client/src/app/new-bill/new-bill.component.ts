@@ -5,18 +5,18 @@ import { HttpStatusCode } from '@angular/common/http';
 import { CardModule } from 'primeng/card';
 import { Router } from '@angular/router';
 import { BillFormComponent } from '../bill-form/bill-form.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { DebtService } from '../../services/debt/debt.service';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { UserService } from '../../services/user/user.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-bill-form',
   standalone: true,
   templateUrl: './new-bill.component.html',
   styleUrls: ['./new-bill.component.css'],
-  imports: [CardModule, BillFormComponent, TranslateModule]
+  imports: [CardModule, BillFormComponent, TranslatePipe]
 })
 export class NewBillComponent {
   private readonly billService = inject(BillService);

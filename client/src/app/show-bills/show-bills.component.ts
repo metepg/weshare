@@ -6,19 +6,19 @@ import { BillService } from '../../services/bill/bill.service';
 import { UserService } from '../../services/user/user.service';
 import { BillFormComponent } from '../bill-form/bill-form.component';
 import { DialogModule } from 'primeng/dialog';
-import { TranslateModule } from '@ngx-translate/core';
 import { DebtService } from '../../services/debt/debt.service';
 import { EMPTY, switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { CategoryService } from '../../services/category/category.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '../../model/User';
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-show-bills',
   templateUrl: './show-bills.component.html',
   styleUrls: ['./show-bills.component.css'],
-  imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslateModule]
+  imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslatePipe]
 })
 export class ShowBillsComponent implements AfterViewChecked {
   private readonly billService = inject(BillService);

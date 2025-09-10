@@ -1,14 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { NewBillComponent } from './new-bill/new-bill.component';
 import { ShowBillsComponent } from './show-bills/show-bills.component';
+import { StatsComponent } from './stats/stats.component';
 import { ShowChartComponent } from './show-chart/show-chart.component';
 import { SearchBillsComponent } from './search-bills/search-bills.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
-import { StatsComponent } from './stats/stats.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: 'create', component: NewBillComponent },
   { path: 'bills', component: ShowBillsComponent },
   {
@@ -21,13 +19,3 @@ const routes: Routes = [
   { path: '', redirectTo: 'bills', pathMatch: 'full' },
   { path: '**', redirectTo: 'bills' }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-  providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
-  ]
-
-})
-export class AppRoutingModule { }

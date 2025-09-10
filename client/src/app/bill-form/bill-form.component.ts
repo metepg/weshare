@@ -1,6 +1,5 @@
 import { Component, inject, input, model, OnDestroy, OnInit, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { SliderChangeEvent, SliderModule } from 'primeng/slider';
 import { DecimalPipe } from '@angular/common';
@@ -16,13 +15,14 @@ import { LocalStorageService } from '../../services/local-storage/local-storage.
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Select } from 'primeng/select';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bill-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
     InputTextModule,
     SliderModule,
     DecimalPipe,

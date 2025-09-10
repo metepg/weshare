@@ -8,8 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { generateChartData, generateYearOptions } from '../../utils/chartUtils';
-import { TranslateModule } from '@ngx-translate/core';
 import { Select } from 'primeng/select';
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-show-chart',
@@ -18,8 +18,8 @@ import { Select } from 'primeng/select';
     FormsModule,
     ChartModule,
     ProgressSpinnerModule,
-    TranslateModule,
-    Select
+    Select,
+    TranslatePipe
   ],
   styleUrls: ['./show-chart.component.css']
 })

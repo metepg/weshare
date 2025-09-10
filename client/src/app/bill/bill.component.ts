@@ -1,8 +1,8 @@
 import { Component, input, output } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
 import { User } from '../../model/User';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bill',
@@ -11,7 +11,7 @@ import { User } from '../../model/User';
   imports: [
     DatePipe,
     DecimalPipe,
-    TranslateModule,
+    TranslatePipe,
     NgClass
   ]
 })

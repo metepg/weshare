@@ -10,7 +10,6 @@ import { Bill } from '../../model/Bill';
 import { TableModule } from 'primeng/table';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { TranslationService } from '../../services/translation/translation.service';
 import { UserService } from '../../services/user/user.service';
@@ -22,6 +21,7 @@ import { User } from '../../model/User';
 import { PrimeNG } from 'primeng/config';
 import { Button } from 'primeng/button';
 import { Drawer } from 'primeng/drawer';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-bills',
@@ -36,11 +36,11 @@ import { Drawer } from 'primeng/drawer';
     DecimalPipe,
     DatePipe,
     ProgressSpinnerModule,
-    TranslateModule,
     BillFormComponent,
     DialogModule,
     Button,
-    Drawer
+    Drawer,
+    TranslatePipe
   ],
   templateUrl: './search-bills.component.html',
   styleUrl: './search-bills.component.scss'
