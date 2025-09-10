@@ -1,5 +1,4 @@
-import { enableProdMode, provideZonelessChangeDetection } from '@angular/core';
-import { environment } from './environments/environment';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -12,10 +11,6 @@ import { routes } from './app/app-routing.module';
 
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-
-if (environment.production) {
-  enableProdMode();
-}
 
 bootstrapApplication(AppComponent, {
   providers: [
