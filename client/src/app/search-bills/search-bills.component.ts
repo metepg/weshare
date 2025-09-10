@@ -79,19 +79,21 @@ export class SearchBillsComponent implements OnInit {
   private readonly translatedCategories = toSignal(this.translationService.getTranslatedCategories(), {
     initialValue: [] as {
       label: string;
-      value: number
+      value: number;
     }[]
   });
   private readonly usersFromApi = toSignal(this.userService.getUsers(), { initialValue: [] });
 
   readonly categories = computed(() => this.translatedCategories());
-  readonly users = computed(() => this.usersFromApi().map(user => ({ label: user.name, value: user.name })));
+  readonly users = computed(() => this.usersFromApi().map((user) => ({ label: user.name, value: user.name })));
 
   readonly selectedItemsLabel = computed(() => {
-    const selected = this.searchForm?.get('categories')?.value;
-    if (!Array.isArray(selected)) return '';
-    if (selected.length === this.categories().length) return 'Kaikki kategoriat';
-    return `${selected.length} valittuna`;
+    const selectedCategory = this.searchForm.get('categories')?.value;
+    if (!Array.isArray(selectedCategory)) {
+      return '';
+    }
+    if (selectedCategory.length === this.categories().length) return 'Kaikki kategoriat';
+    return `${selectedCategory.length} valittuna`;
   });
 
   ngOnInit() {
@@ -121,17 +123,17 @@ export class SearchBillsComponent implements OnInit {
   onSubmit() {
     const filter: SearchFilter = {
       description: this.searchForm.controls.description.value ?? '',
-      categories: this.searchForm.controls.categories.value?.map(category => category.value) ?? [],
+      categories: this.searchForm.controls.categories.value?.map((category) => category.value) ?? [],
       range: this.searchForm.controls.range.value?.filter((date): date is Date => !!date) ?? [],
-      users: this.searchForm.controls.users.value?.map(user => user.value) ?? [],
+      users: this.searchForm.controls.users.value?.map((user) => user.value) ?? [],
     };
 
     this.sidebarVisible.set(false);
     this.isLoading.set(true);
 
     this.billService.getBillsByFilter(filter).subscribe({
-      next: response => {
-        this.bills.set(response.body?.filter(bill => bill.ownAmount !== 0) ?? []);
+      next: (response) => {
+        this.bills.set(response.body?.filter((bill) => bill.ownAmount !== 0) ?? []);
         this.isLoading.set(false);
       },
       error: () => {
@@ -150,11 +152,8 @@ export class SearchBillsComponent implements OnInit {
     this.showEditBillDialog.set(true);
   }
 
-  handleEditBill(_: Bill): void {
-    const selectedBill = this.selectedBill();
-    if (!selectedBill) {
-      return;
-    }
+  handleEditBill(selected: Bill): void {
+    const selectedBill = selected;
 
     const { amount, description, id, date, ownAmount, ownerId, ownerName, paid } = selectedBill;
     const editedBill = new Bill(amount, selectedBill.categoryId, description, ownAmount, ownerId, ownerName, paid);
@@ -167,7 +166,7 @@ export class SearchBillsComponent implements OnInit {
       this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
       const filter = this.searchFilter();
       const categoryIds = new Set(filter?.categories ?? []);
-      this.bills.update(bs => bs.map(b => (b.id === editedBill.id ? editedBill : b)).filter(b => categoryIds.has(b.categoryId)));
+      this.bills.update((bs) => bs.map((b) => (b.id === editedBill.id ? editedBill : b)).filter((b) => categoryIds.has(b.categoryId)));
       this.showEditBillDialog.set(false);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
