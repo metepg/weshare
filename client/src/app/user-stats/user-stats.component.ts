@@ -49,13 +49,19 @@ export class UserStatsComponent {
   readonly categories = toSignal(this.translationService.getTranslatedCategories(), { initialValue: [] });
   readonly chartLabels = computed(() => this.categories().map((c) => c.label));
 
-  billsByUser = this.billService.getBillsByUserId(this.currentUserId);
-
   filterForm = this.fb.group({
     range: [null],
     user: [this.currentUserId()]
   });
 
+  readonly selectedUserId = toSignal(
+    this.filterForm.get('user')!.valueChanges.pipe(
+      map((userId) => userId ?? 0)
+    ),
+    { initialValue: this.currentUserId() }
+  );
+
+  readonly billsByUser = this.billService.getBillsByUserId(this.selectedUserId);
 
   chartOptions: ChartOptions = {
     animation: false,
@@ -84,9 +90,7 @@ export class UserStatsComponent {
     const result = this.calculationResult();
     const visibility = this.categoryVisibilityState();
 
-    if (!result) {
-      return 0;
-    }
+    if (!result) return 0;
 
     const excludedCategoryTotalAmount = Object.entries(result.categorizedTotals)
       .reduce((acc, [index, value]) => (visibility[+index] ? acc + value : acc), 0);

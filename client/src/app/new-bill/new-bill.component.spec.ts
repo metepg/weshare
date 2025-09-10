@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('NewBillComponent', () => {
   let component: NewBillComponent;
@@ -13,7 +14,7 @@ describe('NewBillComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NewBillComponent, TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting(), MessageService, ConfirmationService],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideZonelessChangeDetection(), MessageService, ConfirmationService],
     })
       .compileComponents();
 

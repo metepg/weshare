@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api';
 import { CategoryService } from '../../services/category/category.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '../../model/User';
-import { TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-bills',
@@ -20,7 +20,7 @@ import { TranslatePipe } from "@ngx-translate/core";
   styleUrls: ['./show-bills.component.css'],
   imports: [BillComponent, ProgressSpinnerModule, BillFormComponent, DialogModule, TranslatePipe]
 })
-export class ShowBillsComponent implements AfterViewChecked {
+export class ShowBillsComponent {
   private readonly billService = inject(BillService);
   private readonly userService = inject(UserService);
   private readonly debtService = inject(DebtService);
@@ -37,8 +37,11 @@ export class ShowBillsComponent implements AfterViewChecked {
     return this.categoryService.findCategoriesByGroupId(this.user().groupId);
   });
 
-  ngAfterViewChecked(): void {
-    window.scrollTo(0, document.body.scrollHeight);
+  constructor() {
+    effect(() => {
+      this.bills.value();
+      queueMicrotask(() => { window.scrollTo(0, document.body.scrollHeight); });
+    });
   }
 
   handleEditBillDialog(bill: Bill) {

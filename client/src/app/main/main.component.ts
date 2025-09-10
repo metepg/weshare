@@ -12,7 +12,6 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgStyle } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { DebtService } from '../../services/debt/debt.service';
@@ -23,7 +22,6 @@ import { Button } from 'primeng/button';
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
-  providers: [MessageService, UserService],
   imports: [
     NavbarComponent,
     ConfirmDialogModule,
@@ -32,7 +30,6 @@ import { Button } from 'primeng/button';
     SplitButtonModule,
     SelectButtonModule,
     FormsModule,
-    TranslateModule,
     NgStyle,
     Button,
     RouterOutlet

@@ -1,10 +1,10 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection } from '@angular/core';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
 import { provideRouter, withHashLocation } from '@angular/router';
@@ -19,6 +19,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZonelessChangeDetection(),
     provideHttpClient(withXsrfConfiguration({})),
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     provideAnimations(),
@@ -36,7 +37,8 @@ bootstrapApplication(AppComponent, {
         suffix: '.json'
       })
     }),
-    ConfirmationService
+    ConfirmationService,
+    MessageService
   ]
 })
   .catch((err) => { console.error(err); });

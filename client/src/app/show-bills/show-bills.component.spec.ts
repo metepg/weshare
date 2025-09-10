@@ -4,6 +4,7 @@ import { ShowBillsComponent } from './show-bills.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('ShowBillsComponent', () => {
   let component: ShowBillsComponent;
@@ -12,7 +13,7 @@ describe('ShowBillsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ShowBillsComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), MessageService],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideZonelessChangeDetection(), MessageService],
     })
       .compileComponents();
 

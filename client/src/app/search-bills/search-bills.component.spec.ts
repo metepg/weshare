@@ -6,6 +6,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('SearchBillsComponent', () => {
   let component: SearchBillsComponent;
@@ -15,7 +16,7 @@ describe('SearchBillsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SearchBillsComponent, TranslateModule.forRoot()],
       // eslint-disable-next-line @typescript-eslint/no-deprecated
-      providers: [provideHttpClient(), provideHttpClientTesting(), MessageService, provideNoopAnimations()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideZonelessChangeDetection(), MessageService, provideNoopAnimations()],
     })
       .compileComponents();
 

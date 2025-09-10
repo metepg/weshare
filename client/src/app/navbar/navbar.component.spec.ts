@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('NavBarComponent', () => {
   let component: NavbarComponent;
@@ -13,7 +14,7 @@ describe('NavBarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NavbarComponent, TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting(), MessageService],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideZonelessChangeDetection(), MessageService],
     })
       .compileComponents();
 

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { TranslationService } from './translation.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('TranslationService', () => {
   let service: TranslationService;
@@ -9,6 +10,7 @@ describe('TranslationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot({})],
+      providers: [provideZonelessChangeDetection()]
     });
     service = TestBed.inject(TranslationService);
   });

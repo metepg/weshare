@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BillComponent } from './bill.component';
 import { MOCK_BILL } from '../../testUtils/constants';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('BillComponent', () => {
   let component: BillComponent;
@@ -10,6 +11,7 @@ describe('BillComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BillComponent],
+      providers: [provideZonelessChangeDetection()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BillComponent);
