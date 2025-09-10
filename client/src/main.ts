@@ -71,6 +71,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserModule, TranslateModule.forRoot(translateModuleConfig) ),
     ConfirmationService,
     provideHttpClient(withXsrfConfiguration({})),
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     provideAnimations(),
     providePrimeNG({
       theme: {

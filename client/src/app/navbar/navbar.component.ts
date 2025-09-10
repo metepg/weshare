@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { View } from '../../constants/View';
 import { DecimalPipe } from '@angular/common';
 import { Button } from 'primeng/button';
@@ -22,8 +22,8 @@ export class NavbarComponent {
     [View.SHOW_BILLS]: 'bills',
     [View.SHOW_STATISTICS]: 'stats'
   };
-  @Input() debtAmount: number;
-  @Output() debtEmitter = new EventEmitter<void>();
+  readonly debtAmount = input<number>(0);
+  debtEmitter = output<undefined>();
 
   showTab(view: View) {
     const route = this.routeMap[view] || '';
@@ -31,7 +31,7 @@ export class NavbarComponent {
   }
 
   payDebt() {
-    this.debtEmitter.emit();
+    this.debtEmitter.emit(undefined);
   }
 
 }

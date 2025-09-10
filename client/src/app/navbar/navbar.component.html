@@ -24,8 +24,8 @@
       styleClass="p-button-raised">
     </p-button>
     <p
-      [style.color]="debtAmount >= 0 ? 'green' : 'red'">
-      {{debtAmount > 0 ? '+' : ' '}} {{debtAmount | number : '1.2-2' }}{{ 'currency' | translate}}
+      [style.color]="debtAmount() >= 0 ? 'green' : 'red'">
+      {{ debtAmount() > 0 ? '+' : ' ' }} {{ debtAmount() | number : '1.2-2' }}{{ 'currency' | translate }}
     </p>
     <p-button
       (onClick)="showTab(View.SHOW_STATISTICS)"
@@ -36,8 +36,8 @@
     </p-button>
     <p-button
       (onClick)="payDebt()"
-      [disabled]="debtAmount >= 0"
-      [styleClass]="debtAmount >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
+      [disabled]="debtAmount() >= 0"
+      [styleClass]="debtAmount() >= 0 ? 'p-button-secondary p-button-raised' : 'p-button-warning p-button-raised'"
       class="checkButton"
       icon="pi pi-wallet"
       severity="warn"

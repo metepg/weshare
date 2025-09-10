@@ -1,13 +1,8 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, inject, model, OnInit } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
 import { MessageService } from 'primeng/api';
@@ -70,8 +65,7 @@ export class SearchBillsComponent implements OnInit {
   isLoading = false;
   showEditBillDialog = false;
   searchFilter: SearchFilter;
-  @Input() sidebarVisible = true;
-  @Output() sidebarVisibleChange = new EventEmitter<boolean>();
+  readonly sidebarVisible = model(true);
 
   ngOnInit() {
     this.currentUser = this.localStorageService.getUser();
@@ -98,7 +92,7 @@ export class SearchBillsComponent implements OnInit {
     });
 
     this.sidebarService.sidebarVisibility$.subscribe((visible) => {
-      this.sidebarVisible = visible;
+      this.sidebarVisible.set(visible);
     });
 
     // TODO: Put these to translation file
@@ -146,14 +140,13 @@ export class SearchBillsComponent implements OnInit {
 
     this.searchFilter = { description, categories, range, users };
 
-    this.sidebarVisible = false;
+    this.sidebarVisible.set(false);
     this.isLoading = true;
     this.billService.getBillsByFilter(this.searchFilter).subscribe((response) => {
       if (response.ok && response.body) {
         const bills = response.body;
         this.bills = bills.filter((bill) => bill.ownAmount !== 0);
         this.isLoading = false;
-        this.sidebarVisibleChange.emit(this.sidebarVisible);
       } else {
         // TODO: Better error handling
         alert('Jotain meni pieleen.');

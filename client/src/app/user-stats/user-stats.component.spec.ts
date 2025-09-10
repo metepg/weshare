@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserStatsComponent } from './user-stats.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ConfirmationService } from 'primeng/api';
 import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserStatsComponent', () => {

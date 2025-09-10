@@ -14,6 +14,7 @@ describe('SearchBillsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchBillsComponent, TranslateModule.forRoot()],
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       providers: [provideHttpClient(), provideHttpClientTesting(), MessageService, provideNoopAnimations()],
     })
       .compileComponents();
