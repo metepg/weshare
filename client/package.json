@@ -2,13 +2,13 @@
   "name": "client",
   "version": "3.0.4",
   "scripts": {
-    "start": "./node/node ./node_modules/@angular/cli/bin/ng serve --watch --proxy-config proxy.conf.json --configuration development",
+    "start": "ng serve --watch --proxy-config proxy.conf.json --configuration development",
     "build": "ng build --configuration production",
-    "watch": "./node/node ./node_modules/@angular/cli/bin/ng --watch --configuration development",
-    "test": "./node/node ./node_modules/@angular/cli/bin/ng test --browsers=ChromeHeadless --watch=false",
-    "bprod": "./node/node ./node_modules/@angular/cli/bin/ng build --configuration production",
+    "watch": "ng --watch --configuration development",
+    "test": "ng test --browsers=ChromeHeadless --watch=false",
+    "bprod": "ng build --configuration production",
     "lint": "ng lint",
-    "lint-fix": "./node/node ./node_modules/@angular/cli/bin/ng lint --fix"
+    "lint-fix": "ng lint --fix"
   },
   "private": true,
   "dependencies": {
