@@ -22,7 +22,7 @@
   <p>{{ 'ownAmount' | translate }}: {{ ownShareOfBill() | number: '1.2-2' }} {{ 'currency' | translate }}</p>
   <p-slider (onChange)="handleSliderChange($event)" [step]=10
             formControlName="sliderPercent"></p-slider>
-  <p style="text-align: center; font-size: 12px"><i>({{ sliderPercent }}%)</i></p>
+  <p style="text-align: center; font-size: 12px"><i>({{ sliderPercent() }}%)</i></p>
 
   <p-iconfield>
     <p-inputicon class="pi pi-tag"/>
