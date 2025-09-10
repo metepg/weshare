@@ -1,6 +1,6 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="billFormBuilder">
   <p-iconfield>
-    <p-inputicon styleClass="pi pi-euro"/>
+    <p-inputicon class="pi pi-euro"/>
     <input
       class="customStyle"
       placeholder="{{ 'amount' | translate }}"
@@ -11,21 +11,21 @@
 
   @if (isControlInvalid('amount')) {
     <div class="alert alert-danger">
-      @if (billFormBuilder.get('amount')?.hasError('required')) {
+      @if (billFormBuilder.controls.amount.hasError('required')) {
         <small class="error">{{ 'required' | translate }}</small>
-      } @else if (billFormBuilder.get('amount')?.hasError('min')) {
+      } @else if (billFormBuilder.controls.amount.hasError('min')) {
         <small class="error">{{ 'amountMustBeGreaterThanZero' | translate }}</small>
       }
     </div>
   }
 
-  <p>{{ 'ownAmount' | translate }}: {{ ownShareOfBill | number: '1.2-2' }} {{ 'currency' | translate }}</p>
+  <p>{{ 'ownAmount' | translate }}: {{ ownShareOfBill() | number: '1.2-2' }} {{ 'currency' | translate }}</p>
   <p-slider (onChange)="handleSliderChange($event)" [step]=10
             formControlName="sliderPercent"></p-slider>
   <p style="text-align: center; font-size: 12px"><i>({{ sliderPercent }}%)</i></p>
 
   <p-iconfield>
-    <p-inputicon styleClass="pi pi-tag"/>
+    <p-inputicon class="pi pi-tag"/>
     <input
       class="customStyle"
       placeholder="{{ 'description' | translate }}"
@@ -36,9 +36,9 @@
 
   @if (isControlInvalid('description')) {
     <div class="alert alert-danger">
-      @if (billFormBuilder.get('description')?.hasError('required')) {
+      @if (billFormBuilder.controls.description.hasError('required')) {
         <small class="error">{{ 'required' | translate }}</small>
-      } @else if (billFormBuilder.get('description')?.hasError('invalidDescription')) {
+      } @else if (billFormBuilder.controls.description.hasError('invalidDescription')) {
         <small class="error">{{ 'minCharacters' | translate }}</small>
       }
     </div>
@@ -54,14 +54,14 @@
     formControlName="category"
     name="category"
     [placeholder]="'category' | translate"
-    styleClass="customStyle">
+    class="customStyle">
   </p-select>
 
   @if (isControlInvalid('category')) {
     <div class="alert alert-danger">
-      @if (billFormBuilder.get('category')?.hasError('required')) {
+      @if (billFormBuilder.controls.category.hasError('required')) {
         <small class="error">{{ 'required' | translate }}</small>
-      } @else if (billFormBuilder.get('category')?.hasError('invalidCategory')) {
+      } @else if (billFormBuilder.controls.category.hasError('invalidCategory')) {
         <small class="error">{{ 'somethingWentWrong' | translate }}</small>
       }
     </div>
@@ -77,7 +77,7 @@
       styleClass="p-button-primary"
       type="submit">{{ 'save' | translate }}
     </p-button>
-    @if (showDeleteBillButton) {
+    @if (showDeleteBillButton()) {
       <p-button
         styleClass="p-button-danger"
         (onClick)="deleteBill()">{{ 'delete' | translate }}

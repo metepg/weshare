@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BillFormComponent } from './bill-form.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ConfirmationService } from 'primeng/api';
 
 describe('BillFormComponent', () => {
   let component: BillFormComponent;
@@ -8,7 +12,8 @@ describe('BillFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BillFormComponent]
+      imports: [BillFormComponent, TranslateModule.forRoot()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), ConfirmationService],
     })
       .compileComponents();
 

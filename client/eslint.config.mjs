@@ -9,7 +9,7 @@ import angular from 'angular-eslint';
 
 export default tseslint.config(
   {
-    //Config for .ts and .spec.ts files
+    // Config for .ts and .spec.ts files
     plugins: {
       "@typescript-eslint": typescriptEslint,
       "@stylistic": stylistic
@@ -35,6 +35,7 @@ export default tseslint.config(
     ignores: ["node_modules", "dist", ".vscode"],
     files: ["**/*.ts"],
     rules: {
+      "@angular-eslint/prefer-signals": 'error',
       "eqeqeq": ["error", "smart"],
       "no-constructor-return": "error",
       "no-duplicate-imports": "error",
@@ -52,7 +53,7 @@ export default tseslint.config(
       "@stylistic/block-spacing": "error",
       "@stylistic/comma-spacing": "error",
       "@stylistic/comma-style": "error",
-      "@stylistic/curly-newline": ["error", {"multiline": true, "consistent": true}],
+      "@stylistic/curly-newline": [ "error", { "multiline": true, "consistent": true } ],
       "@stylistic/function-call-argument-newline": ["error", "consistent"],
       "@stylistic/function-call-spacing": "error",
       "@stylistic/function-paren-newline": ["error", "consistent"],
@@ -64,12 +65,12 @@ export default tseslint.config(
       "@stylistic/no-mixed-operators": "error",
       "@stylistic/no-mixed-spaces-and-tabs": "error",
       "@stylistic/no-multi-spaces": "error",
-      "@stylistic/no-trailing-spaces": ["error", {"ignoreComments": true}],
+      "@stylistic/no-trailing-spaces": [ "error", { "ignoreComments": true } ],
       "@stylistic/no-whitespace-before-property": "error",
-      "@stylistic/object-curly-newline": ["error", {"multiline": true, "consistent": true}],
+      "@stylistic/object-curly-newline": [ "error", { "multiline": true, "consistent": true } ],
       "@stylistic/semi-spacing": "error",
       "@stylistic/space-before-blocks": "error",
-      "@stylistic/space-before-function-paren": ["error", {"anonymous": "ignore", "named": "never", "asyncArrow": "always"}],
+      "@stylistic/space-before-function-paren": [ "error", { "anonymous": "ignore", "named": "never", "asyncArrow": "always" } ],
       "@stylistic/switch-colon-spacing": "error",
       "@stylistic/type-annotation-spacing": "error",
       "@stylistic/type-generic-spacing": "error",
@@ -78,7 +79,7 @@ export default tseslint.config(
       "@typescript-eslint/no-confusing-void-expression": "error",
       "@typescript-eslint/no-deprecated": "warn",
       "@typescript-eslint/no-dynamic-delete": "error",
-      "@typescript-eslint/no-invalid-void-type": ["error", {"allowInGenericTypeArguments": true}],
+      "@typescript-eslint/no-invalid-void-type": [ "error", { "allowInGenericTypeArguments": true } ],
       "@typescript-eslint/no-meaningless-void-operator": "error",
       "@typescript-eslint/no-misused-spread": "error",
       "@typescript-eslint/no-mixed-enums": "error",
@@ -91,7 +92,7 @@ export default tseslint.config(
       "@typescript-eslint/no-useless-constructor": "error",
       "@typescript-eslint/related-getter-setter-pairs": "error",
       "@typescript-eslint/restrict-template-expressions": "off",
-      "@typescript-eslint/unbound-method": ["error", {"ignoreStatic": true}],
+      "@typescript-eslint/unbound-method": [ "error", { "ignoreStatic": true } ],
 
       "@angular-eslint/directive-selector": [
         "error",
@@ -114,18 +115,18 @@ export default tseslint.config(
     },
   },
   {
+    ignores: [ "node_modules", "dist", ".vscode" ],
     files: ["**/*.spec.ts"],
     rules: {
       "@typescript-eslint/no-unsafe-call": "off"
     },
   },
   {
-    //Config for .html files
+    // Config for .html files
     ignores: ["node_modules", "dist", ".vscode"],
     files: ["**/*.html"],
     extends: [
       ...angular.configs.templateRecommended,
-      //...angular.configs.templateAccessibility,
     ],
     rules: {
       "@angular-eslint/template/no-duplicate-attributes": "error",

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, effect, inject } from '@angular/core';
+import { AfterViewChecked, Component, computed, inject, signal } from '@angular/core';
 import { Bill } from '../../model/Bill';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BillComponent } from '../bill/bill.component';
@@ -8,11 +8,11 @@ import { BillFormComponent } from '../bill-form/bill-form.component';
 import { DialogModule } from 'primeng/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DebtService } from '../../services/debt/debt.service';
-import { switchMap } from 'rxjs';
+import { EMPTY, switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { User } from '../../model/User';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { CategoryService } from '../../services/category/category.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { User } from '../../model/User';
 
 @Component({
   selector: 'app-show-bills',
@@ -25,42 +25,27 @@ export class ShowBillsComponent implements AfterViewChecked {
   private readonly userService = inject(UserService);
   private readonly debtService = inject(DebtService);
   private readonly messageService = inject(MessageService);
-  private readonly localStorageService = inject(LocalStorageService);
   private readonly categoryService = inject(CategoryService);
 
   protected readonly Math = Math;
   showEditBillDialog = false;
   bills = this.billService.getBills();
-  bill: Bill;
-  user: User;
-
-  constructor() {
-    effect(() => {
-      const bills = this.bills.value();
-      if (bills) {
-        this.setUserAndCategories();
-      }
-    });
-  }
-
-  setUserAndCategories() {
-    const currentUser = this.localStorageService.getUser();
-    if (!currentUser) return;
-
-    this.user = currentUser;
-
-    this.categoryService.findCategoriesByGroupId(this.user.groupId).subscribe((categories) => {
-      this.localStorageService.setCategories(categories);
-    })
-  }
+  readonly bill = signal<Bill>({} as Bill);
+  readonly user = toSignal(this.userService.getCurrentUser(), { initialValue: {} as User });
+  readonly userId = computed(() => this.user().id);
+  readonly categories = computed(() => {
+    return this.categoryService.findCategoriesByGroupId(this.user().groupId);
+  });
 
   ngAfterViewChecked(): void {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
   handleEditBillDialog(bill: Bill) {
-    if (this.user.id !== bill.ownerId) return;
-    this.bill = bill;
+    if (this.userId() !== bill.ownerId) {
+      return;
+    }
+    this.bill.set(bill);
     this.showEditBillDialog = true;
   }
 
@@ -70,8 +55,8 @@ export class ShowBillsComponent implements AfterViewChecked {
    * @param bill The bill object with updated values.
    */
   handleEditBill(bill: Bill) {
-    bill.id = this.bill.id;
-    bill.date = this.bill.date;
+    bill.id = this.bill().id;
+    bill.date = this.bill().date;
     this.billService.updateBill(bill).pipe(
       switchMap((updatedBill) => {
         const current = this.bills.value() ?? [];
@@ -79,7 +64,13 @@ export class ShowBillsComponent implements AfterViewChecked {
           current.map((b) => b.id === updatedBill.id ? updatedBill : b)
         );
         this.showEditBillDialog = false;
-        return this.userService.getTotalDebtAmount(this.user.id);
+        const userId = this.userId();
+
+        if (!userId) {
+          return EMPTY;
+        }
+
+        return this.userService.getTotalDebtAmount(userId);
       })
     ).subscribe((amount) => {
       this.messageService.add({ severity: 'success', summary: 'Muokkaus onnistui.' });
@@ -93,7 +84,14 @@ export class ShowBillsComponent implements AfterViewChecked {
         const current = this.bills.value() ?? [];
         this.bills.set(current.filter((b) => b.id !== id));
         this.showEditBillDialog = false;
-        return this.userService.getTotalDebtAmount(this.user.id);
+
+        const userId = this.userId();
+
+        if (!userId) {
+          return EMPTY;
+        }
+
+        return this.userService.getTotalDebtAmount(userId);
       })
     ).subscribe((amount) => {
       this.messageService.add({ severity: 'success', summary: 'Laskun poistaminen onnistui.' });

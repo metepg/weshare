@@ -13,6 +13,7 @@ import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-new-bill-form',
+  standalone: true,
   templateUrl: './new-bill.component.html',
   styleUrls: ['./new-bill.component.css'],
   imports: [CardModule, BillFormComponent, TranslateModule]

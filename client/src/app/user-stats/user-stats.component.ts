@@ -1,19 +1,20 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { CATEGORY_COLORS } from '../../constants/constants';
 import { BillService } from '../../services/bill/bill.service';
 import { DecimalPipe } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Bill } from '../../model/Bill';
 import { CalculationResult } from '../../model/Stats';
 import { TranslationService } from '../../services/translation/translation.service';
 import { UserService } from '../../services/user/user.service';
-import { BillCategoryCode } from '../../constants/Categories';
 import { ChartData, ChartOptions } from 'chart.js';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { User } from '../../model/User';
 import { Select } from 'primeng/select';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-stats',
@@ -28,22 +29,33 @@ import { Select } from 'primeng/select';
   styleUrl: './user-stats.component.scss'
 })
 
-export class UserStatsComponent implements OnInit {
+export class UserStatsComponent {
   private readonly billService = inject(BillService);
   private readonly fb = inject(FormBuilder);
   private readonly translationService = inject(TranslationService);
   private readonly userService = inject(UserService);
   private readonly localStorageService = inject(LocalStorageService);
 
-  currentUser = signal<User | null>(this.localStorageService.getUser());
-  currentUserId = computed(() => this.currentUser()?.id ?? 0);
-  categoryVisibilityState = signal<boolean[]>([]);
+  readonly currentUser = signal<User | null>(this.localStorageService.getUser());
+  readonly currentUserId = computed(() => this.currentUser()?.id ?? 0);
+  readonly categoryVisibilityState = signal<boolean[]>([]);
+  readonly users = toSignal(
+    this.userService.getUsers().pipe(
+      map((users) => users.map((user) => ({ label: user.name, value: user.id })))
+    ),
+    { initialValue: [] }
+  );
+
+  readonly categories = toSignal(this.translationService.getTranslatedCategories(), { initialValue: [] });
+  readonly chartLabels = computed(() => this.categories().map((c) => c.label));
+
   billsByUser = this.billService.getBillsByUserId(this.currentUserId);
 
-  users: { label: string; value: number }[] = [];
-  categories: { label: string; value: BillCategoryCode }[] = [];
-  chartLabels: string[] = [];
-  filterForm!: FormGroup;
+  filterForm = this.fb.group({
+    range: [null],
+    user: [this.currentUserId()]
+  });
+
 
   chartOptions: ChartOptions = {
     animation: false,
@@ -63,12 +75,12 @@ export class UserStatsComponent implements OnInit {
     }
   };
 
-  calculationResult = computed(() => {
+  readonly calculationResult = computed(() => {
     const bills = this.billsByUser.value();
     return bills ? this.calculateTotals(bills) : null;
   });
 
-  totalAmount = computed(() => {
+  readonly totalAmount = computed(() => {
     const result = this.calculationResult();
     const visibility = this.categoryVisibilityState();
 
@@ -82,17 +94,18 @@ export class UserStatsComponent implements OnInit {
     return result.totalOwnAmount - excludedCategoryTotalAmount;
   });
 
-  chartData = computed<ChartData | null>(() => {
+  readonly chartData = computed<ChartData | null>(() => {
     const result = this.calculationResult();
+    const labels = this.chartLabels();
 
-    if (!result || this.chartLabels.length === 0) {
+    if (!result || labels.length === 0) {
       return null;
     }
 
-    const values = this.chartLabels.map((_, i) => result.categorizedTotals[i] ?? 0);
+    const values = this.chartLabels().map((_, i) => result.categorizedTotals[i] ?? 0);
 
     return {
-      labels: this.chartLabels,
+      labels: labels,
       datasets: [
         {
           data: values,
@@ -102,30 +115,6 @@ export class UserStatsComponent implements OnInit {
       ],
     };
   });
-
-  ngOnInit() {
-    this.filterForm = this.fb.group({
-      range: [null],
-      user: [this.currentUserId()]
-    });
-
-    this.userService.getUsers().subscribe((users) => {
-      this.users = users.map((user) => ({ label: user.name, value: user.id }));
-    });
-
-    this.translationService.getTranslatedCategories().subscribe((categories) => {
-      this.categories = categories;
-      this.chartLabels = categories.map((c) => c.label);
-      this.categoryVisibilityState.set(new Array<boolean>(categories.length).fill(false));
-    });
-
-    this.filterForm.get('user')!.valueChanges.subscribe((id: number | null) => {
-      if (typeof id === 'number') {
-        this.currentUser.set({ ...this.currentUser()!, id });
-        this.categoryVisibilityState.set(new Array<boolean>(this.categories.length).fill(false));
-      }
-    });
-  }
 
   updateTotalAmount(categoryIndex: number) {
     this.categoryVisibilityState.update((state) => {

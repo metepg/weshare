@@ -7,8 +7,8 @@
     @for (bill of bills.value(); track bill.id) {
       <app-bill
         [bill]="bill"
-        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.ownerId === user.id) ? 'end' : 'start'"
-        [user]="user"
+        [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.ownerId === userId()) ? 'end' : 'start'"
+        [user]="user()"
         (editBillEmitter)="handleEditBillDialog($event)"
         style="margin-bottom: 10px">
       </app-bill>
@@ -25,12 +25,12 @@
       <app-bill-form
         style="margin-top: 20px"
         [showDeleteBillButton]="true"
-        [amount]="bill.amount"
-        [description]="bill.description"
-        [id]="bill.id"
-        [ownShareOfBill]="bill.ownAmount"
-        [category]="bill.categoryId"
-        [sliderPercent]="Math.round(bill.ownAmount / bill.amount * 100)"
+        [amount]="bill().amount"
+        [description]="bill().description"
+        [id]="bill().id"
+        [ownShareOfBill]="bill().ownAmount"
+        [category]="bill().categoryId"
+        [sliderPercent]="Math.round(bill().ownAmount / bill().amount * 100)"
         (formEmitter)="handleEditBill($event)"
         (deleteBillEmitter)="handleDeleteBill($event)">
       </app-bill-form>

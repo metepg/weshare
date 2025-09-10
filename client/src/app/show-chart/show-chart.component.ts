@@ -26,10 +26,10 @@ import { Select } from 'primeng/select';
 export class ShowChartComponent {
   private readonly billService = inject(BillService);
 
-  yearOptions = signal(generateYearOptions(5));
-  selectedYear = signal<number>(new Date().getFullYear());
+  readonly yearOptions = signal(generateYearOptions(5));
+  readonly selectedYear = signal<number>(new Date().getFullYear());
   billsByYear = this.billService.getBillsByYear(this.selectedYear);
-  showSideBar = model<boolean>(false);
+  readonly showSideBar = model<boolean>(false);
 
   protected readonly CHART_OPTIONS = BAR_CHART_OPTIONS;
 

@@ -16,46 +16,46 @@ import { User } from '../../model/User';
   ]
 })
 export class BillComponent {
-  user = input<User>();
-  bill = input<Bill>();
+  readonly user = input.required<User>();
+  readonly bill = input.required<Bill>();
   editBillEmitter = output<Bill>();
 
   get isDebtPaidBox() {
     // Category 7 is the debtPaid box
-    return this.bill()?.categoryId === 7;
+    return this.bill().categoryId === 7;
   }
 
   get formattedDate() {
-    return this.bill()?.date;
+    return this.bill().date;
   }
 
   get ownerText() {
     return this.isUserOwnerOfBill
       ? 'Maksoit velat'
-      : `${this.bill()?.ownerName} maksoi velat`;
+      : `${this.bill().ownerName} maksoi velat`;
   }
 
   get ownShareText() {
     return this.isUserOwnerOfBill
       ? 'Oma'
-      : `${this.bill()?.ownerName}n`;
+      : `${this.bill().ownerName}n`;
   }
 
   get ownAmount() {
-    return Math.abs(this.bill()?.ownAmount ?? 0);
+    return Math.abs(this.bill().ownAmount);
   }
 
   get isBillPaid() {
-    return this.bill()?.paid;
+    return this.bill().paid;
   }
 
   get isUserOwnerOfBill() {
-    return this.bill()?.ownerId === this.user()?.id;
+    return this.bill().ownerId === this.user().id;
   }
 
   editBill() {
     const bill = this.bill();
-    if (!bill || bill.paid) {
+    if (bill.paid) {
       return;
     }
     this.editBillEmitter.emit(bill);
