@@ -1,8 +1,8 @@
-import { Component, inject, model, OnInit } from '@angular/core';
+import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BillService } from '../../services/bill/bill.service';
 import { MessageService } from 'primeng/api';
@@ -22,6 +22,16 @@ import { PrimeNG } from 'primeng/config';
 import { Button } from 'primeng/button';
 import { Drawer } from 'primeng/drawer';
 import { TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+type CategoryOption = { label: string; value: number };
+type UserOption = { label: string; value: string };
+type SearchForm = {
+  description: FormControl<string | null>;
+  categories: FormControl<CategoryOption[] | null>;
+  range: FormControl<(Date | null)[] | null>;
+  users: FormControl<UserOption[] | null>;
+}
 
 @Component({
   selector: 'app-search-bills',
@@ -56,46 +66,46 @@ export class SearchBillsComponent implements OnInit {
   private readonly localStorageService = inject(LocalStorageService);
 
   protected readonly Math = Math;
-  selectedBill: Bill;
-  bills: Bill[];
-  currentUser: User | null;
-  categories: { label: string; value: number }[];
-  users: { label: string; value: string }[];
-  searchForm: FormGroup;
-  isLoading = false;
-  showEditBillDialog = false;
-  searchFilter: SearchFilter;
   readonly sidebarVisible = model(true);
+  readonly isLoading = signal(false);
+  readonly showEditBillDialog = signal(false);
+  readonly selectedBill = signal<Bill | null>(null);
+  readonly bills = signal<Bill[]>([]);
+  readonly currentUser = signal<User | null>(null);
+  readonly searchFilter = signal<SearchFilter | null>(null);
+
+  searchForm!: FormGroup<SearchForm>;
+
+  private readonly translatedCategories = toSignal(this.translationService.getTranslatedCategories(), {
+    initialValue: [] as {
+      label: string;
+      value: number
+    }[]
+  });
+  private readonly usersFromApi = toSignal(this.userService.getUsers(), { initialValue: [] });
+
+  readonly categories = computed(() => this.translatedCategories());
+  readonly users = computed(() => this.usersFromApi().map(user => ({ label: user.name, value: user.name })));
+
+  readonly selectedItemsLabel = computed(() => {
+    const selected = this.searchForm?.get('categories')?.value;
+    if (!Array.isArray(selected)) return '';
+    if (selected.length === this.categories().length) return 'Kaikki kategoriat';
+    return `${selected.length} valittuna`;
+  });
 
   ngOnInit() {
-    this.currentUser = this.localStorageService.getUser();
-    this.searchForm = this.formBuilder.group({
-      description: [null],
-      categories: [null],
-      range: [null],
-      users: [null],
+    this.currentUser.set(this.localStorageService.getUser());
+    this.searchForm = this.formBuilder.group<SearchForm>({
+      description: this.formBuilder.control<string | null>(null),
+      categories: this.formBuilder.control<CategoryOption[]>([]),
+      range: this.formBuilder.control<(Date | null)[]>([]),
+      users: this.formBuilder.control<UserOption[]>([]),
     });
+    if (this.categories().length) {
+      this.searchForm.patchValue({ categories: [...this.categories()] }, { emitEvent: false });
+    }
 
-    this.translationService.getTranslatedCategories().subscribe((translatedCategories) => {
-      this.categories = translatedCategories;
-      this.searchForm.patchValue({
-        categories: [...this.categories]
-      });
-      this.userService.getUsers().subscribe((users) => {
-        this.users = users.map((user) => {
-          return {
-            label: user.name,
-            value: user.name,
-          };
-        });
-      });
-    });
-
-    this.sidebarService.sidebarVisibility$.subscribe((visible) => {
-      this.sidebarVisible.set(visible);
-    });
-
-    // TODO: Put these to translation file
     this.primengConfig.setTranslation({
       firstDayOfWeek: 1,
       dayNames: ['Sunnuntai', 'Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai'],
@@ -108,48 +118,25 @@ export class SearchBillsComponent implements OnInit {
     });
   }
 
-  getSelectedItemsLabel() {
-    const selectedCategories = this.searchForm.get('categories')?.value as unknown;
-
-    if (!Array.isArray(selectedCategories)) return;
-
-    if (selectedCategories.length === this.categories.length) {
-      return 'Kaikki kategoriat';
-    }
-    return `${selectedCategories.length} valittuna`;
-  }
-
   onSubmit() {
-    const rawDescription: unknown = this.searchForm.get('description')?.value;
-    const description: string = typeof rawDescription === 'string' ? rawDescription : '';
-
-    const rawCategories: unknown = this.searchForm.get('categories')?.value;
-    const categories: number[] = Array.isArray(rawCategories)
-      ? (rawCategories as { label: string; value: number }[]).map((categories) => categories.value)
-      : [];
-
-    const rawRange: unknown = this.searchForm.get('range')?.value;
-    const range: Date[] = Array.isArray(rawRange)
-      ? (rawRange as (Date | null)[]).filter((date): date is Date => date !== null)
-      : [];
-
-    const rawUsers: unknown = this.searchForm.get('users')?.value;
-    const users: string[] = Array.isArray(rawUsers)
-      ? (rawUsers as { label: string; value: string }[]).map((users) => users.value)
-      : [];
-
-    this.searchFilter = { description, categories, range, users };
+    const filter: SearchFilter = {
+      description: this.searchForm.controls.description.value ?? '',
+      categories: this.searchForm.controls.categories.value?.map(category => category.value) ?? [],
+      range: this.searchForm.controls.range.value?.filter((date): date is Date => !!date) ?? [],
+      users: this.searchForm.controls.users.value?.map(user => user.value) ?? [],
+    };
 
     this.sidebarVisible.set(false);
-    this.isLoading = true;
-    this.billService.getBillsByFilter(this.searchFilter).subscribe((response) => {
-      if (response.ok && response.body) {
-        const bills = response.body;
-        this.bills = bills.filter((bill) => bill.ownAmount !== 0);
-        this.isLoading = false;
-      } else {
-        // TODO: Better error handling
-        alert('Jotain meni pieleen.');
+    this.isLoading.set(true);
+
+    this.billService.getBillsByFilter(filter).subscribe({
+      next: response => {
+        this.bills.set(response.body?.filter(bill => bill.ownAmount !== 0) ?? []);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Haku epäonnistui.' });
+        this.isLoading.set(false);
       }
     });
   }
@@ -159,28 +146,31 @@ export class SearchBillsComponent implements OnInit {
   }
 
   showEditView(bill: Bill) {
-    this.selectedBill = bill;
-    this.showEditBillDialog = true;
+    this.selectedBill.set(bill);
+    this.showEditBillDialog.set(true);
   }
 
-  handleEditBill(bill: Bill): void {
-    const { amount, description, id, date, ownAmount, ownerId, ownerName, paid } = this.selectedBill;
-    const editedBill = new Bill(amount, bill.categoryId, description, ownAmount, ownerId, ownerName, paid);
+  handleEditBill(_: Bill): void {
+    const selectedBill = this.selectedBill();
+    if (!selectedBill) {
+      return;
+    }
+
+    const { amount, description, id, date, ownAmount, ownerId, ownerName, paid } = selectedBill;
+    const editedBill = new Bill(amount, selectedBill.categoryId, description, ownAmount, ownerId, ownerName, paid);
     editedBill.setId(id);
     editedBill.setDate(date);
-    this.billService.updateBill(editedBill).subscribe({
-      next: (editedBill) => {
-        this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
-        const categoryIds = new Set(this.searchFilter.categories);
-        this.bills = this.bills
-          .map((b) => b.id === editedBill.id ? editedBill : b)
-          .filter((b) => categoryIds.has(b.categoryId));
-        this.showEditBillDialog = false;
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
-      }
-    });
-  }
 
+    const response = toSignal(this.billService.updateBill(editedBill), { initialValue: null })();
+
+    if (response) {
+      this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
+      const filter = this.searchFilter();
+      const categoryIds = new Set(filter?.categories ?? []);
+      this.bills.update(bs => bs.map(b => (b.id === editedBill.id ? editedBill : b)).filter(b => categoryIds.has(b.categoryId)));
+      this.showEditBillDialog.set(false);
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
+    }
+  }
 }
