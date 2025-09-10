@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShowBillsComponent } from './show-bills.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { MessageService } from 'primeng/api';
 
 describe('ShowBillsComponent', () => {
   let component: ShowBillsComponent;
@@ -8,7 +11,8 @@ describe('ShowBillsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShowBillsComponent]
+      imports: [ShowBillsComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), MessageService],
     })
       .compileComponents();
 

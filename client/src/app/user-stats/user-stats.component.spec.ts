@@ -1,14 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserStatsComponent } from './user-stats.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ConfirmationService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
-describe('HallOfFameComponent', () => {
+describe('UserStatsComponent', () => {
   let component: UserStatsComponent;
   let fixture: ComponentFixture<UserStatsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserStatsComponent]
+      imports: [UserStatsComponent, TranslateModule.forRoot()],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     })
       .compileComponents();
 

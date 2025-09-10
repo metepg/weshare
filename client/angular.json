@@ -106,7 +106,7 @@
             "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "src/**/*.ts",
-              "**/*.spec.ts",
+              "src/**/*.spec.ts",
               "src/**/*.html"
             ]
           }

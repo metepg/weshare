@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, inject, input, model, OnDestroy, OnInit, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,6 +19,7 @@ import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-bill-form',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,
@@ -44,17 +45,19 @@ export class BillFormComponent implements OnInit, OnDestroy {
   categories: { label: string; value: BillCategoryCode }[] = [];
   submitButtonIsDisabled = true;
   user: User | null;
-  @Input() disabledFields: string[] = [];
-  @Input() id: number | undefined;
-  @Input() showDeleteBillButton = false;
-  @Input() description: string;
-  @Input() ownShareOfBill: number;
-  @Input() sliderPercent = 50;
-  @Input() amount: number;
-  @Input() category: number;
-  @Input() paid = false;
-  @Output() formEmitter = new EventEmitter<Bill>();
-  @Output() deleteBillEmitter = new EventEmitter<number>();
+  readonly disabledFields = input<string[]>([]);
+  readonly id = input<number>();
+  readonly showDeleteBillButton = input(false);
+
+  readonly description = model<string>();
+  readonly ownShareOfBill = model<number>();
+  readonly sliderPercent = model(50);
+  readonly amount = model<number>();
+  readonly category = model<number>();
+  readonly paid = model(false);
+
+  formEmitter = output<Bill>();
+  deleteBillEmitter = output<number>();
   billFormBuilder: FormGroup<{
     amount: FormControl<number | null>;
     category: FormControl<number | null>;
@@ -64,15 +67,27 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.billFormBuilder = this.formBuilder.group({
-      amount: [{value: this.amount, disabled: this.disabledFields.includes('amount')}, [Validators.required, Validators.min(1)]],
-      category: [{value: this.category, disabled: this.disabledFields.includes('category')}, [Validators.required, isValidCategory]],
-      description: [{value: this.description, disabled: this.disabledFields.includes('description')}, [Validators.required, isValidDescription]],
-      sliderPercent: {value: this.sliderPercent, disabled: this.disabledFields.includes('sliderPercent')}
-    })
+      amount: [
+        { value: this.amount() ?? null, disabled: this.disabledFields().includes('amount') },
+        [Validators.required, Validators.min(1)]
+      ],
+      category: [
+        { value: this.category() ?? null, disabled: this.disabledFields().includes('category') },
+        [Validators.required, isValidCategory]
+      ],
+      description: [
+        { value: this.description() ?? null, disabled: this.disabledFields().includes('description') },
+        [Validators.required, isValidDescription]
+      ],
+      sliderPercent: {
+        value: this.sliderPercent(),
+        disabled: this.disabledFields().includes('sliderPercent')
+      }
+    });
 
     this.billFormBuilder.valueChanges.subscribe((value) => {
       if (!value.amount) return
-      this.ownShareOfBill = Math.round((value.amount * (this.sliderPercent / 100)) * 100) / 100;
+      this.ownShareOfBill.set(Math.round((value.amount * (this.sliderPercent() / 100)) * 100) / 100);
     })
 
     this.subscription = this.translationService.getTranslatedCategories().subscribe((translatedCategories) => {
@@ -94,22 +109,25 @@ export class BillFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill, this.user.id, this.user.name, this.paid));
+    this.formEmitter.emit(new Bill(amount!, category!, description!, this.ownShareOfBill()!, this.user.id, this.user.name, this.paid()));
     this.submitButtonIsDisabled = false;
   }
 
   handleSliderChange(e: SliderChangeEvent): void {
     if (e.value === undefined) return;
-    this.sliderPercent = e.value
+    this.sliderPercent.set(e.value);
   }
 
   deleteBill() {
-    if (!this.id) return;
+    const billId = this.id();
+    if (!billId) {
+      return;
+    }
 
     this.confirmationService.confirm({
       header: 'Varmistus', message: `Haluatko varmasti poistaa laskun?`,
       accept: (): void => {
-        this.deleteBillEmitter.emit(this.id);
+        this.deleteBillEmitter.emit(billId);
       },
 
       reject: () => {},

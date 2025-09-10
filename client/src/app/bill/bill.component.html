@@ -6,7 +6,7 @@
   <hr>
 } @else {
   <div [ngClass]="isBillPaid ? 'isPaid' : ''">
-    <i style="margin: 0 6px ;color: grey">{{ bill()?.ownerName }}</i>
+    <i style="margin: 0 6px ;color: grey">{{ bill().ownerName }}</i>
     <br>
     <i style="margin: 0 6px; color: grey">{{ formattedDate | date:'d.M.yyyy' }}</i>
 
@@ -16,8 +16,8 @@
       [attr.tabindex]="isUserOwnerOfBill && !isBillPaid ? 0 : -1"
       [ngClass]="[isUserOwnerOfBill ? 'own' : 'other']"
       style="width: 185px;">
-      <p id="amount">{{ bill()?.amount | number:'1.2-2' }} €</p>
-      <p id="description">{{ bill()?.description }}</p>
+      <p id="amount">{{ bill().amount | number:'1.2-2' }} €</p>
+      <p id="description">{{ bill().description }}</p>
       <hr>
       <p id="own">{{ ownShareText }} osuus {{ ownAmount | number:'1.2-2' }} €</p>
     </div>
