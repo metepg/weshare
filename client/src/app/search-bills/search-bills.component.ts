@@ -1,4 +1,4 @@
-import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
@@ -66,13 +66,12 @@ export class SearchBillsComponent implements OnInit {
   private readonly localStorageService = inject(LocalStorageService);
 
   protected readonly Math = Math;
-  readonly sidebarVisible = model(true);
+  readonly sidebarVisible = signal(true);
   readonly isLoading = signal(false);
   readonly showEditBillDialog = signal(false);
   readonly selectedBill = signal<Bill | null>(null);
   readonly bills = signal<Bill[]>([]);
   readonly currentUser = signal<User | null>(null);
-  readonly searchFilter = signal<SearchFilter | null>(null);
 
   searchForm!: FormGroup<SearchForm>;
 
@@ -153,23 +152,25 @@ export class SearchBillsComponent implements OnInit {
   }
 
   handleEditBill(selected: Bill): void {
-    const selectedBill = selected;
+    const id = this.selectedBill()?.id;
+    const date = this.selectedBill()?.date;
 
-    const { amount, description, id, date, ownAmount, ownerId, ownerName, paid } = selectedBill;
-    const editedBill = new Bill(amount, selectedBill.categoryId, description, ownAmount, ownerId, ownerName, paid);
-    editedBill.setId(id);
-    editedBill.setDate(date);
-
-    const response = toSignal(this.billService.updateBill(editedBill), { initialValue: null })();
-
-    if (response) {
-      this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
-      const filter = this.searchFilter();
-      const categoryIds = new Set(filter?.categories ?? []);
-      this.bills.update((bs) => bs.map((b) => (b.id === editedBill.id ? editedBill : b)).filter((b) => categoryIds.has(b.categoryId)));
-      this.showEditBillDialog.set(false);
-    } else {
-      this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
+    if (!id || !date) {
+      return;
     }
+
+    selected.setId(id);
+    selected.setDate(date);
+
+    this.billService.updateBill(selected).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Kategorian päivitys onnistui' });
+        this.bills.update((bills) => bills.map((bill) => bill.id === selected.id ? selected : bill));
+        this.showEditBillDialog.set(false);
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Kategorian päivitys epäonnistui.' });
+      }
+    });
   }
 }

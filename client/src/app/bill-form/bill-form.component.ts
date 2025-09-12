@@ -102,7 +102,8 @@ export class BillFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     this.submitButtonIsDisabled = true;
-    const {amount, category, description} = this.billFormBuilder.value;
+    // getRawValue() also includes disabled fields (when updating bill)
+    const {amount, category, description} = this.billFormBuilder.getRawValue();
     this.user = this.localStorageService.getUser();
 
     if (!this.billFormBuilder.valid || !this.user) {

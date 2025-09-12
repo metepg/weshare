@@ -106,6 +106,7 @@
       [header]="'edit' | translate"
       [modal]="true"
       [visible]="showEditBillDialog()"
+      (visibleChange)="showEditBillDialog.set(false)"
       focusOnShow="false"
       [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
       <app-bill-form
