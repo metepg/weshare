@@ -6,6 +6,7 @@
     "build": "ng build --configuration production",
     "watch": "ng --watch --configuration development",
     "test": "ng test --browsers=ChromeHeadless",
+    "test-no-watch": "ng test --browsers=ChromeHeadless --watch=false",
     "lint": "ng lint",
     "lint-fix": "ng lint --fix"
   },
