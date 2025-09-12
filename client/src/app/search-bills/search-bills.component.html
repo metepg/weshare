@@ -68,7 +68,7 @@
           size="small"
           scrollHeight="600px"
           class="p-datatable-gridlines">
-          <ng-template pTemplate="header">
+          <ng-template #header>
             <tr>
               <th id="sort-owner" pSortableColumn="owner">{{ 'who' | translate}} <br>
                 <p-sortIcon field="owner"/>
@@ -84,7 +84,7 @@
               </th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-bill>
+          <ng-template #body let-bill>
             <tr (click)="showEditView(bill)" (keydown.enter)="showEditView(bill)">
               <td>{{ bill.ownerName}}</td>
               <td style="white-space: normal; word-wrap: break-word; max-width: 100px;">
