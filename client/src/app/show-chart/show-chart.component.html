@@ -6,11 +6,11 @@
     [options]="yearOptions()"
     [style.margin]="'auto'"
     optionLabel="name"
-    optionValue="code">
-  </p-select>
+    optionValue="code"
+  />
   @if (billsByYear.isLoading()) {
     <div style="margin-top: 200px; display: grid; place-items: center">
-      <p-progressSpinner></p-progressSpinner>
+      <p-progressSpinner />
     </div>
   } @else if (billsByYear.value()?.length) {
     <p-chart
@@ -18,8 +18,8 @@
       [options]="CHART_OPTIONS"
       height="500px"
       type="bar"
-      width="350px">
-    </p-chart>
+      width="350px"
+    />
   } @else {
     <p style="text-align: center; font-size: 16px; margin-top: 30px">
       {{ 'noBillsFromSelectedYear' | translate }}

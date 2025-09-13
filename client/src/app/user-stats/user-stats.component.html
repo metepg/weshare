@@ -1,10 +1,9 @@
 <form style="display: flex; flex-direction: column; text-align: center;" [formGroup]="filterForm">
-  <p-select
-    formControlName="user"
+  <p-select formControlName="user"
     [options]="users()" 
     [style]="{'width': '80%', 'margin': 'auto', 'margin-top': '5px', 'display': 'flex', 'justify-content': 'center'}" 
-    [placeholder]="'user' | translate">
-  </p-select>
+    [placeholder]="'user' | translate"
+  />
 </form>
 
 <p-chart

@@ -1,8 +1,6 @@
 <main style="display: flex; justify-content: center">
 <p-card [style.margin-top]="'3vh'">
   <h2>{{ 'newBill.title' | translate }}</h2>
-  <app-bill-form
-   (formEmitter)="handleSubmit($event)" 
-  ></app-bill-form>
+  <app-bill-form (formEmitter)="handleSubmit($event)" />
 </p-card>
 </main>

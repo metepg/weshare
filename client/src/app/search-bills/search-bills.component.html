@@ -11,7 +11,7 @@
     >
       <!--Search word-->
       <p-iconfield iconPosition="right">
-        <p-inputicon class="pi pi-tag"></p-inputicon>
+        <p-inputicon class="pi pi-tag" />
         <input
           type="text"
           pInputText
@@ -22,8 +22,7 @@
       </p-iconfield>
 
       <!--Category-->
-      <p-multiSelect
-        [options]="categories()"
+      <p-multiSelect [options]="categories()"
         formControlName="categories"
         showClear="true"
         [filter]="false"
@@ -32,18 +31,17 @@
         [selectedItemsLabel]="selectedItemsLabel()"
         [maxSelectedLabels]="2"
         [style]="{'width': '100%', 'margin-bottom': '10px'}"
-        [placeholder]="'categories' | translate">
-      </p-multiSelect>
+        [placeholder]="'categories' | translate"
+      />
 
       <!--User-->
-      <p-multiSelect
-        [options]="users()"
+      <p-multiSelect [options]="users()"
         formControlName="users"
         [showHeader]="false"
         optionLabel="label"
         [style]="{'width': '100%', 'margin-bottom': '10px'}"
-        placeholder="Käyttäjä">
-      </p-multiSelect>
+        placeholder="Käyttäjä"
+      />
 
       <p-button
         class="p-button-submit"
@@ -109,8 +107,7 @@
       (visibleChange)="showEditBillDialog.set(false)"
       focusOnShow="false"
       [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
-      <app-bill-form
-        style="margin-top: 20px"
+      <app-bill-form style="margin-top: 20px"
         [disabledFields]="['amount', 'sliderPercent', 'description']"
         [showDeleteBillButton]="false"
         [amount]="selectedBill()?.amount"
@@ -120,8 +117,7 @@
         [paid]="selectedBill()!.paid"
         [category]="selectedBill()?.categoryId"
         [sliderPercent]="Math.round(selectedBill()!.ownAmount / selectedBill()!.amount * 100)"
-        (formEmitter)="handleEditBill($event)">
-      </app-bill-form>
+        (formEmitter)="handleEditBill($event)" />
     </p-dialog>
 
   }

@@ -1,20 +1,17 @@
-<app-navbar
-  (debtEmitter)="payDebt()"
-  [debtAmount]="debt()">
-</app-navbar>
+<app-navbar (debtEmitter)="payDebt()" [debtAmount]="debt()" />
 
 @if (isLoading) {
-  <p-progressSpinner [ngStyle]="{'margin-top': '200px', 'display': 'grid', 'place-items': 'center'}"></p-progressSpinner>
+  <p-progressSpinner [ngStyle]="{'margin-top': '200px', 'display': 'grid', 'place-items': 'center'}" />
 } @else {
-  <router-outlet></router-outlet>
+  <router-outlet />
 }
 
 <!--Confirmation popup-->
 <p-confirmDialog #cd header="Confirmation" icon="pi pi-exclamation-triangle">
   <ng-template #footer>
     <p-button label="Peruuta" (onClick)="cd.onReject()" severity="danger"
-              icon="pi pi-times"></p-button>
+              icon="pi pi-times" />
     <p-button label="Hyväksy" (onClick)="cd.onAccept()" severity="success"
-              icon="pi pi-check"></p-button>
+              icon="pi pi-check" />
   </ng-template>
 </p-confirmDialog>

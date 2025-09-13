@@ -1,17 +1,16 @@
 @if (bills.isLoading()) {
   <div style="margin-top: 200px; display: grid; place-items: center">
-    <p-progressSpinner></p-progressSpinner>
+    <p-progressSpinner />
   </div>
 } @else if (bills.value()?.length) {
   <div style="display:grid; place-items: center;">
     @for (bill of bills.value(); track bill.id) {
-      <app-bill
-        [bill]="bill"
+      <app-bill [bill]="bill"
         [style.place-self]="(bill.amount === 0) ? 'normal' : (bill.ownerId === userId()) ? 'end' : 'start'"
         [user]="user()"
         (editBillEmitter)="handleEditBillDialog($event)"
-        style="margin-bottom: 10px">
-      </app-bill>
+        style="margin-bottom: 10px"
+      />
     }
   </div>
 
@@ -21,9 +20,9 @@
       [modal]="true"
       [(visible)]="showEditBillDialog"
       focusOnShow="false"
-      [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}">
-      <app-bill-form
-        style="margin-top: 20px"
+      [contentStyle]="{'height': '500px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}"
+    >
+      <app-bill-form style="margin-top: 20px"
         [showDeleteBillButton]="true"
         [amount]="bill().amount"
         [description]="bill().description"
@@ -32,8 +31,8 @@
         [category]="bill().categoryId"
         [sliderPercent]="Math.round(bill().ownAmount / bill().amount * 100)"
         (formEmitter)="handleEditBill($event)"
-        (deleteBillEmitter)="handleDeleteBill($event)">
-      </app-bill-form>
+        (deleteBillEmitter)="handleDeleteBill($event)"
+      />
     </p-dialog>
   }
 } @else {
