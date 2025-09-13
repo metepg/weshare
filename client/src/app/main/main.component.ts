@@ -2,7 +2,7 @@ import { Component, DoCheck, inject, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
 import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
-import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserService } from '../../services/user/user.service';
 import Messages from '../../constants/Messages';
 import { HttpResponse } from '@angular/common/http';
@@ -25,7 +25,6 @@ import { Button } from 'primeng/button';
   imports: [
     NavbarComponent,
     ConfirmDialogModule,
-    PrimeTemplate,
     ProgressSpinnerModule,
     SplitButtonModule,
     SelectButtonModule,
