@@ -186,7 +186,7 @@ class BillIntegrationTest extends TestcontainersConfig {
             .when()
             .get(BASE_URL + "/user/{userId}", 0)
             .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
+            .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test

@@ -46,7 +46,7 @@ public class BillController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and #userId == @securityService.getCurrentUser().id()")
     public List<BillDTO> findBillsByUserId(@PathVariable Integer userId) {
         return billService.findBillsByUserId(userId);
     }
@@ -64,7 +64,7 @@ public class BillController {
     }
 
     @PostMapping("/pay")
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and @billSecurity.isOwner(#bill.id())")
     @ResponseStatus(HttpStatus.OK)
     public List<BillDTO> payDebt(@RequestBody BillDTO bill) {
         return billService.payDebt(bill);
@@ -77,14 +77,14 @@ public class BillController {
     }
 
     @PutMapping()
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and @billSecurity.isOwner(#bill.id())")
     public BillDTO editBill(@RequestBody BillDTO bill) {
         LOG.info("User '{}' is editing bill: {}", securityService.getCurrentUser().name(), bill);
         return billService.save(bill);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and @billSecurity.isOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Boolean deleteBill(@PathVariable Integer id) {
         return billService.deleteBillById(id);
