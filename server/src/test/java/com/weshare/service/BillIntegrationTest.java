@@ -180,7 +180,7 @@ class BillIntegrationTest extends TestcontainersConfig {
     }
 
     @Test
-    @DisplayName("Should return not found when given invalid userId")
+    @DisplayName("Should return FORBIDDEN when given invalid userId")
     void none() {
         given(requestSpecification)
             .when()
