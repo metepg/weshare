@@ -2,7 +2,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withFetch, withXsrfConfiguration } from '@angular/common/http';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
@@ -15,7 +15,10 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 bootstrapApplication(AppComponent, {
   providers: [
     provideZonelessChangeDetection(),
-    provideHttpClient(withXsrfConfiguration({})),
+    provideHttpClient(
+      withFetch(),
+      withXsrfConfiguration({})
+    ),
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     provideAnimations(),
     providePrimeNG({
