@@ -1,8 +1,10 @@
 package com.weshare.service;
 
 import com.weshare.dto.UserDTO;
+import com.weshare.mocks.MockDataProvider;
 import com.weshare.model.Group;
 import com.weshare.model.User;
+import com.weshare.repository.BillRepository;
 import com.weshare.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,9 @@ class SecurityServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    BillRepository billRepository;
 
     @InjectMocks
     SecurityService securityService;
@@ -109,5 +114,44 @@ class SecurityServiceTest {
         assertThatThrownBy(() -> securityService.getCurrentUser())
             .isInstanceOf(IllegalStateException.class)
             .hasMessage("User not authenticated");
+    }
+
+    @Test
+    @DisplayName("isUserInSameGroup true when bill owner group equals current user group")
+    void isUserInSameGroupTrue() {
+        Group group = MockDataProvider.createMockGroup();
+        group.setId(UUID.randomUUID());
+        User user = MockDataProvider.createMockUser(group);
+        int billId = 42;
+
+        // auth context
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken(user.getName(), "pw", List.of())
+        );
+        when(userRepository.findUserByName(user.getName())).thenReturn(Optional.of(user));
+
+        // bill's group
+        when(billRepository.findUserGroupIdByBillId(billId)).thenReturn(group.getId());
+
+        assertThat(securityService.isUserInSameGroup(billId)).isTrue();
+    }
+
+    @Test
+    @DisplayName("isUserInSameGroup false when bill owner group differs")
+    void isUserInSameGroupFalse() {
+        Group group = MockDataProvider.createMockGroup();
+        User user = MockDataProvider.createMockUser(group);
+        Group otherGroup = MockDataProvider.createMockGroup();
+        group.setId(UUID.randomUUID());
+        int billId = 43;
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken(user.getName(), "pw", List.of())
+        );
+        when(userRepository.findUserByName(user.getName())).thenReturn(Optional.of(user));
+
+        when(billRepository.findUserGroupIdByBillId(billId)).thenReturn(otherGroup.getId());
+
+        assertThat(securityService.isUserInSameGroup(billId)).isFalse();
     }
 }

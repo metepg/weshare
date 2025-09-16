@@ -46,7 +46,7 @@ public class BillController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and #userId == @securityService.getCurrentUser().id()")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and @securityService.isUserInSameGroup(#userId)")
     public List<BillDTO> findBillsByUserId(@PathVariable Integer userId) {
         return billService.findBillsByUserId(userId);
     }
@@ -64,7 +64,7 @@ public class BillController {
     }
 
     @PostMapping("/pay")
-    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2) and @billSecurity.isOwner(#bill.id())")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
     @ResponseStatus(HttpStatus.OK)
     public List<BillDTO> payDebt(@RequestBody BillDTO bill) {
         return billService.payDebt(bill);

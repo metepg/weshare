@@ -75,4 +75,7 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
             "AND b.paid = false")
     Double findUserDebtByUserId(@Param("userId") Integer userId);
 
+
+    @Query("SELECT u.group.id FROM Bill b JOIN b.owner u WHERE b.id = :billId")
+    UUID findUserGroupIdByBillId(@Param("billId") Integer billId);
 }

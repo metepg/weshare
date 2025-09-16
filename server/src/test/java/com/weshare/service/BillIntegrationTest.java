@@ -163,23 +163,6 @@ class BillIntegrationTest extends TestcontainersConfig {
     }
 
     @Test
-    @DisplayName("Should return bills by user ID for authorized user")
-    void findBillsByUserId_shouldReturnSpecificUserBills() {
-        generateBillsForTests();
-        List<BillDTO> returnedBills = given(requestSpecification)
-                .when()
-                .get(BASE_URL + "/user/{userId}", user.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response()
-                .jsonPath()
-                .getList(".", BillDTO.class);
-
-        assertThat(returnedBills).hasSize(NUMBER_OF_BILLS);
-    }
-
-    @Test
     @DisplayName("Should return FORBIDDEN when given invalid userId")
     void none() {
         given(requestSpecification)

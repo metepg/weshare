@@ -47,28 +47,28 @@ public class MockDataProvider {
             .build();
     }
 
-    public static BillDTO createMockBillDTO(User user, Category category) {
-        double amount = getRandomAmount();
-        double ownAmount = getRandomOwnAmount(amount);
-
-        return new BillDTO(
-                null,
-                amount,
-                ownAmount,
-                getRandomString(),
-                LocalDate.now(),
-                getRandomBoolean(),
-                category.getId(),
-                user.getId(),
-                user.getName()
-        );
-    }
-
     public static Category createMockCategory(Group group) {
         Category category = new Category();
         category.setDescription("Category: " + getRandomString());
         category.setGroup(group);
         return category;
+    }
+
+    public static BillDTO createMockBillDTO(User user, Category category) {
+        double amount = getRandomAmount();
+        double ownAmount = getRandomOwnAmount(amount);
+
+        return new BillDTO(
+            null,
+            amount,
+            ownAmount,
+            getRandomString(),
+            LocalDate.now(),
+            getRandomBoolean(),
+            category.getId(),
+            user.getId(),
+            user.getName()
+        );
     }
 
     private static double getRandomAmount() {
