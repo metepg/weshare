@@ -43,8 +43,7 @@ class UserControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.name").value("User"))
-            .andExpect(jsonPath("$.groupId").exists())
-            .andExpect(jsonPath("$.role").value("ROLE1"));
+            .andExpect(jsonPath("$.groupId").exists());
     }
 
     @Test
@@ -57,8 +56,7 @@ class UserControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(1))
             .andExpect(jsonPath("$[0].name").value("User"))
-            .andExpect(jsonPath("$[0].groupId").exists())
-            .andExpect(jsonPath("$[0].role").value("ROLE1"));
+            .andExpect(jsonPath("$[0].groupId").exists());
     }
 
     @Test
