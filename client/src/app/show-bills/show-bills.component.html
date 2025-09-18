@@ -29,7 +29,7 @@
         [id]="bill().id"
         [ownShareOfBill]="bill().ownAmount"
         [category]="bill().categoryId"
-        [sliderPercent]="Math.round(bill().ownAmount / bill().amount * 100)"
+        [sliderPercent]="sliderPercent"
         (formEmitter)="handleEditBill($event)"
         (deleteBillEmitter)="handleDeleteBill($event)"
       />

@@ -116,7 +116,7 @@
         [ownShareOfBill]="selectedBill()?.ownAmount"
         [paid]="selectedBill()!.paid"
         [category]="selectedBill()?.categoryId"
-        [sliderPercent]="Math.round(selectedBill()!.ownAmount / selectedBill()!.amount * 100)"
+        [sliderPercent]="sliderPercent"
         (formEmitter)="handleEditBill($event)" />
     </p-dialog>
 

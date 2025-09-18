@@ -65,7 +65,6 @@ export class SearchBillsComponent implements OnInit {
   private readonly messageService = inject(MessageService);
   private readonly localStorageService = inject(LocalStorageService);
 
-  protected readonly Math = Math;
   readonly sidebarVisible = signal(true);
   readonly isLoading = signal(false);
   readonly showEditBillDialog = signal(false);
@@ -94,6 +93,14 @@ export class SearchBillsComponent implements OnInit {
     if (selectedCategory.length === this.categories().length) return 'Kaikki kategoriat';
     return `${selectedCategory.length} valittuna`;
   });
+
+  get sliderPercent() {
+    const selectedBill = this.selectedBill();
+    if (!selectedBill) {
+      return 0;
+    }
+    return Math.round((selectedBill.ownAmount / selectedBill.amount) * 100);
+  }
 
   ngOnInit() {
     this.currentUser.set(this.localStorageService.getUser());

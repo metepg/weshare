@@ -27,7 +27,6 @@ export class ShowBillsComponent {
   private readonly messageService = inject(MessageService);
   private readonly categoryService = inject(CategoryService);
 
-  protected readonly Math = Math;
   showEditBillDialog = false;
   bills = this.billService.getBills();
   readonly bill = signal<Bill>({} as Bill);
@@ -42,6 +41,10 @@ export class ShowBillsComponent {
       this.bills.value();
       queueMicrotask(() => { window.scrollTo(0, document.body.scrollHeight); });
     });
+  }
+
+  get sliderPercent() {
+    return Math.round((this.bill().ownAmount / this.bill().amount) * 100);
   }
 
   handleEditBillDialog(bill: Bill) {
