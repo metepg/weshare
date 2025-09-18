@@ -1,16 +1,15 @@
 {
   "name": "client",
   "version": "3.2.3",
+  "private": true,
   "scripts": {
-    "start": "ng serve --watch --proxy-config proxy.conf.json --configuration development",
+    "start": "ng serve --proxy-config proxy.conf.json --configuration development",
     "build": "ng build --configuration production",
-    "watch": "ng --watch --configuration development",
     "test": "ng test --browsers=ChromeHeadless",
     "test-no-watch": "ng test --browsers=ChromeHeadless --watch=false",
     "lint": "ng lint",
     "lint-fix": "ng lint --fix"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^20.2.1",
     "@angular/common": "^20.2.1",
