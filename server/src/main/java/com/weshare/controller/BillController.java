@@ -3,6 +3,7 @@ package com.weshare.controller;
 import com.weshare.dto.BillDTO;
 import com.weshare.model.SearchFilter;
 import com.weshare.model.StatsFilter;
+import com.weshare.service.BillEventService;
 import com.weshare.service.BillService;
 import com.weshare.service.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class BillController {
     private static final Logger LOG = LoggerFactory.getLogger(BillController.class);
     private final BillService billService;
     private final SecurityService securityService;
+    private final BillEventService billEventService;
 
     @PostMapping()
     @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
@@ -88,5 +91,11 @@ public class BillController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Boolean deleteBill(@PathVariable Integer id) {
         return billService.deleteBillById(id);
+    }
+
+    @GetMapping("/stream")
+    @PreAuthorize("hasAnyRole(@eRole.role1, @eRole.role2)")
+    public SseEmitter stream() {
+        return billEventService.subscribe();
     }
 }

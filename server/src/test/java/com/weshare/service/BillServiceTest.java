@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -50,6 +49,9 @@ class BillServiceTest {
     private SecurityService securityService;
     @Mock
     private BillConverter billConverter;
+    @SuppressWarnings("unused")
+    @Mock
+    private BillEventService billEventService;
 
     @InjectMocks
     private BillService billService;
@@ -232,23 +234,12 @@ class BillServiceTest {
 
             Bill recent = MockDataProvider.createMockBill(mockUserEntity, mockCategory);
             recent.setId(6);
-            when(billRepository.findRecentBills(
-                eq(mockUserDto.groupId()), any(PageRequest.class))
-            ).thenReturn(List.of(recent));
-
-            BillDTO recentDto = new BillDTO(
-                recent.getId(), recent.getAmount(), recent.getOwnAmount(),
-                recent.getDescription(), recent.getDate(), recent.isPaid(),
-                recent.getCategory().getId(), recent.getOwner().getId(),
-                recent.getOwner().getName()
-            );
-            when(billConverter.billToDTO(recent)).thenReturn(recentDto);
 
             List<BillDTO> result = billService.payDebt(dto);
 
             verify(billRepository).payDebt();
             assertThat(result).extracting(BillDTO::id)
-                .containsExactly(6);
+                .containsExactly(5);
         }
 
     }

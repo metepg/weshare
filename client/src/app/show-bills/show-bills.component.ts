@@ -28,17 +28,15 @@ export class ShowBillsComponent {
   private readonly categoryService = inject(CategoryService);
 
   showEditBillDialog = false;
-  bills = this.billService.getBills();
+  bills = this.billService.bills;
   readonly bill = signal<Bill>({} as Bill);
   readonly user = toSignal(this.userService.getCurrentUser(), { initialValue: {} as User });
   readonly userId = computed(() => this.user().id);
-  readonly categories = computed(() => {
-    return this.categoryService.findCategoriesByGroupId(this.user().groupId);
-  });
+  readonly categories = computed(() => this.categoryService.findCategoriesByGroupId(this.user().groupId));
 
   constructor() {
     effect(() => {
-      this.bills.value();
+      this.bills();
       queueMicrotask(() => { window.scrollTo(0, document.body.scrollHeight); });
     });
   }
@@ -55,48 +53,23 @@ export class ShowBillsComponent {
     this.showEditBillDialog = true;
   }
 
-  /**
-   * Edits the given bill and updates the local bills and debt amount.
-   *
-   * @param bill The bill object with updated values.
-   */
   handleEditBill(bill: Bill) {
     bill.id = this.bill().id;
     bill.date = this.bill().date;
-    this.billService.updateBill(bill).pipe(
-      switchMap((updatedBill) => {
-        const current = this.bills.value() ?? [];
-        this.bills.set(
-          current.map((b) => b.id === updatedBill.id ? updatedBill : b)
-        );
-        this.showEditBillDialog = false;
-        const userId = this.userId();
-
-        if (!userId) {
-          return EMPTY;
-        }
-
-        return this.userService.getTotalDebtAmount(userId);
-      })
-    ).subscribe((amount) => {
+    this.billService.updateBill(bill).subscribe(() => {
+      this.showEditBillDialog = false;
       this.messageService.add({ severity: 'success', summary: 'Muokkaus onnistui.' });
-      this.debtService.setDebt(amount);
     });
   }
 
   handleDeleteBill(id: number) {
     this.billService.deleteBillById(id).pipe(
       switchMap(() => {
-        const current = this.bills.value() ?? [];
-        this.bills.set(current.filter((b) => b.id !== id));
         this.showEditBillDialog = false;
-
         const userId = this.userId();
-
         if (!userId) {
           return EMPTY;
         }
-
         return this.userService.getTotalDebtAmount(userId);
       })
     ).subscribe((amount) => {

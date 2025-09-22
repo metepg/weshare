@@ -2,6 +2,7 @@ package com.weshare.security;
 
 import com.weshare.controller.BillController;
 import com.weshare.model.ERole;
+import com.weshare.service.BillEventService;
 import com.weshare.service.BillService;
 import com.weshare.service.SecurityService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,8 @@ class CsrfTest {
     private MockMvc mockMvc;
     @MockitoBean
     BillService billService;
+    @MockitoBean
+    BillEventService billEventService;
     @MockitoBean
     SecurityService securityService;
 

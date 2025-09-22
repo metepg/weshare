@@ -1,6 +1,5 @@
 import { Component, DoCheck, inject, OnInit } from '@angular/core';
 import { BillService } from '../../services/bill/bill.service';
-import { Observable, of } from 'rxjs';
 import { Bill } from '../../model/Bill';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserService } from '../../services/user/user.service';
@@ -13,7 +12,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { NgStyle } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { DebtService } from '../../services/debt/debt.service';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { Button } from 'primeng/button';
@@ -38,12 +37,10 @@ export class MainComponent implements OnInit, DoCheck {
   private readonly billService = inject(BillService);
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly router = inject(Router);
   private readonly debtService = inject(DebtService);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly userService = inject(UserService);
 
-  bills$: Observable<Bill[]>;
   isLoading = false;
   debt = this.debtService.debt;
   sidebarVisible = true;
@@ -87,13 +84,9 @@ export class MainComponent implements OnInit, DoCheck {
         this.isLoading = true;
         const resetBill = new Bill(0, 7, '', this.debt(), user.id, user.name);
         this.billService.payDebt(resetBill).subscribe((response: HttpResponse<Bill[]>) => {
-          const body: Bill[] | null = response.body;
-          if (response.ok && body) {
+          if (response.ok) {
             this.isLoading = false;
-            this.debtService.setDebt(0);
-            this.bills$ = of(body);
             this.messageService.add({severity: 'success', summary: `Velat nollattu.`,});
-            void this.router.navigate(['bills'])
           } else {
             this.messageService.add(Messages.ERROR.unknownError);
           }

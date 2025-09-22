@@ -1,6 +1,7 @@
 package com.weshare.service;
 
 import com.weshare.dto.BillDTO;
+import com.weshare.dto.BillEvent;
 import com.weshare.dto.UserDTO;
 import com.weshare.model.Bill;
 import com.weshare.model.SearchFilter;
@@ -24,6 +25,11 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static com.weshare.model.BillEventType.ADDED;
+import static com.weshare.model.BillEventType.DEBT_PAID;
+import static com.weshare.model.BillEventType.DELETED;
+import static com.weshare.model.BillEventType.UPDATED;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,15 +37,18 @@ public class BillService {
     private static final Logger LOG = LoggerFactory.getLogger(BillService.class);
     private final BillRepository billRepository;
     private final BillConverter billConverter;
-    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
     private final UserService userService;
     private final SecurityService securityService;
+    private final BillEventService billEventService;
+    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
 
     @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public BillDTO save(BillDTO dto) {
         Bill bill = billRepository.save(billConverter.dtoToBill(dto));
+        BillDTO saved = billConverter.billToDTO(bill);
         LOG.debug("User '{}' saved bill: {}", securityService.getCurrentUser().name(), bill);
-        return billConverter.billToDTO(bill);
+        billEventService.publish(new BillEvent(dto.id() == null ? ADDED : UPDATED, saved));
+        return saved;
     }
 
     @Cacheable("recentBills")
@@ -68,14 +77,11 @@ public class BillService {
     @CacheEvict(value = {"recentBills", "billsByYear"}, allEntries = true)
     public List<BillDTO> payDebt(BillDTO bill) {
         UserDTO currentUser = securityService.getCurrentUser();
-        save(bill);
+        Bill saved = billRepository.save(billConverter.dtoToBill(bill));
         billRepository.payDebt();
         LOG.info("User '{}' paid debt", currentUser.name());
-        List<Bill> recentBills = billRepository.findRecentBills(currentUser.groupId(), PageRequest.of(0, 100));
-        Collections.reverse(recentBills);
-        return recentBills.stream()
-                .map(billConverter::billToDTO)
-                .toList();
+        billEventService.publish(new BillEvent(DEBT_PAID, null));
+        return List.of(billConverter.billToDTO(saved));
     }
 
     @Cacheable(value = "billsByYear", key = "#year")
@@ -105,6 +111,9 @@ public class BillService {
         LOG.info("User '{}' deleting bill with ID: {}", securityService.getCurrentUser().name(), id);
         try {
             billRepository.deleteById(id);
+            billEventService.publish(new BillEvent(
+                DELETED, new BillDTO(id, 0, 0, null, null, false, null, null, null)
+            ));
             return true;
         } catch (Exception e) {
             LOG.error("User '{}' failed to delete bill with ID: {}", securityService.getCurrentUser().name(), id, e);
