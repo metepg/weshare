@@ -6,6 +6,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { version } from 'package.json'
 
 @Component({
   selector: 'app-navbar',
@@ -24,6 +25,10 @@ export class NavbarComponent {
   };
   readonly debtAmount = input<number>(0);
   debtEmitter = output<undefined>();
+
+  get version() {
+    return version;
+  }
 
   showTab(view: View) {
     const route = this.routeMap[view] || '';
