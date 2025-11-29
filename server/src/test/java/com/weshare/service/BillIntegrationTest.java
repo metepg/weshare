@@ -12,6 +12,7 @@ import com.weshare.repository.CategoryRepository;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import java.util.stream.Stream;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
+//https://github.com/rest-assured/rest-assured/issues/1846
+@Disabled("Until rest-assured is compatible with Groovy 5")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BillIntegrationTest extends TestcontainersConfig {
     private static final String BASE_URL = "/api/bills";
