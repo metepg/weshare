@@ -1,7 +1,6 @@
 # Maven
 target/
 */target/
-.mvn/
 .settings/
 .classpath
 .project

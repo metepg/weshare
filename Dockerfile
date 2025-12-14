@@ -9,20 +9,22 @@ COPY client/ .
 RUN npm run build
 
 # ---------- server ----------
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
+
+COPY mvnw .
+COPY .mvn .mvn
+RUN chmod +x mvnw
 
 COPY pom.xml ./
 COPY server/pom.xml server/pom.xml
-RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests -pl server -am dependency:go-offline
 
 COPY server/ server/
 COPY --from=client /client/dist client/dist/
-
-RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests -pl server -am package
+RUN ./mvnw -q -pl server -DskipTests package
 
 # ---------- runtime ----------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN adduser --system appuser
 USER appuser
