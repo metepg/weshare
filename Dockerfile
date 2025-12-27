@@ -21,7 +21,7 @@ COPY server/pom.xml server/pom.xml
 
 COPY server/ server/
 COPY --from=client /client/dist client/dist/
-RUN ./mvnw -q -pl server -DskipTests package
+RUN ./mvnw -pl server package -DskipTests
 
 # ---------- runtime ----------
 FROM eclipse-temurin:21-jre-alpine
